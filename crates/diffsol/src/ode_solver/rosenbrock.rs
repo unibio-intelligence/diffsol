@@ -10,6 +10,7 @@ use num_traits::{One, Signed, ToPrimitive, Zero};
 /// A tableau-driven class of linearly implicit Rosenbrock-Wanner methods.
 /// Each attempted step freezes the Jacobian and reuses one linear factorization.
 /// A tableau's continuous extension supplies dense output; otherwise Hermite interpolation is used.
+/// With a continuous extension, `state().dy` is its endpoint derivative.
 /// Constant mass matrices are supported for index-1 DAEs with a continuous extension.
 /// Integrated outputs use quadrature along the required state continuous extension;
 /// Rodas5P outputs have global order four.
@@ -279,11 +280,15 @@ where
     }
 }
 #[cfg(test)]
+#[path = "rosenbrock_harness_tests.rs"]
+mod harness_tests;
+
+#[cfg(test)]
 mod tests {
     use super::*;
     use crate::{
         ode_equations::test_models::{
-            exponential_decay::exponential_decay_problem,
+            exponential_decay::{exponential_decay_problem, exponential_decay_problem_with_root},
             exponential_decay_with_algebraic::{
                 exponential_decay_with_algebraic_adjoint_problem,
                 exponential_decay_with_algebraic_problem,
@@ -294,7 +299,7 @@ mod tests {
             test_checkpointing, test_config, test_interpolate, test_interpolate_dy,
             test_ode_solver, test_problem, test_state_mut,
         },
-        FaerLU, FaerMat, NalgebraLU, NalgebraMat, OdeBuilder, TableauMat, TableauVec,
+        FaerLU, FaerMat, NalgebraLU, NalgebraMat, OdeBuilder, TableauMat, TableauVec, VectorView,
     };
     type Mat = NalgebraMat<f64>;
     type LS = NalgebraLU<f64>;
@@ -318,18 +323,24 @@ mod tests {
                 p.rodas5p::<$ls>().unwrap(),
                 p.rodas5p::<$ls>().unwrap(),
             );
-            for (p, sol) in [
-                exponential_decay_problem::<$mat>(false),
-                exponential_decay_problem::<$mat>(true),
-            ] {
+            for use_tstop in [false, true] {
+                let (p, sol) = exponential_decay_problem::<$mat>(false);
                 let mut s = p.rodas5p::<$ls>().unwrap();
-                test_ode_solver(&mut s, sol, None, false, false);
+                test_ode_solver(&mut s, sol, None, use_tstop, false);
                 let stats = s.get_statistics();
                 assert_eq!(
                     stats.number_of_linear_solver_setups,
                     stats.number_of_steps + stats.number_of_error_test_failures
                 );
                 assert_eq!(stats.number_of_nonlinear_solver_iterations, 0);
+                let (p, sol) = exponential_decay_problem_with_root::<$mat>(false, false);
+                test_ode_solver(
+                    &mut p.rodas5p::<$ls>().unwrap(),
+                    sol,
+                    None,
+                    use_tstop,
+                    false,
+                );
             }
             let (p, sol) = robertson_ode::<$mat>(false, 1);
             test_ode_solver(&mut p.rodas5p::<$ls>().unwrap(), sol, None, false, false);
@@ -342,6 +353,104 @@ mod tests {
     #[test]
     fn faer_shared_contract() {
         contract!(FaerMat<f64>, FaerLU<f64>);
+    }
+    #[test]
+    fn minimum_timestep_is_checked_before_any_attempt() {
+        for tableau in [Tableau::rodas5p(), Tableau::rosenbrock23()] {
+            for h in [1e-6, -1e-6] {
+                let (p, _) = exponential_decay_problem::<Mat>(false);
+                let mut s = p
+                    .rosenbrock_solver::<LS, Mat>(p.rodas5p_state::<LS>().unwrap(), tableau)
+                    .unwrap();
+                *s.state_mut().h = h;
+                s.config_mut().minimum_timestep = 1e-5;
+                let before = (s.state().t, s.state().y.clone());
+                assert!(matches!(
+                    s.step(),
+                    Err(DiffsolError::OdeSolverError(
+                        OdeSolverError::StepSizeTooSmall { .. }
+                    ))
+                ));
+                assert_eq!(s.state().t, before.0);
+                s.state().y.assert_eq_st(&before.1, 0.0);
+                assert_eq!(s.get_statistics().number_of_linear_solver_setups, 0);
+            }
+        }
+    }
+    #[test]
+    fn continuous_extension_avoids_endpoint_rhs_evaluation() {
+        use std::{cell::Cell, rc::Rc};
+        for tableau in [Tableau::rodas5p(), Tableau::rosenbrock23()] {
+            let calls = Rc::new(Cell::new(0));
+            let observed = calls.clone();
+            let p = OdeBuilder::<Mat>::new()
+                .rtol(1e-5)
+                .atol([1e-7])
+                .rhs_implicit(
+                    move |x, _, _, f| {
+                        observed.set(observed.get() + 1);
+                        f[0] = -x[0];
+                    },
+                    |_, _, _, v, jv| jv[0] = -v[0],
+                )
+                .init(|_, _, y| y[0] = 1.0, 1)
+                .build()
+                .unwrap();
+            let stages = tableau.s();
+            let mut s = p
+                .rosenbrock_solver::<LS, Mat>(p.rodas5p_state::<LS>().unwrap(), tableau)
+                .unwrap();
+            *s.state_mut().h = 0.001;
+            calls.set(0); // Exclude constructor/initial-timestep work.
+            s.step().unwrap();
+            let attempts = 1 + s.get_statistics().number_of_error_test_failures;
+            // Each stage plus two probes from the shared central f_t implementation.
+            assert_eq!(calls.get(), attempts * (stages + 2));
+            s.interpolate_dy(s.state().t)
+                .unwrap()
+                .assert_eq_st(s.state().dy, 1e-12);
+        }
+    }
+    #[test]
+    fn rosenbrock23_sparse_robertson_interpolation() {
+        macro_rules! check {
+            ($mat:ty, $ls:ty) => {{
+                let times: Vec<_> = (0..61).map(|i| 10f64.powf(-6.0 + i as f64 / 6.0)).collect();
+                let (mut reference_problem, _) = robertson_ode::<$mat>(false, 1);
+                reference_problem.rtol = 1e-11;
+                reference_problem.atol.fill(1e-14);
+                let reference = reference_problem
+                    .bdf::<$ls>()
+                    .unwrap()
+                    .solve_dense(&times)
+                    .unwrap()
+                    .0;
+                let (p, _) = robertson_ode::<$mat>(false, 1);
+                let mut s = p.rosenbrock23::<$ls>().unwrap();
+                let mut max_error: f64 = 0.0;
+                for (i, &t) in times.iter().enumerate() {
+                    // Never stop at an observation: exercise interior samples in large stiff steps.
+                    while s.state().t < t {
+                        s.step().unwrap();
+                    }
+                    let expected = reference.column(i).into_owned();
+                    let mut error = s.interpolate(t).unwrap();
+                    error.axpy(-1.0, &expected, 1.0);
+                    let scaled = error.squared_norm(&expected, &p.atol, p.rtol).sqrt();
+                    max_error = max_error.max(scaled);
+                }
+                assert!(
+                    max_error < 15.0,
+                    "sparse Robertson error: {max_error} tolerance units"
+                );
+                println!(
+                    "sparse_robertson,{},max_tolerance_units={max_error}",
+                    stringify!($mat)
+                );
+            }};
+        }
+        check!(Mat, LS);
+        check!(FaerMat<f64>, FaerLU<f64>);
     }
     #[test]
     fn constant_mass_index_one_dae() {
@@ -981,6 +1090,7 @@ mod tests {
                 test_state_mut(test_problem::<$mat>(false).rosenbrock23::<$ls>().unwrap());
                 test_interpolate(test_problem::<$mat>(false).rosenbrock23::<$ls>().unwrap());
                 test_interpolate(test_problem::<$mat>(true).rosenbrock23::<$ls>().unwrap());
+                test_interpolate_dy(test_problem::<$mat>(false).rosenbrock23::<$ls>().unwrap());
                 test_config(
                     robertson_ode::<$mat>(false, 1)
                         .0
@@ -993,6 +1103,24 @@ mod tests {
                     p.rosenbrock23::<$ls>().unwrap(),
                     p.rosenbrock23::<$ls>().unwrap(),
                 );
+                for use_tstop in [false, true] {
+                    let (p, sol) = exponential_decay_problem::<$mat>(false);
+                    test_ode_solver(
+                        &mut p.rosenbrock23::<$ls>().unwrap(),
+                        sol,
+                        None,
+                        use_tstop,
+                        false,
+                    );
+                    let (p, sol) = exponential_decay_problem_with_root::<$mat>(false, false);
+                    test_ode_solver(
+                        &mut p.rosenbrock23::<$ls>().unwrap(),
+                        sol,
+                        None,
+                        use_tstop,
+                        false,
+                    );
+                }
                 let (p, sol) = robertson_ode::<$mat>(false, 1);
                 let mut s = p.rosenbrock23::<$ls>().unwrap();
                 test_ode_solver(&mut s, sol, None, false, false);

@@ -739,12 +739,11 @@ where
             Eqn::T::one(),
             &mut self.old_state.y,
         );
-        if self.problem.eqn.mass().is_some() {
-            let weights = Self::interpolate_beta_weights_deriv(
-                Eqn::T::one(),
-                self.tableau.beta_t().unwrap(),
-                Eqn::T::one() / h,
-            );
+        if let Some(beta) = self.tableau.beta_t() {
+            // The extension supplies the endpoint derivative for both ODEs and DAEs.
+            // Preserve the stage columns and avoid an extra RHS evaluation per attempt.
+            let weights =
+                Self::interpolate_beta_weights_deriv(Eqn::T::one(), beta, Eqn::T::one() / h);
             self.diff.gemv_cols(
                 0,
                 weights.len(),
