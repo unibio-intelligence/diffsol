@@ -292,10 +292,6 @@ where
     }
 }
 #[cfg(test)]
-#[path = "rosenbrock_harness_tests.rs"]
-mod harness_tests;
-
-#[cfg(test)]
 mod tests {
     use super::*;
     use crate::{
@@ -308,7 +304,7 @@ mod tests {
             robertson_ode::robertson_ode,
         },
         ode_solver::tests::{test_ode_solver, test_problem},
-        FaerLU, FaerMat, NalgebraLU, NalgebraMat, OdeBuilder, TableauMat, TableauVec,
+        FaerLU, FaerMat, NalgebraLU, NalgebraMat, OdeBuilder, OdeEquations, TableauMat, TableauVec,
     };
     type Mat = NalgebraMat<f64>;
     type LS = NalgebraLU<f64>;
@@ -1285,5 +1281,236 @@ mod tests {
             let error = (s.state().y[0] - expected).abs();
             assert!(error < 1e-13, "{name}, lambda={lambda}, {error}");
         }
+    }
+
+    // Statistics snapshots, as for the SDIRK and BDF solvers: one Jacobian and one
+    // factorisation per accepted step, no nonlinear iterations.
+
+    #[test]
+    fn test_rosenbrock23_nalgebra_exponential_decay() {
+        let (problem, soln) = exponential_decay_problem::<Mat>(false);
+        let mut s = problem.rosenbrock23::<LS>().unwrap();
+        test_ode_solver(&mut s, soln, None, false, false);
+        insta::assert_yaml_snapshot!(s.get_statistics(), @r###"
+        number_of_linear_solver_setups: 30
+        number_of_steps: 30
+        number_of_error_test_failures: 0
+        number_of_nonlinear_solver_iterations: 0
+        number_of_nonlinear_solver_fails: 0
+        number_of_linear_solver_setups_from_checkpoint: 0
+        number_of_linear_solver_setups_from_first_convergence_fail: 0
+        number_of_linear_solver_setups_from_second_convergence_fail: 0
+        number_of_linear_solver_setups_from_error_test_fail: 0
+        number_of_linear_solver_setups_from_step_success: 30
+        "###);
+        insta::assert_yaml_snapshot!(problem.eqn.rhs().statistics(), @r###"
+        number_of_calls: 182
+        number_of_jac_muls: 60
+        number_of_matrix_evals: 30
+        number_of_jac_adj_muls: 0
+        "###);
+    }
+
+    #[test]
+    fn test_rosenbrock23_nalgebra_robertson_ode() {
+        let (problem, soln) = robertson_ode::<Mat>(false, 1);
+        let mut s = problem.rosenbrock23::<LS>().unwrap();
+        test_ode_solver(&mut s, soln, None, false, false);
+        insta::assert_yaml_snapshot!(s.get_statistics(), @r###"
+        number_of_linear_solver_setups: 386
+        number_of_steps: 386
+        number_of_error_test_failures: 0
+        number_of_nonlinear_solver_iterations: 0
+        number_of_nonlinear_solver_fails: 0
+        number_of_linear_solver_setups_from_checkpoint: 0
+        number_of_linear_solver_setups_from_first_convergence_fail: 0
+        number_of_linear_solver_setups_from_second_convergence_fail: 0
+        number_of_linear_solver_setups_from_error_test_fail: 0
+        number_of_linear_solver_setups_from_step_success: 386
+        "###);
+        insta::assert_yaml_snapshot!(problem.eqn.rhs().statistics(), @r###"
+        number_of_calls: 2318
+        number_of_jac_muls: 1158
+        number_of_matrix_evals: 386
+        number_of_jac_adj_muls: 0
+        "###);
+    }
+
+    #[test]
+    fn test_rodas5p_nalgebra_exponential_decay() {
+        let (problem, soln) = exponential_decay_problem::<Mat>(false);
+        let mut s = problem.rodas5p::<LS>().unwrap();
+        test_ode_solver(&mut s, soln, None, false, false);
+        insta::assert_yaml_snapshot!(s.get_statistics(), @r###"
+        number_of_linear_solver_setups: 8
+        number_of_steps: 8
+        number_of_error_test_failures: 0
+        number_of_nonlinear_solver_iterations: 0
+        number_of_nonlinear_solver_fails: 0
+        number_of_linear_solver_setups_from_checkpoint: 0
+        number_of_linear_solver_setups_from_first_convergence_fail: 0
+        number_of_linear_solver_setups_from_second_convergence_fail: 0
+        number_of_linear_solver_setups_from_error_test_fail: 0
+        number_of_linear_solver_setups_from_step_success: 8
+        "###);
+        insta::assert_yaml_snapshot!(problem.eqn.rhs().statistics(), @r###"
+        number_of_calls: 90
+        number_of_jac_muls: 16
+        number_of_matrix_evals: 8
+        number_of_jac_adj_muls: 0
+        "###);
+    }
+
+    #[test]
+    fn test_rodas5p_nalgebra_robertson_ode() {
+        let (problem, soln) = robertson_ode::<Mat>(false, 1);
+        let mut s = problem.rodas5p::<LS>().unwrap();
+        test_ode_solver(&mut s, soln, None, false, false);
+        insta::assert_yaml_snapshot!(s.get_statistics(), @r###"
+        number_of_linear_solver_setups: 129
+        number_of_steps: 129
+        number_of_error_test_failures: 0
+        number_of_nonlinear_solver_iterations: 0
+        number_of_nonlinear_solver_fails: 0
+        number_of_linear_solver_setups_from_checkpoint: 0
+        number_of_linear_solver_setups_from_first_convergence_fail: 0
+        number_of_linear_solver_setups_from_second_convergence_fail: 0
+        number_of_linear_solver_setups_from_error_test_fail: 0
+        number_of_linear_solver_setups_from_step_success: 129
+        "###);
+        insta::assert_yaml_snapshot!(problem.eqn.rhs().statistics(), @r###"
+        number_of_calls: 1421
+        number_of_jac_muls: 387
+        number_of_matrix_evals: 129
+        number_of_jac_adj_muls: 0
+        "###);
+    }
+
+    /// Both Rosenbrock tableaus through the shared solver harness.
+    mod harness {
+        use crate::{
+            matrix::dense_nalgebra_serial::NalgebraMat,
+            ode_equations::test_models::{
+                exponential_decay::{
+                    exponential_decay_problem, exponential_decay_problem_with_root,
+                    negative_exponential_decay_problem,
+                },
+                heat2d::head2d_problem,
+                robertson_ode::robertson_ode,
+            },
+            ode_solver::tests::{
+                test_checkpointing, test_config, test_interpolate, test_interpolate_dy,
+                test_ode_solver, test_problem, test_state_mut, test_state_mut_on_problem,
+            },
+            FaerLU, FaerMat, FaerSparseLU, FaerSparseMat, NalgebraLU, OdeSolverMethod,
+        };
+
+        type M = NalgebraMat<f64>;
+        type LS = NalgebraLU<f64>;
+
+        macro_rules! harness {
+            ($modname:ident, $ctor:ident) => {
+                mod $modname {
+                    use super::*;
+                    #[test]
+                    fn t_state_mut() {
+                        test_state_mut(test_problem::<M>(false).$ctor::<LS>().unwrap());
+                    }
+                    #[test]
+                    fn t_config() {
+                        test_config(robertson_ode::<M>(false, 1).0.$ctor::<LS>().unwrap());
+                    }
+                    #[test]
+                    fn t_interpolate() {
+                        test_interpolate(test_problem::<M>(false).$ctor::<LS>().unwrap());
+                        test_interpolate(test_problem::<M>(true).$ctor::<LS>().unwrap());
+                    }
+                    #[test]
+                    fn t_interpolate_dy() {
+                        test_interpolate_dy(test_problem::<M>(false).$ctor::<LS>().unwrap());
+                    }
+                    #[test]
+                    fn t_checkpointing() {
+                        let (problem, soln) = exponential_decay_problem::<M>(false);
+                        let s1 = problem.$ctor::<LS>().unwrap();
+                        let s2 = problem.$ctor::<LS>().unwrap();
+                        test_checkpointing(soln, s1, s2);
+                    }
+                    #[test]
+                    fn t_state_mut_on_problem() {
+                        let (p, soln) = exponential_decay_problem::<M>(false);
+                        let mut s = p.$ctor::<LS>().unwrap();
+                        // Isolate state reinitialisation from accumulated adaptive global error.
+                        // The shared controller estimates local error; Rosenbrock23's default
+                        // trajectory reaches 19.28 tolerance units against this harness's 19.
+                        *s.state_mut().h = 0.1;
+                        s.config_mut().maximum_timestep_growth = 1.0;
+                        s.config_mut().minimum_timestep_growth = 1.0;
+                        test_state_mut_on_problem(s, soln);
+                    }
+                    #[test]
+                    fn t_exponential_decay() {
+                        let (problem, soln) = exponential_decay_problem::<M>(false);
+                        let mut s = problem.$ctor::<LS>().unwrap();
+                        test_ode_solver(&mut s, soln, None, false, false);
+                    }
+                    #[test]
+                    fn t_exponential_decay_tstop() {
+                        let (problem, soln) = exponential_decay_problem::<M>(false);
+                        let mut s = problem.$ctor::<LS>().unwrap();
+                        test_ode_solver(&mut s, soln, None, true, false);
+                    }
+                    #[test]
+                    fn t_negative_exponential_decay() {
+                        let (problem, soln) = negative_exponential_decay_problem::<M>(false);
+                        let mut s = problem.$ctor::<LS>().unwrap();
+                        test_ode_solver(&mut s, soln, Some(30.), false, false);
+                    }
+                    #[test]
+                    fn t_exponential_decay_with_root() {
+                        let (problem, soln) =
+                            exponential_decay_problem_with_root::<M>(false, false);
+                        let mut s = problem.$ctor::<LS>().unwrap();
+                        test_ode_solver(&mut s, soln, None, false, false);
+                    }
+                    #[test]
+                    fn t_robertson_ode() {
+                        let (problem, soln) = robertson_ode::<M>(false, 1);
+                        let mut s = problem.$ctor::<LS>().unwrap();
+                        test_ode_solver(&mut s, soln, None, false, false);
+                        assert_eq!(
+                            s.get_statistics().number_of_linear_solver_setups,
+                            s.get_statistics().number_of_steps
+                                + s.get_statistics().number_of_error_test_failures
+                        );
+                        assert_eq!(s.get_statistics().number_of_nonlinear_solver_iterations, 0);
+                        let (problem, soln) = robertson_ode::<FaerMat<f64>>(false, 1);
+                        let mut s = problem.$ctor::<FaerLU<f64>>().unwrap();
+                        test_ode_solver(&mut s, soln, None, false, false);
+                        assert_eq!(
+                            s.get_statistics().number_of_linear_solver_setups,
+                            s.get_statistics().number_of_steps
+                                + s.get_statistics().number_of_error_test_failures
+                        );
+                        assert_eq!(s.get_statistics().number_of_nonlinear_solver_iterations, 0);
+                    }
+                    #[test]
+                    fn t_robertson_ode_tstop() {
+                        let (problem, soln) = robertson_ode::<M>(false, 1);
+                        let mut s = problem.$ctor::<LS>().unwrap();
+                        test_ode_solver(&mut s, soln, None, true, false);
+                    }
+                    #[test]
+                    fn t_heat2d_faer_sparse() {
+                        let (problem, soln) = head2d_problem::<FaerSparseMat<f64>, 10>();
+                        let mut s = problem.$ctor::<FaerSparseLU<f64>>().unwrap();
+                        test_ode_solver(&mut s, soln, None, false, false);
+                    }
+                }
+            };
+        }
+
+        harness!(rosenbrock23, rosenbrock23);
+        harness!(rodas5p, rodas5p);
     }
 }
