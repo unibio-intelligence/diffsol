@@ -1,0 +1,9 @@
+   Compiling diffsol-pr-a-scientific v0.0.0 (<build-path>)
+    Finished `release` profile [optimized] target(s) in 1.92s
+     Running `<build-path>`
+TRACE_STEP,circle_inexact,rosenbrock23,0.000001,1,0.027009313521587842,0.0000002700465636757926,50000,12
+TRACE_STEP,circle_inexact,rosenbrock23,0.000001,1,0.03819755593670011,0.00000019103862880237154,100000,12
+TRACE_STEP,circle_inexact,rosenbrock23,0.000001,1,0.04678622791428187,0.00000015604430448867425,150000,12
+TRACE_STEP,circle_inexact,rosenbrock23,0.000001,1,0.05402963461442805,0.00000013518994106418499,200000,12
+TRACE_STEP,circle_inexact,rosenbrock23,0.000001,1,0.060413624073862686,0.0000001209630006373645,250000,12
+FAILED circle_inexact rosenbrock23 0.000001: Error: validation step cap

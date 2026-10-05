@@ -1,0 +1,1013 @@
+[
+  {
+    "item": "B1",
+    "reference": "OrdinaryDiffEqRosenbrock 2.7.1, Rodas5PTableau",
+    "quantity": "A, C (including implied zero column), c, d, gamma, H-to-beta",
+    "expected": "0 ulp",
+    "observed": "0 ulp; bitwise fixture test passes",
+    "tolerance": "0 ulp",
+    "status": "pass"
+  },
+  {
+    "item": "B5",
+    "reference": "Steinebach 2023 Table 6",
+    "quantity": "Endpoint max error at h=0.25",
+    "expected": 1.26e-09,
+    "observed": 1.255564541224885e-09,
+    "tolerance": "20% of published rounded error",
+    "status": "pass"
+  },
+  {
+    "item": "B5",
+    "reference": "Steinebach 2023 Table 6",
+    "quantity": "Endpoint max error at h=0.125",
+    "expected": 1.47e-10,
+    "observed": 1.474731448070088e-10,
+    "tolerance": "20% of published rounded error",
+    "status": "pass"
+  },
+  {
+    "item": "B3",
+    "reference": "Steinebach 2023 \u00a74 Problem 2",
+    "quantity": "Endpoint error at t=2; accepted steps (paper forcing, stiffness 1e5)",
+    "expected": "10-12 exp(-2)",
+    "observed": {
+      "error": 5.57395907208047e-10,
+      "steps": 19
+    },
+    "tolerance": "<1e-7",
+    "status": "pass"
+  },
+  {
+    "item": "B5",
+    "reference": "Steinebach 2023 Table 6",
+    "quantity": "Endpoint max error at h=0.0625",
+    "expected": 1.78e-11,
+    "observed": 1.7822188169702713e-11,
+    "tolerance": "20% of published rounded error",
+    "status": "pass"
+  },
+  {
+    "item": "B4",
+    "reference": "Steinebach 2023 Table 5",
+    "quantity": "Endpoint max error at h=0.125",
+    "expected": 2.93e-08,
+    "observed": 2.928143638669667e-08,
+    "tolerance": "20% of published rounded error",
+    "status": "pass"
+  },
+  {
+    "item": "B7",
+    "reference": "Steinebach 2023 Table 8",
+    "quantity": "Endpoint max error at h=0.03125",
+    "expected": 9e-05,
+    "observed": 9.001463867830406e-05,
+    "tolerance": "20% of published rounded error",
+    "status": "pass"
+  },
+  {
+    "item": "B2",
+    "reference": "Steinebach 2023 \u00a74 Problem 1",
+    "quantity": "Endpoint component errors at t=4, rtol=1e-7",
+    "expected": "ln(4); ln(4)/4",
+    "observed": [
+      7.482647834677891e-10,
+      7.03506142230026e-11
+    ],
+    "tolerance": "<1e-7",
+    "status": "pass"
+  },
+  {
+    "item": "B4",
+    "reference": "Steinebach 2023 Table 5",
+    "quantity": "Endpoint max error at h=0.0625",
+    "expected": 8.56e-10,
+    "observed": 8.562359710140299e-10,
+    "tolerance": "20% of published rounded error",
+    "status": "pass"
+  },
+  {
+    "item": "B5",
+    "reference": "Steinebach 2023 Table 6",
+    "quantity": "Endpoint max error at h=0.03125",
+    "expected": 2.17e-12,
+    "observed": 2.1103119252074976e-12,
+    "tolerance": "20% of published rounded error",
+    "status": "pass"
+  },
+  {
+    "item": "B4",
+    "reference": "Steinebach 2023 Table 5",
+    "quantity": "Endpoint max error at h=0.03125",
+    "expected": 2.59e-11,
+    "observed": 2.592170922355308e-11,
+    "tolerance": "20% of published rounded error",
+    "status": "pass"
+  },
+  {
+    "item": "B7",
+    "reference": "Steinebach 2023 Table 8",
+    "quantity": "Endpoint max error at h=0.015625",
+    "expected": 2.33e-05,
+    "observed": 2.334097324505069e-05,
+    "tolerance": "20% of published rounded error",
+    "status": "pass"
+  },
+  {
+    "item": "B7",
+    "reference": "Steinebach 2023 Table 8",
+    "quantity": "Endpoint max error at h=0.0078125",
+    "expected": 5.94e-06,
+    "observed": 5.93873756757346e-06,
+    "tolerance": "20% of published rounded error",
+    "status": "pass"
+  },
+  {
+    "item": "B4",
+    "reference": "Steinebach 2023 Table 5",
+    "quantity": "Observed endpoint orders",
+    "expected": 5,
+    "observed": [
+      5.095834070501863,
+      5.04577569055821
+    ],
+    "tolerance": "\u00b10.25",
+    "status": "pass"
+  },
+  {
+    "item": "B5",
+    "reference": "Steinebach 2023 Table 6",
+    "quantity": "Observed endpoint orders",
+    "expected": 3,
+    "observed": [
+      3.089812025547019,
+      3.0487058765417014,
+      3.078146314148503
+    ],
+    "tolerance": "\u00b10.2",
+    "status": "pass"
+  },
+  {
+    "item": "B7",
+    "reference": "Steinebach 2023 Table 8",
+    "quantity": "Observed endpoint orders",
+    "expected": 2,
+    "observed": [
+      1.9472949214296815,
+      1.974636531589852
+    ],
+    "tolerance": "\u00b10.2",
+    "status": "pass"
+  },
+  {
+    "item": "B6/B13",
+    "reference": "Steinebach 2023 Table 7; Lang\u2013Verwer; Rang\u2013Angermann",
+    "quantity": "1000-state nonlinear parabolic endpoint max error at h=0.03125",
+    "expected": 5.97e-09,
+    "observed": 5.970898220297727e-09,
+    "tolerance": "25% of published rounded error",
+    "status": "pass"
+  },
+  {
+    "item": "B6/B13",
+    "reference": "Steinebach 2023 Table 7; Lang\u2013Verwer; Rang\u2013Angermann",
+    "quantity": "1000-state nonlinear parabolic endpoint max error at h=0.015625",
+    "expected": 4.72e-10,
+    "observed": 4.729991953666968e-10,
+    "tolerance": "25% of published rounded error",
+    "status": "pass"
+  },
+  {
+    "item": "B6/B13",
+    "reference": "Steinebach 2023 Table 7; Lang\u2013Verwer; Rang\u2013Angermann",
+    "quantity": "1000-state nonlinear parabolic endpoint max error at h=0.0078125",
+    "expected": 3.45e-11,
+    "observed": 3.476285925785305e-11,
+    "tolerance": "25% of published rounded error",
+    "status": "pass"
+  },
+  {
+    "item": "B6/B13",
+    "reference": "Steinebach 2023 Table 7; Lang\u2013Verwer; Rang\u2013Angermann",
+    "quantity": "1000-state nonlinear parabolic endpoint max error at h=0.00390625",
+    "expected": 2.36e-12,
+    "observed": 2.573496971081113e-12,
+    "tolerance": "25% of published rounded error",
+    "status": "pass"
+  },
+  {
+    "item": "B6/B13",
+    "reference": "Steinebach 2023 Table 7",
+    "quantity": "Parabolic observed orders (first three step sizes)",
+    "expected": "approximately 4",
+    "observed": [
+      3.658038342331991,
+      3.766219075015856
+    ],
+    "tolerance": "approximately 4\u20135",
+    "status": "pass"
+  },
+  {
+    "item": "B8",
+    "reference": "Steinebach 2023 \u00a74 Problem 6 / Table 9",
+    "quantity": "Polynomial DAE degree 1: max dense, endpoint and endpoint derivative errors",
+    "expected": "0 for degrees 1\u20134; degree 5 dense/derivative not exact",
+    "observed": {
+      "dense": 2.90878432451791e-14,
+      "endpoint": 1.199040866595169e-14,
+      "derivative": 1.6586731987899839e-13
+    },
+    "tolerance": "1e-9 for degrees 1\u20134; endpoint only for degree 5",
+    "status": "pass"
+  },
+  {
+    "item": "B8",
+    "reference": "Steinebach 2023 \u00a74 Problem 6 / Table 9",
+    "quantity": "Polynomial DAE degree 2: max dense, endpoint and endpoint derivative errors",
+    "expected": "0 for degrees 1\u20134; degree 5 dense/derivative not exact",
+    "observed": {
+      "dense": 1.021405182655144e-14,
+      "endpoint": 1.687538997430238e-14,
+      "derivative": 1.6564527527407336e-13
+    },
+    "tolerance": "1e-9 for degrees 1\u20134; endpoint only for degree 5",
+    "status": "pass"
+  },
+  {
+    "item": "B8",
+    "reference": "Steinebach 2023 \u00a74 Problem 6 / Table 9",
+    "quantity": "Polynomial DAE degree 3: max dense, endpoint and endpoint derivative errors",
+    "expected": "0 for degrees 1\u20134; degree 5 dense/derivative not exact",
+    "observed": {
+      "dense": 1.554312234475219e-14,
+      "endpoint": 0.0,
+      "derivative": 1.9539925233402755e-14
+    },
+    "tolerance": "1e-9 for degrees 1\u20134; endpoint only for degree 5",
+    "status": "pass"
+  },
+  {
+    "item": "B8",
+    "reference": "Steinebach 2023 \u00a74 Problem 6 / Table 9",
+    "quantity": "Polynomial DAE degree 4: max dense, endpoint and endpoint derivative errors",
+    "expected": "0 for degrees 1\u20134; degree 5 dense/derivative not exact",
+    "observed": {
+      "dense": 3.108624468950438e-14,
+      "endpoint": 3.552713678800501e-15,
+      "derivative": 4.263256414560601e-14
+    },
+    "tolerance": "1e-9 for degrees 1\u20134; endpoint only for degree 5",
+    "status": "pass"
+  },
+  {
+    "item": "B8",
+    "reference": "Steinebach 2023 \u00a74 Problem 6 / Table 9",
+    "quantity": "Polynomial DAE degree 5: max dense, endpoint and endpoint derivative errors",
+    "expected": "0 for degrees 1\u20134; degree 5 dense/derivative not exact",
+    "observed": {
+      "dense": 0.41716771835949995,
+      "endpoint": 1.9184653865522705e-13,
+      "derivative": 0.1338500899133237
+    },
+    "tolerance": "1e-9 for degrees 1\u20134; endpoint only for degree 5",
+    "status": "diagnostic"
+  },
+  {
+    "item": "B9",
+    "reference": "Hairer\u2013Wanner IV.7; Julia Rodas5P()",
+    "quantity": "R(-1.0)",
+    "expected": 0.3678803089370538,
+    "observed": 0.36788030893705376,
+    "tolerance": "absolute 1e-13",
+    "status": "pass"
+  },
+  {
+    "item": "B9",
+    "reference": "Hairer\u2013Wanner IV.7; Julia Rodas5P()",
+    "quantity": "R(-10.0)",
+    "expected": -0.04037298377966268,
+    "observed": -0.04037298377966081,
+    "tolerance": "absolute 1e-13",
+    "status": "pass"
+  },
+  {
+    "item": "B9",
+    "reference": "Hairer\u2013Wanner IV.7; Julia Rodas5P()",
+    "quantity": "R(-1000.0)",
+    "expected": -0.01205291678818721,
+    "observed": -0.0120529167881873,
+    "tolerance": "absolute 1e-13",
+    "status": "pass"
+  },
+  {
+    "item": "B9",
+    "reference": "Hairer\u2013Wanner IV.7; Julia Rodas5P()",
+    "quantity": "R(-100000000.0)",
+    "expected": -1.2520878608405691e-07,
+    "observed": -1.2520878608405604e-07,
+    "tolerance": "absolute 1e-13",
+    "status": "pass"
+  },
+  {
+    "item": "B9",
+    "reference": "Hairer\u2013Wanner IV.7; Julia Rodas5P()",
+    "quantity": "R(-100000000000000.0)",
+    "expected": -1.2520883384046958e-13,
+    "observed": -1.2520883384047003e-13,
+    "tolerance": "absolute 1e-13",
+    "status": "pass"
+  },
+  {
+    "item": "B9",
+    "reference": "Steinebach 2023; Hairer\u2013Wanner IV.7",
+    "quantity": "L-stable limit at z=-1e14",
+    "expected": 0,
+    "observed": -1.2520883384047003e-13,
+    "tolerance": "absolute <1e-10",
+    "status": "pass"
+  },
+  {
+    "item": "B11",
+    "reference": "OrdinaryDiffEqRosenbrock 2.7.1",
+    "quantity": "rodas5p decay: fixed 10 steps h=0.01 (native default central f_t)",
+    "expected": [
+      0.9048374180359586
+    ],
+    "observed": {
+      "endpoint": [
+        0.9048374180359589
+      ],
+      "max_relative_error": 2.453972398787416e-16
+    },
+    "tolerance": "relative 1e-12",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rodas5p decay: adaptive rtol=1e-06",
+    "expected": [
+      0.3678794411721777
+    ],
+    "observed": {
+      "endpoint": [
+        0.36787944362272557
+      ],
+      "max_error_vs_bdf": 2.4505478757319565e-09,
+      "error_over_rtol": 0.0024505478757319565,
+      "max_error_vs_julia": 2.393545472934022e-09,
+      "native_steps": 5,
+      "native_rejects": 0,
+      "julia_steps": 9,
+      "julia_rejects": 0
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rodas5p decay: adaptive rtol=1e-09",
+    "expected": [
+      0.3678794411721777
+    ],
+    "observed": {
+      "endpoint": [
+        0.3678794411726229
+      ],
+      "max_error_vs_bdf": 4.4519943287468777e-13,
+      "error_over_rtol": 0.0004451994328746877,
+      "max_error_vs_julia": 1.0355605262191148e-12,
+      "native_steps": 14,
+      "native_rejects": 0,
+      "julia_steps": 21,
+      "julia_rejects": 0
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "pass"
+  },
+  {
+    "item": "B11",
+    "reference": "OrdinaryDiffEqRosenbrock 2.7.1",
+    "quantity": "rosenbrock23 decay: fixed 10 steps h=0.01 (native default central f_t)",
+    "expected": [
+      0.904837051782804
+    ],
+    "observed": {
+      "endpoint": [
+        0.904837051782804
+      ],
+      "max_relative_error": 0.0
+    },
+    "tolerance": "relative 1e-12",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rosenbrock23 decay: adaptive rtol=1e-06",
+    "expected": [
+      0.3678794411721777
+    ],
+    "observed": {
+      "endpoint": [
+        0.36786901732486527
+      ],
+      "max_error_vs_bdf": 1.0423847312424073e-05,
+      "error_over_rtol": 10.423847312424073,
+      "max_error_vs_julia": 3.0002289458930242e-06,
+      "native_steps": 38,
+      "native_rejects": 1,
+      "julia_steps": 49,
+      "julia_rejects": 0
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "global-error-overrun"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rosenbrock23 decay: adaptive rtol=1e-09",
+    "expected": [
+      0.3678794411721777
+    ],
+    "observed": {
+      "endpoint": [
+        0.3678793375718914
+      ],
+      "max_error_vs_bdf": 1.0360028629419205e-07,
+      "error_over_rtol": 103.60028629419205,
+      "max_error_vs_julia": 2.4191710412679868e-08,
+      "native_steps": 379,
+      "native_rejects": 3,
+      "julia_steps": 437,
+      "julia_rejects": 0
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "global-error-overrun"
+  },
+  {
+    "item": "B11",
+    "reference": "OrdinaryDiffEqRosenbrock 2.7.1",
+    "quantity": "rodas5p robertson: fixed 10 steps h=0.001 (native default central f_t)",
+    "expected": [
+      0.9996006841629056,
+      3.6450479186134964e-05,
+      0.0003628653579085962
+    ],
+    "observed": {
+      "endpoint": [
+        0.9996006841629056,
+        3.645047918613495e-05,
+        0.000362865357908598
+      ],
+      "max_relative_error": 5.079414865746527e-15
+    },
+    "tolerance": "relative 1e-12",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rodas5p robertson: adaptive rtol=1e-06",
+    "expected": [
+      0.10730042855133996,
+      4.800166973234571e-07,
+      0.8926990914319547
+    ],
+    "observed": {
+      "endpoint": [
+        0.10730034673959674,
+        4.800162880723715e-07,
+        0.8926991732441141
+      ],
+      "max_error_vs_bdf": 8.18121593804122e-08,
+      "error_over_rtol": 0.0818121593804122,
+      "max_error_vs_julia": 6.576279920622596e-08,
+      "native_steps": 66,
+      "native_rejects": 5,
+      "julia_steps": 97,
+      "julia_rejects": 2
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rodas5p robertson: adaptive rtol=1e-09",
+    "expected": [
+      0.10730042855133996,
+      4.800166973234571e-07,
+      0.8926990914319547
+    ],
+    "observed": {
+      "endpoint": [
+        0.10730042832695336,
+        4.800166962008385e-07,
+        0.8926990916563485
+      ],
+      "max_error_vs_bdf": 2.2439383684513814e-10,
+      "error_over_rtol": 0.2243938368451381,
+      "max_error_vs_julia": 1.592103254788313e-10,
+      "native_steps": 220,
+      "native_rejects": 13,
+      "julia_steps": 304,
+      "julia_rejects": 2
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "pass"
+  },
+  {
+    "item": "B11",
+    "reference": "OrdinaryDiffEqRosenbrock 2.7.1",
+    "quantity": "rosenbrock23 robertson: fixed 10 steps h=0.001 (native default central f_t)",
+    "expected": [
+      0.9996006819320089,
+      3.645047866463391e-05,
+      0.0003628675893263426
+    ],
+    "observed": {
+      "endpoint": [
+        0.999600681932009,
+        3.64504786646339e-05,
+        0.0003628675893263428
+      ],
+      "max_relative_error": 4.481809085643224e-16
+    },
+    "tolerance": "relative 1e-12",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rosenbrock23 robertson: adaptive rtol=1e-06",
+    "expected": [
+      0.10730042855133996,
+      4.800166973234571e-07,
+      0.8926990914319547
+    ],
+    "observed": {
+      "endpoint": [
+        0.10729693829487816,
+        4.799958987658614e-07,
+        0.8927025817092221
+      ],
+      "max_error_vs_bdf": 3.490277267426123e-06,
+      "error_over_rtol": 3.490277267426123,
+      "max_error_vs_julia": 1.0393389183738222e-06,
+      "native_steps": 146,
+      "native_rejects": 7,
+      "julia_steps": 185,
+      "julia_rejects": 0
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rosenbrock23 robertson: adaptive rtol=1e-09",
+    "expected": [
+      0.10730042855133996,
+      4.800166973234571e-07,
+      0.8926990914319547
+    ],
+    "observed": {
+      "endpoint": [
+        0.10730039643748795,
+        4.800165282211474e-07,
+        0.8926991235459877
+      ],
+      "max_error_vs_bdf": 3.211403298841731e-08,
+      "error_over_rtol": 32.11403298841731,
+      "max_error_vs_julia": 7.578513927519737e-09,
+      "native_steps": 2095,
+      "native_rejects": 8,
+      "julia_steps": 2502,
+      "julia_rejects": 0
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "global-error-overrun"
+  },
+  {
+    "item": "B11",
+    "reference": "OrdinaryDiffEqRosenbrock 2.7.1",
+    "quantity": "rodas5p vdp: fixed 10 steps h=0.00001 (native default central f_t)",
+    "expected": [
+      1.9999999909292843,
+      -0.0001727878527461639
+    ],
+    "observed": {
+      "endpoint": [
+        1.9999999909292843,
+        -0.0001727878527461634
+      ],
+      "max_relative_error": 2.8236416499441033e-15
+    },
+    "tolerance": "relative 1e-12",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rodas5p vdp: adaptive rtol=1e-06",
+    "expected": [
+      1.999333370506298,
+      -0.0006670371231732628
+    ],
+    "observed": {
+      "endpoint": [
+        1.999333370506309,
+        -0.0006670371231732533
+      ],
+      "max_error_vs_bdf": 1.1102230246251565e-14,
+      "error_over_rtol": 1.1102230246251565e-08,
+      "max_error_vs_julia": 4.440892098500626e-16,
+      "native_steps": 19,
+      "native_rejects": 5,
+      "julia_steps": 21,
+      "julia_rejects": 3
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rodas5p vdp: adaptive rtol=1e-09",
+    "expected": [
+      1.999333370506298,
+      -0.0006670371231732628
+    ],
+    "observed": {
+      "endpoint": [
+        1.9993333705063119,
+        -0.0006670371231732369
+      ],
+      "max_error_vs_bdf": 1.3988810110276972e-14,
+      "error_over_rtol": 1.398881011027697e-05,
+      "max_error_vs_julia": 3.3306690738754696e-15,
+      "native_steps": 44,
+      "native_rejects": 5,
+      "julia_steps": 56,
+      "julia_rejects": 3
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "pass"
+  },
+  {
+    "item": "B11",
+    "reference": "OrdinaryDiffEqRosenbrock 2.7.1",
+    "quantity": "rosenbrock23 vdp: fixed 10 steps h=0.00001 (native default central f_t)",
+    "expected": [
+      1.9999999909310873,
+      -0.00017279326041364008
+    ],
+    "observed": {
+      "endpoint": [
+        1.999999990931087,
+        -0.00017279326041364008
+      ],
+      "max_relative_error": 1.1102230296594144e-16
+    },
+    "tolerance": "relative 1e-12",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rosenbrock23 vdp: adaptive rtol=1e-06",
+    "expected": [
+      1.999333370506298,
+      -0.0006670371231732628
+    ],
+    "observed": {
+      "endpoint": [
+        1.9993333705077168,
+        -0.000667037115401829
+      ],
+      "max_error_vs_bdf": 7.771433778620829e-12,
+      "error_over_rtol": 7.771433778620829e-06,
+      "max_error_vs_julia": 4.056754931980322e-13,
+      "native_steps": 52,
+      "native_rejects": 8,
+      "julia_steps": 63,
+      "julia_rejects": 0
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rosenbrock23 vdp: adaptive rtol=1e-09",
+    "expected": [
+      1.999333370506298,
+      -0.0006670371231732628
+    ],
+    "observed": {
+      "endpoint": [
+        1.9993333705067078,
+        -0.0006670371224692729
+      ],
+      "max_error_vs_bdf": 7.03989926249815e-13,
+      "error_over_rtol": 0.000703989926249815,
+      "max_error_vs_julia": 2.398081733190338e-13,
+      "native_steps": 421,
+      "native_rejects": 10,
+      "julia_steps": 490,
+      "julia_rejects": 0
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "pass"
+  },
+  {
+    "item": "B12",
+    "reference": "OrdinaryDiffEqRosenbrock 2.7.1",
+    "quantity": "rodas5p cosine: fixed 10 steps h=0.01 (native default central f_t)",
+    "expected": [
+      0.09983341664682904
+    ],
+    "observed": {
+      "endpoint": [
+        0.09983341664682915
+      ],
+      "max_relative_error": 1.1120755573784321e-15
+    },
+    "tolerance": "relative 1e-08",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rodas5p cosine: adaptive rtol=1e-06",
+    "expected": [
+      -0.5440211109717309
+    ],
+    "observed": {
+      "endpoint": [
+        -0.5440210064924478
+      ],
+      "max_error_vs_bdf": 1.0447928311396737e-07,
+      "error_over_rtol": 0.10447928311396737,
+      "max_error_vs_julia": 6.748459213667957e-08,
+      "native_steps": 50,
+      "native_rejects": 16,
+      "julia_steps": 51,
+      "julia_rejects": 7
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rodas5p cosine: adaptive rtol=1e-09",
+    "expected": [
+      -0.5440211109717309
+    ],
+    "observed": {
+      "endpoint": [
+        -0.5440211106223769
+      ],
+      "max_error_vs_bdf": 3.4935399018110047e-10,
+      "error_over_rtol": 0.34935399018110047,
+      "max_error_vs_julia": 1.2685796857425657e-10,
+      "native_steps": 157,
+      "native_rejects": 12,
+      "julia_steps": 180,
+      "julia_rejects": 20
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "pass"
+  },
+  {
+    "item": "B12",
+    "reference": "OrdinaryDiffEqRosenbrock 2.7.1",
+    "quantity": "rosenbrock23 cosine: fixed 10 steps h=0.01 (native default central f_t)",
+    "expected": [
+      0.09983383262061077
+    ],
+    "observed": {
+      "endpoint": [
+        0.09983383262061077
+      ],
+      "max_relative_error": 0.0
+    },
+    "tolerance": "relative 1e-08",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rosenbrock23 cosine: adaptive rtol=1e-06",
+    "expected": [
+      -0.5440211109717309
+    ],
+    "observed": {
+      "endpoint": [
+        -0.5440304306855244
+      ],
+      "max_error_vs_bdf": 9.319713793476403e-06,
+      "error_over_rtol": 9.319713793476403,
+      "max_error_vs_julia": 9.126343377241497e-06,
+      "native_steps": 453,
+      "native_rejects": 17,
+      "julia_steps": 3687,
+      "julia_rejects": 7
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rosenbrock23 cosine: adaptive rtol=1e-09",
+    "expected": [
+      -0.5440211109717309
+    ],
+    "observed": {
+      "endpoint": [
+        -0.5440211814643665
+      ],
+      "max_error_vs_bdf": 7.049263561764718e-08,
+      "error_over_rtol": 70.49263561764718,
+      "max_error_vs_julia": 7.039139893194601e-08,
+      "native_steps": 4431,
+      "native_rejects": 9,
+      "julia_steps": 114856,
+      "julia_rejects": 40
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "global-error-overrun"
+  },
+  {
+    "item": "B12",
+    "reference": "OrdinaryDiffEqRosenbrock 2.7.1",
+    "quantity": "rodas5p pr: fixed 10 steps h=0.001 (native default central f_t)",
+    "expected": [
+      0.009999833334166675
+    ],
+    "observed": {
+      "endpoint": [
+        0.009999833334166939
+      ],
+      "max_relative_error": 2.6368236303255147e-14
+    },
+    "tolerance": "relative 1e-08",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rodas5p pr: adaptive rtol=1e-06",
+    "expected": [
+      0.8414709848081828
+    ],
+    "observed": {
+      "endpoint": [
+        0.8414709716026956
+      ],
+      "max_error_vs_bdf": 1.3205487259249082e-08,
+      "error_over_rtol": 0.013205487259249082,
+      "max_error_vs_julia": 1.3079377580993423e-08,
+      "native_steps": 15,
+      "native_rejects": 0,
+      "julia_steps": 16,
+      "julia_rejects": 0
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rodas5p pr: adaptive rtol=1e-09",
+    "expected": [
+      0.8414709848081828
+    ],
+    "observed": {
+      "endpoint": [
+        0.841470984811659
+      ],
+      "max_error_vs_bdf": 3.4762193124038276e-12,
+      "error_over_rtol": 0.0034762193124038276,
+      "max_error_vs_julia": 3.238853629738969e-12,
+      "native_steps": 41,
+      "native_rejects": 0,
+      "julia_steps": 56,
+      "julia_rejects": 0
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "pass"
+  },
+  {
+    "item": "B12",
+    "reference": "OrdinaryDiffEqRosenbrock 2.7.1",
+    "quantity": "rosenbrock23 pr: fixed 10 steps h=0.001 (native default central f_t)",
+    "expected": [
+      0.009999834105815892
+    ],
+    "observed": {
+      "endpoint": [
+        0.009999834105816908
+      ],
+      "max_relative_error": 1.0165648211415686e-13
+    },
+    "tolerance": "relative 1e-08",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rosenbrock23 pr: adaptive rtol=1e-06",
+    "expected": [
+      0.8414709848081828
+    ],
+    "observed": {
+      "endpoint": [
+        0.8414711717311948
+      ],
+      "max_error_vs_bdf": 1.869230119577736e-07,
+      "error_over_rtol": 0.1869230119577736,
+      "max_error_vs_julia": 1.8645794430671714e-07,
+      "native_steps": 403,
+      "native_rejects": 0,
+      "julia_steps": 26647,
+      "julia_rejects": 1
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "pass"
+  },
+  {
+    "item": "B10/B14",
+    "reference": "Exact solution / diffsol BDF at rtol=1e-12; Julia 2.7.1",
+    "quantity": "rosenbrock23 pr: adaptive rtol=1e-09",
+    "expected": [
+      0.8414709848081828
+    ],
+    "observed": {
+      "endpoint": [
+        0.8414709876794138
+      ],
+      "max_error_vs_bdf": 2.8712309196876618e-09,
+      "error_over_rtol": 2.8712309196876618,
+      "max_error_vs_julia": 2.8710605004533818e-09,
+      "native_steps": 4659,
+      "native_rejects": 0,
+      "julia_steps": 846812,
+      "julia_rejects": 1
+    },
+    "tolerance": "10*rtol absolute diagnostic; step counts unasserted",
+    "status": "pass"
+  },
+  {
+    "item": "B12/B14",
+    "reference": "Julia 2.7.1 with analytic tgrad; Rust test-only analytic kernel",
+    "quantity": "rodas5p, lambda=0, 10 fixed steps h=0.01",
+    "expected": 0.09983341664682904,
+    "observed": {
+      "endpoint": 0.0998334166468292,
+      "absolute_error": 1.5265566588595902e-16
+    },
+    "tolerance": "1e-13 absolute",
+    "status": "pass"
+  },
+  {
+    "item": "B12/B14",
+    "reference": "Julia 2.7.1 with analytic tgrad; Rust test-only analytic kernel",
+    "quantity": "rodas5p, lambda=-1000, 10 fixed steps h=0.001",
+    "expected": 0.009999833334166675,
+    "observed": {
+      "endpoint": 0.009999833334166678,
+      "absolute_error": 3.469446951953614e-18
+    },
+    "tolerance": "1e-13 absolute",
+    "status": "pass"
+  },
+  {
+    "item": "B12/B14",
+    "reference": "Julia 2.7.1 with analytic tgrad; Rust test-only analytic kernel",
+    "quantity": "rosenbrock23, lambda=0, 10 fixed steps h=0.01",
+    "expected": 0.09983383262061077,
+    "observed": {
+      "endpoint": 0.09983383262061077,
+      "absolute_error": 0.0
+    },
+    "tolerance": "1e-13 absolute",
+    "status": "pass"
+  },
+  {
+    "item": "B12/B14",
+    "reference": "Julia 2.7.1 with analytic tgrad; Rust test-only analytic kernel",
+    "quantity": "rosenbrock23, lambda=-1000, 10 fixed steps h=0.001",
+    "expected": 0.009999834105815892,
+    "observed": {
+      "endpoint": 0.00999983410581589,
+      "absolute_error": 1.734723475976807e-18
+    },
+    "tolerance": "1e-13 absolute",
+    "status": "pass"
+  }
+]

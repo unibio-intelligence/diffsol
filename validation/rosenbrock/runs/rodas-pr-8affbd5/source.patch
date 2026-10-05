@@ -1,0 +1,2500 @@
+diff --git a/README.md b/README.md
+index fd7f4d1..6961b2c 100644
+--- a/README.md
++++ b/README.md
+@@ -92,6 +92,7 @@ The following ODE solvers are available in diffsol
+ 1. A variable order Backwards Difference Formulae (BDF) solver, suitable for stiff problems and singular mass matrices. The basic algorithm is derived in [(Byrne & Hindmarsh, 1975)](#1), however this particular implementation follows that implemented in the Matlab routine ode15s [(Shampine & Reichelt, 1997)](#4) and the SciPy implementation [(Virtanen et al., 2020)](#5), which features the NDF formulas for improved stability
+ 2. A Singly Diagonally Implicit Runge-Kutta (SDIRK or ESDIRK) solver, suitable for moderately stiff problems and singular mass matrices. Two different butcher tableau are provided, TR-BDF2 [(Hosea & Shampine, 1996)](#2) and ESDIRK34 [(Jørgensen et al., 2018)](#3), or users can supply their own.
+ 3. A variable order Explict Runge-Kutta (ERK) solver, suitable for non-stiff problems. One butcher tableau is provided, the 4th order TSIT45 [(Tsitouras, 2011)](#5), or users can supply their own.
++4. A tableau-driven Rosenbrock solver for stiff ODEs and constant-mass index-1 DAEs. Two tableaus are provided, Rosenbrock23 [(Shampine & Reichelt, 1997)](#4) and Rodas5P [(Steinebach, 2023)](#6), or users can supply their own. Integrated outputs use the continuous extension (global order four for Rodas5P, two for Rosenbrock23). Sensitivities are not yet implemented for this class.
+ 
+ All solvers feature:
+ 
+@@ -143,3 +144,4 @@ diffsol makes heavy use of generic programming, which can make it difficult to u
+ - <a id="4"></a> Shampine, L. F., & Reichelt, M. W. (1997). The matlab ode suite. SIAM Journal on Scientific Computing, 18(1), 1–22.
+ - <a id="5"></a> Virtanen, P., Gommers, R., Oliphant, T. E., Haberland, M., Reddy, T., Cournapeau, D., Burovski, E., Peterson, P., Weckesser, W., Bright, J., & others. (2020). SciPy 1.0: Fundamental algorithms for scientific computing in python. Nature Methods, 17(3), 261–272.
+ - <a id="5"></a> Tsitouras, C. (2011). Runge–Kutta pairs of order 5 (4) satisfying only the first column simplifying assumption. Computers & Mathematics with Applications, 62(2), 770-775.
++- <a id="6"></a> Steinebach, G. (2023). Construction of Rosenbrock–Wanner method Rodas5P and numerical benchmarks within the Julia Differential Equations package. BIT Numerical Mathematics, 63, 27.
+diff --git a/book/src/solver/creating_a_solver.md b/book/src/solver/creating_a_solver.md
+index f2c1cde..85e257b 100644
+--- a/book/src/solver/creating_a_solver.md
++++ b/book/src/solver/creating_a_solver.md
+@@ -4,6 +4,7 @@ Once you have defined the problem, you need to create a solver to solve the prob
+ - [`diffsol::Bdf`](https://docs.rs/diffsol/latest/diffsol/ode_solver/bdf/struct.Bdf.html): A Backwards Difference Formulae solver, suitable for stiff problems and singular mass matrices.
+ - [`diffsol::Sdirk`](https://docs.rs/diffsol/latest/diffsol/ode_solver/sdirk/struct.Sdirk.html) A Singly Diagonally Implicit Runge-Kutta (SDIRK or ESDIRK) solver. You can define your own butcher tableau using [`Tableau`](https://docs.rs/diffsol/latest/diffsol/ode_solver/tableau/struct.Tableau.html) or use one of the pre-defined tableaues.
+ - [`diffsol::ExplicitRk`](https://docs.rs/diffsol/latest/diffsol/ode_solver/explicit_rk/struct.ExplicitRk.html): An explicit Runge-Kutta solver. You can define your own butcher tableau using [`Tableau`](https://docs.rs/diffsol/latest/diffsol/ode_solver/tableau/struct.Tableau.html) or use one of the pre-defined tableaues.
++- [`diffsol::Rosenbrock`](https://docs.rs/diffsol/latest/diffsol/struct.Rosenbrock.html): A tableau-driven Rosenbrock solver for stiff ODEs and constant-mass index-1 DAEs. Use `problem.rodas5p::<LS>()` for Rodas5P or supply a Rosenbrock `Tableau`; integrated outputs require a continuous extension. Sensitivities are not yet implemented for this class.
+ 
+ For each solver, you will need to specify the linear solver type to use. The available linear solvers are:
+ - [`diffsol::NalgebraLU`](https://docs.rs/diffsol/latest/diffsol/linear_solver/nalgebra_lu/struct.NalgebraLU.html): A LU decomposition solver using the [nalgebra](https://nalgebra.org) crate.
+diff --git a/crates/diffsol/src/lib.rs b/crates/diffsol/src/lib.rs
+index 49f121f..d607b93 100644
+--- a/crates/diffsol/src/lib.rs
++++ b/crates/diffsol/src/lib.rs
+@@ -82,8 +82,8 @@
+ //! to compile the equations to efficient machine code. The LLVM JIT backend also uses the EnzymeAD
+ //! library to compute the jacobian and sensitivity/adjoint equations.
+ //!
+-//! You can use DiffSL with diffsol using the [DiffSl] struct, which is created using the
+-//! [OdeBuilder::build_from_diffsl] method. You need to enable one of the `diffsl-llvm*` features
++//! You can use DiffSL with diffsol using the [`DiffSl`](https://docs.rs/diffsol/latest/diffsol/struct.DiffSl.html) struct, which is created using the
++//! [`OdeBuilder::build_from_diffsl`](https://docs.rs/diffsol/latest/diffsol/struct.OdeBuilder.html#method.build_from_diffsl) method. You need to enable one of the `diffsl-llvm*` features
+ //! corresponding to the version of LLVM you have installed. E.g. to use your LLVM 17 installation,
+ //! enable the `diffsl-llvm17` feature. Or you can use the `diffsl-cranelift` feature to use the
+ //! Cranelift backend.
+@@ -316,7 +316,7 @@ pub mod nonlinear_solver;
+ /// - [OdeEquationsAdjoint] for adjoint sensitivity equations
+ ///
+ /// It also provides implementations:
+-/// - [DiffSl] for equations specified in the DiffSL domain-specific language
++/// - [`DiffSl`](https://docs.rs/diffsol/latest/diffsol/struct.DiffSl.html) for equations specified in the DiffSL domain-specific language
+ /// - [SensEquations] and [AdjointEquations] for sensitivity computations
+ ///
+ /// All the test equations used in diffsol's test suite are also provided here.
+@@ -438,12 +438,13 @@ pub use ode_solver::{
+     method::OdeSolverStopReason,
+     no_checkpointing_solver::NoCheckpointingSolver,
+     problem::{InitialConditionSolverOptions, OdeSolverOptions, OdeSolverProblem},
++    rosenbrock::Rosenbrock,
+     sdirk::Sdirk,
+     sdirk_state::RkState,
+     sensitivities::SensitivitiesOdeSolverMethod,
+     solution::Solution,
+     state::OdeSolverState,
+-    tableau::Tableau,
++    tableau::{RosenbrockTableau, Tableau},
+     tableau::{TableauMat, TableauVec},
+ };
+ pub use op::constant_op::{ConstantOp, ConstantOpSens, ConstantOpSensAdjoint};
+diff --git a/crates/diffsol/src/ode_equations/mod.rs b/crates/diffsol/src/ode_equations/mod.rs
+index 77d451f..ca27550 100644
+--- a/crates/diffsol/src/ode_equations/mod.rs
++++ b/crates/diffsol/src/ode_equations/mod.rs
+@@ -356,12 +356,18 @@ impl<T: OdeEquations> OdeEquations for &'_ T {
+ }
+ 
+ pub trait OdeEquationsImplicit:
+-    OdeEquations<Rhs: NonLinearOpJacobian<M = Self::M, V = Self::V, T = Self::T, C = Self::C>>
++    OdeEquations<
++    Rhs: NonLinearOpJacobian<M = Self::M, V = Self::V, T = Self::T, C = Self::C>
++             + NonLinearOpTimePartial<M = Self::M, V = Self::V, T = Self::T, C = Self::C>,
++>
+ {
+ }
+ 
+ impl<T> OdeEquationsImplicit for T where
+-    T: OdeEquations<Rhs: NonLinearOpJacobian<M = T::M, V = T::V, T = T::T, C = T::C>>
++    T: OdeEquations<
++        Rhs: NonLinearOpJacobian<M = T::M, V = T::V, T = T::T, C = T::C>
++                 + NonLinearOpTimePartial<M = T::M, V = T::V, T = T::T, C = T::C>,
++    >
+ {
+ }
+ 
+diff --git a/crates/diffsol/src/ode_equations/test_models/rosenbrock_reference/rodas5p-julia-2.7.1.txt b/crates/diffsol/src/ode_equations/test_models/rosenbrock_reference/rodas5p-julia-2.7.1.txt
+new file mode 100644
+index 0000000..4f55040
+--- /dev/null
++++ b/crates/diffsol/src/ode_equations/test_models/rosenbrock_reference/rodas5p-julia-2.7.1.txt
+@@ -0,0 +1,169 @@
++# OrdinaryDiffEqRosenbrock 2.7.1 (MIT), generated by julia-reference.jl.
++# Gamma, A/C row-major, c, d, H row-major; IEEE Float64 decimal round trips.
++gamma
++0.21193756319429014
++A
++0.0
++0.0
++0.0
++0.0
++0.0
++0.0
++0.0
++0.0
++3.0
++0.0
++0.0
++0.0
++0.0
++0.0
++0.0
++0.0
++2.849394379747939
++0.45842242204463923
++0.0
++0.0
++0.0
++0.0
++0.0
++0.0
++-6.954028509809101
++2.489845061869568
++-10.358996098473584
++0.0
++0.0
++0.0
++0.0
++0.0
++2.8029986275628964
++0.5072464736228206
++-0.3988312541770524
++-0.04721187230404641
++0.0
++0.0
++0.0
++0.0
++-7.502846399306121
++2.561846144803919
++-11.627539656261098
++-0.18268767659942256
++0.030198172008377946
++0.0
++0.0
++0.0
++-7.502846399306121
++2.561846144803919
++-11.627539656261098
++-0.18268767659942256
++0.030198172008377946
++1.0
++0.0
++0.0
++-7.502846399306121
++2.561846144803919
++-11.627539656261098
++-0.18268767659942256
++0.030198172008377946
++1.0
++1.0
++0.0
++C
++0.0
++0.0
++0.0
++0.0
++0.0
++0.0
++0.0
++-14.155112264123755
++0.0
++0.0
++0.0
++0.0
++0.0
++0.0
++-17.97296035885952
++-2.859693295451294
++0.0
++0.0
++0.0
++0.0
++0.0
++147.12150275711716
++-1.41221402718213
++71.68940251302358
++0.0
++0.0
++0.0
++0.0
++165.43517024871676
++-0.4592823456491126
++42.90938336958603
++-5.961986721573306
++0.0
++0.0
++0.0
++24.854864614690072
++-3.0009227002832186
++47.4931110020768
++5.5814197821558125
++-0.6610691825249471
++0.0
++0.0
++30.91273214028599
++-3.1208243349937974
++77.79954646070892
++34.28646028294783
++-19.097331116725623
++-28.087943162872662
++0.0
++37.80277123390563
++-3.2571969029072276
++112.26918849496327
++66.9347231244047
++-40.06618937091002
++-54.66780262877968
++-9.48861652309627
++c
++0.0
++0.6358126895828704
++0.4095798393397535
++0.9769306725060716
++0.4288403609558664
++1.0
++1.0
++1.0
++d
++0.21193756319429014
++-0.42387512638858027
++-0.3384627126235924
++1.8046452872882734
++2.325825639765069
++0.0
++0.0
++0.0
++H
++25.948786856663858
++-2.5579724845846235
++10.433815404888879
++-2.3679251022685204
++0.524948541321073
++1.1241088310450404
++0.4272876194431874
++-0.17202221070155493
++-9.91568850695171
++-0.9689944594115154
++3.0438037242978453
++-24.495224566215796
++20.176138334709044
++15.98066361424651
++-6.789040303419874
++-6.710236069923372
++11.419903575922262
++2.8879645146136994
++72.92137995996029
++80.12511834622643
++-52.072871366152654
++-59.78993625266729
++-0.15582684282751913
++4.883087185713722
+diff --git a/crates/diffsol/src/ode_solver/mod.rs b/crates/diffsol/src/ode_solver/mod.rs
+index 96c8664..722356f 100644
+--- a/crates/diffsol/src/ode_solver/mod.rs
++++ b/crates/diffsol/src/ode_solver/mod.rs
+@@ -10,6 +10,7 @@ pub mod method;
+ pub mod no_checkpointing_solver;
+ pub mod pi_controller;
+ pub mod problem;
++pub mod rosenbrock;
+ pub mod runge_kutta;
+ pub mod sde;
+ pub mod sdirk;
+diff --git a/crates/diffsol/src/ode_solver/problem.rs b/crates/diffsol/src/ode_solver/problem.rs
+index 7776616..57c06db 100644
+--- a/crates/diffsol/src/ode_solver/problem.rs
++++ b/crates/diffsol/src/ode_solver/problem.rs
+@@ -6,7 +6,7 @@ use crate::{
+     AugmentedOdeEquationsImplicit, Bdf, BdfState, CheckpointingPath, Context, DefaultDenseMatrix,
+     DenseMatrix, ExplicitRk, LinearSolver, MatrixRef, NewtonNonlinearSolver, NoLineSearch,
+     OdeEquations, OdeEquationsAdjoint, OdeEquationsImplicit, OdeEquationsImplicitAdjoint,
+-    OdeEquationsImplicitSens, OdeSolverMethod, OdeSolverState, RkState, Scalar, Sdirk,
++    OdeEquationsImplicitSens, OdeSolverMethod, OdeSolverState, RkState, Rosenbrock, Scalar, Sdirk,
+     SensEquations, Tableau, VectorRef,
+ };
+ 
+@@ -918,6 +918,73 @@ where
+         Sdirk::new(self, state, tableau, linear_solver)
+     }
+ 
++    /// Create a Rosenbrock solver with a caller-supplied state and tableau.
++    pub fn rosenbrock_solver<
++        LS: LinearSolver<Eqn::M>,
++        DM: DenseMatrix<T = Eqn::T, V = Eqn::V, C = Eqn::C>,
++    >(
++        &self,
++        state: RkState<Eqn::V>,
++        tableau: Tableau<Eqn::T>,
++    ) -> Result<Rosenbrock<'_, Eqn, LS, DM>, DiffsolError>
++    where
++        Eqn: OdeEquationsImplicit,
++    {
++        Rosenbrock::new(self, state, tableau, LS::default())
++    }
++    /// Create a fifth-order Rodas5P Rosenbrock solver.
++    pub fn rodas5p<LS: LinearSolver<Eqn::M>>(&self) -> Result<Rosenbrock<'_, Eqn, LS>, DiffsolError>
++    where
++        Eqn: OdeEquationsImplicit,
++    {
++        self.rodas5p_solver(self.rodas5p_state::<LS>()?)
++    }
++    /// Restart a Rodas5P solver from a caller-supplied state.
++    pub fn rodas5p_solver<LS: LinearSolver<Eqn::M>>(
++        &self,
++        state: RkState<Eqn::V>,
++    ) -> Result<Rosenbrock<'_, Eqn, LS>, DiffsolError>
++    where
++        Eqn: OdeEquationsImplicit,
++    {
++        self.rosenbrock_solver(state, Tableau::rodas5p())
++    }
++    /// Create consistent initial conditions and an initial step size for Rodas5P.
++    pub fn rodas5p_state<LS: LinearSolver<Eqn::M>>(&self) -> Result<RkState<Eqn::V>, DiffsolError>
++    where
++        Eqn: OdeEquationsImplicit,
++    {
++        self.rk_state_and_consistent::<LS>(&Tableau::rodas5p())
++    }
++    /// Create a second-order Rosenbrock23 Rosenbrock solver.
++    pub fn rosenbrock23<LS: LinearSolver<Eqn::M>>(
++        &self,
++    ) -> Result<Rosenbrock<'_, Eqn, LS>, DiffsolError>
++    where
++        Eqn: OdeEquationsImplicit,
++    {
++        self.rosenbrock23_solver(self.rosenbrock23_state::<LS>()?)
++    }
++    /// Restart a Rosenbrock23 solver from a caller-supplied state.
++    pub fn rosenbrock23_solver<LS: LinearSolver<Eqn::M>>(
++        &self,
++        state: RkState<Eqn::V>,
++    ) -> Result<Rosenbrock<'_, Eqn, LS>, DiffsolError>
++    where
++        Eqn: OdeEquationsImplicit,
++    {
++        self.rosenbrock_solver(state, Tableau::rosenbrock23())
++    }
++    /// Create consistent initial conditions and an initial step size for Rosenbrock23.
++    pub fn rosenbrock23_state<LS: LinearSolver<Eqn::M>>(
++        &self,
++    ) -> Result<RkState<Eqn::V>, DiffsolError>
++    where
++        Eqn: OdeEquationsImplicit,
++    {
++        self.rk_state_and_consistent::<LS>(&Tableau::rosenbrock23())
++    }
++
+     pub(crate) fn sdirk_solver_aug<
+         LS: LinearSolver<Eqn::M>,
+         DM: DenseMatrix<V = Eqn::V, T = Eqn::T, C = Eqn::C>,
+diff --git a/crates/diffsol/src/ode_solver/rosenbrock.rs b/crates/diffsol/src/ode_solver/rosenbrock.rs
+new file mode 100644
+index 0000000..037f19e
+--- /dev/null
++++ b/crates/diffsol/src/ode_solver/rosenbrock.rs
+@@ -0,0 +1,1516 @@
++use super::{jacobian_update::SolverState, runge_kutta::Rk, OdeSolverStatistics};
++use crate::{
++    error::DiffsolError, error::OdeSolverError, ode_solver_error, op::sdirk::SdirkCallable,
++    DefaultDenseMatrix, DenseMatrix, ExplicitRkConfig, LinearSolver, NoAug, NonLinearOpTimePartial,
++    OdeEquationsImplicit, OdeSolverMethod, OdeSolverProblem, OdeSolverState, OdeSolverStopReason,
++    Op, RkState, StateRef, StateRefMut, Tableau, Vector,
++};
++use num_traits::{One, Signed, ToPrimitive, Zero};
++
++/// A tableau-driven class of linearly implicit Rosenbrock-Wanner methods.
++/// Each attempted step freezes the Jacobian and reuses one linear factorization.
++/// A tableau's continuous extension supplies dense output; otherwise Hermite interpolation is used.
++/// Constant mass matrices are supported for index-1 DAEs with a continuous extension.
++/// Integrated outputs use quadrature along the required state continuous extension;
++/// Rodas5P outputs have global order four.
++/// After mutating the state, keep `dy` consistent: Hermite interpolation uses it
++/// as the left-endpoint derivative for tableaus without a continuous extension.
++/// Forward and adjoint sensitivities are not yet implemented for this class.
++pub struct Rosenbrock<'a, Eqn, LS, M = <<Eqn as Op>::V as DefaultDenseMatrix>::M>
++where
++    Eqn: OdeEquationsImplicit,
++    Eqn::V: DefaultDenseMatrix<T = Eqn::T, C = Eqn::C>,
++    M: DenseMatrix<T = Eqn::T, V = Eqn::V, C = Eqn::C>,
++    LS: LinearSolver<Eqn::M>,
++{
++    rk: Rk<'a, Eqn, M>,
++    linear_solver: LS,
++    op: SdirkCallable<&'a Eqn>,
++    ft: Eqn::V,
++    scratch: Eqn::V,
++    config: ExplicitRkConfig<Eqn::T>,
++}
++impl<Eqn, LS, M> Clone for Rosenbrock<'_, Eqn, LS, M>
++where
++    Eqn: OdeEquationsImplicit,
++    Eqn::V: DefaultDenseMatrix<T = Eqn::T, C = Eqn::C>,
++    M: DenseMatrix<T = Eqn::T, V = Eqn::V, C = Eqn::C>,
++    LS: LinearSolver<Eqn::M>,
++{
++    fn clone(&self) -> Self {
++        let op = self.op.clone_state(self.rk.problem().eqn());
++        let mut linear_solver = LS::default();
++        linear_solver.set_problem(&op);
++        Self {
++            rk: self.rk.clone(),
++            linear_solver,
++            op,
++            ft: self.ft.clone(),
++            scratch: self.scratch.clone(),
++            config: self.config.clone(),
++        }
++    }
++}
++impl<'a, Eqn, LS, M> Rosenbrock<'a, Eqn, LS, M>
++where
++    Eqn: OdeEquationsImplicit,
++    Eqn::V: DefaultDenseMatrix<T = Eqn::T, C = Eqn::C>,
++    M: DenseMatrix<T = Eqn::T, V = Eqn::V, C = Eqn::C>,
++    LS: LinearSolver<Eqn::M>,
++{
++    pub fn new(
++        problem: &'a OdeSolverProblem<Eqn>,
++        state: RkState<Eqn::V>,
++        tableau: Tableau<Eqn::T>,
++        mut linear_solver: LS,
++    ) -> Result<Self, DiffsolError> {
++        let invalid = || {
++            ode_solver_error!(InvalidTableau, "Expected finite, strictly lower triangular Rosenbrock coefficients with positive gamma and orders")
++        };
++        let row = tableau.rosenbrock().ok_or_else(invalid)?;
++        let n = tableau.s();
++        let finite = |x: Eqn::T| x.to_f64().is_some_and(f64::is_finite);
++        if n == 0
++            || tableau.order() == 0
++            || row.error_order == 0
++            || !finite(row.gamma)
++            || row.gamma <= Eqn::T::zero()
++            || row.time.len() != n
++            || row.coupling.nrows() != n
++            || row.coupling.ncols() != n
++        {
++            return Err(invalid());
++        }
++        for i in 0..n {
++            if ![tableau.b()[i], tableau.c()[i], tableau.d()[i], row.time[i]]
++                .into_iter()
++                .all(finite)
++            {
++                return Err(invalid());
++            }
++            for j in 0..n {
++                let a = tableau.a(i, j);
++                let c = row.coupling[(i, j)];
++                if !finite(a)
++                    || !finite(c)
++                    || (j >= i && (a != Eqn::T::zero() || c != Eqn::T::zero()))
++                {
++                    return Err(invalid());
++                }
++            }
++        }
++        if let Some(beta) = tableau.beta_t() {
++            if beta.nrows() == 0 || beta.ncols() != n {
++                return Err(invalid());
++            }
++            for i in 0..n {
++                if !beta.as_col_slice(i).iter().copied().all(finite) {
++                    return Err(invalid());
++                }
++            }
++        } else if problem.eqn.mass().is_some() {
++            return Err(ode_solver_error!(
++                InvalidTableau,
++                "Mass-matrix Rosenbrock methods require a continuous extension"
++            ));
++        }
++        if !state.s.is_empty() {
++            return Err(OdeSolverError::SensitivityNotSupported.into());
++        }
++        if problem.integrate_out && tableau.beta_t().is_none() {
++            return Err(ode_solver_error!(
++                InvalidTableau,
++                "Integrated Rosenbrock outputs require a continuous extension"
++            ));
++        }
++        let ft = Eqn::V::zeros(state.y.len(), problem.context().clone());
++        let op = SdirkCallable::new(&problem.eqn, Eqn::T::one(), problem.context().clone());
++        linear_solver.set_problem(&op);
++        Ok(Self {
++            rk: Rk::new(problem, state, tableau)?,
++            linear_solver,
++            op,
++            scratch: ft.clone(),
++            ft,
++            config: ExplicitRkConfig::new(&problem.ode_options),
++        })
++    }
++    // Production and analytic stage oracles share the complete attempted-step arithmetic.
++    // An analytic time partial is supplied only by the internal test helper.
++    fn attempt(
++        &mut self,
++        h: Eqn::T,
++        status: SolverState,
++        analytic_ft: Option<&Eqn::V>,
++    ) -> Result<Eqn::T, DiffsolError> {
++        let state = self.rk.state();
++        let gamma = self.rk.tableau().rosenbrock().unwrap().gamma;
++        self.op.zero_phi();
++        self.op.set_h(gamma * h);
++        self.op.set_jacobian_is_stale();
++        LinearSolver::set_linearisation(&mut self.linear_solver, &self.op, &state.y, state.t);
++        if let Some(ft) = analytic_ft {
++            self.ft.copy_from(ft);
++        } else {
++            self.problem()
++                .eqn
++                .rhs()
++                .time_derive_inplace(&state.y, state.t, &mut self.ft);
++        }
++        self.rk.statistics_mut().record_linear_solver_setup(status);
++        self.rk.start_step_attempt(h, None::<&mut NoAug<Eqn>>);
++        for i in 0..self.rk.tableau().s() {
++            self.rk
++                .do_stage_rosenbrock(i, h, &self.op, &mut self.linear_solver, &self.ft)?;
++        }
++        self.rk.finish_step_rosenbrock(h);
++        if self.problem().integrate_out {
++            self.rk.integrate_rosenbrock_outputs(h, &mut self.scratch);
++        }
++        // Retain diffsol's shared RK error scaling at the starting state.
++        self.rk.error_norm(h, None::<&mut NoAug<Eqn>>, |_| Ok(()))
++    }
++    pub fn get_statistics(&self) -> &OdeSolverStatistics {
++        self.rk.get_statistics()
++    }
++}
++impl<'a, Eqn, LS, M> OdeSolverMethod<'a, Eqn> for Rosenbrock<'a, Eqn, LS, M>
++where
++    Eqn: OdeEquationsImplicit,
++    Eqn::V: DefaultDenseMatrix<T = Eqn::T, C = Eqn::C>,
++    M: DenseMatrix<T = Eqn::T, V = Eqn::V, C = Eqn::C>,
++    LS: LinearSolver<Eqn::M>,
++{
++    type State = RkState<Eqn::V>;
++    type Config = ExplicitRkConfig<Eqn::T>;
++    fn config(&self) -> &Self::Config {
++        &self.config
++    }
++    fn config_mut(&mut self) -> &mut Self::Config {
++        &mut self.config
++    }
++    fn problem(&self) -> &'a OdeSolverProblem<Eqn> {
++        self.rk.problem()
++    }
++    fn state(&self) -> StateRef<'_, Eqn::V> {
++        self.rk.state().as_ref()
++    }
++    fn state_mut(&mut self) -> StateRefMut<'_, Eqn::V> {
++        self.rk.state_mut().as_mut()
++    }
++    fn state_clone(&self) -> Self::State {
++        self.rk.state().clone()
++    }
++    fn checkpoint(&mut self) -> Self::State {
++        self.rk.state().clone()
++    }
++    fn into_state(self) -> Self::State {
++        self.rk.into_state()
++    }
++    fn set_state(&mut self, state: Self::State) {
++        self.rk.set_state(state);
++    }
++    fn order(&self) -> usize {
++        self.rk.order()
++    }
++    fn jacobian(&self) -> Option<std::cell::Ref<'_, Eqn::M>> {
++        // Evaluate the RHS Jacobian at y, rather than the SDIRK stage phi + c*y.
++        self.op.zero_phi();
++        Some(self.op.rhs_jac(&self.rk.state().y, self.rk.state().t))
++    }
++    fn mass(&self) -> Option<std::cell::Ref<'_, Eqn::M>> {
++        self.problem()
++            .eqn
++            .mass()
++            .map(|_| self.op.mass(self.rk.state().t))
++    }
++    fn apply_reset(&mut self) -> Result<(), DiffsolError> {
++        let problem = self.problem();
++        self.rk
++            .state_mut()
++            .as_mut()
++            .apply_reset_with_mass::<LS, _>(problem)
++    }
++    fn step(&mut self) -> Result<OdeSolverStopReason<Eqn::T>, DiffsolError> {
++        let mut h = self.rk.start_step()?;
++        if h.abs() < self.config.minimum_timestep {
++            return Err(OdeSolverError::StepSizeTooSmall {
++                time: self.rk.state().t.to_f64().unwrap(),
++            }
++            .into());
++        }
++        let mut attempts = 0;
++        let (factor, error) = loop {
++            let status = if attempts == 0 {
++                SolverState::StepSuccess
++            } else {
++                SolverState::ErrorTestFail
++            };
++            let error = self.attempt(h, status, None)?;
++            let factor = self.rk.factor(
++                error,
++                1.0,
++                self.config.minimum_timestep_shrink,
++                self.config.maximum_timestep_shrink,
++                self.config.minimum_timestep_growth,
++                self.config.maximum_timestep_growth,
++            );
++            if error < Eqn::T::one() {
++                break (factor, error);
++            }
++            h *= factor;
++            attempts += 1;
++            self.rk.reset_prev_error();
++            self.rk.error_test_fail(
++                h,
++                attempts,
++                self.config.maximum_error_test_failures,
++                self.config.minimum_timestep,
++            )?;
++        };
++        self.rk.store_rosenbrock_hermite_derivatives(h);
++        self.rk.set_prev_error(error);
++        self.rk.step_accepted(h, h * factor, false)
++    }
++    fn set_stop_time(&mut self, t: Eqn::T) -> Result<(), DiffsolError> {
++        self.rk.set_stop_time(t)
++    }
++    fn interpolate_inplace(&self, t: Eqn::T, out: &mut Eqn::V) -> Result<(), DiffsolError> {
++        self.rk.interpolate_inplace(t, out)
++    }
++    fn interpolate_dy_inplace(&self, t: Eqn::T, out: &mut Eqn::V) -> Result<(), DiffsolError> {
++        self.rk.interpolate_dy_inplace(t, out)
++    }
++    fn interpolate_out_inplace(&self, t: Eqn::T, out: &mut Eqn::V) -> Result<(), DiffsolError> {
++        self.rk.interpolate_out_inplace(t, out)
++    }
++    fn interpolate_sens_inplace(&self, t: Eqn::T, out: &mut Eqn::V) -> Result<(), DiffsolError> {
++        self.rk.interpolate_sens_inplace(t, out)
++    }
++    fn state_mut_back(&mut self, t: Eqn::T) -> Result<(), DiffsolError> {
++        self.rk.state_mut_back(t, self.rk.problem().integrate_out)
++    }
++}
++#[cfg(test)]
++mod tests {
++    use super::*;
++    use crate::{
++        ode_equations::test_models::{
++            exponential_decay::exponential_decay_problem,
++            exponential_decay_with_algebraic::{
++                exponential_decay_with_algebraic_adjoint_problem,
++                exponential_decay_with_algebraic_problem,
++            },
++            robertson_ode::robertson_ode,
++        },
++        ode_solver::tests::{test_ode_solver, test_problem},
++        FaerLU, FaerMat, NalgebraLU, NalgebraMat, OdeBuilder, OdeEquations, TableauMat, TableauVec,
++    };
++    type Mat = NalgebraMat<f64>;
++    type LS = NalgebraLU<f64>;
++    fn advance<'a, E: OdeEquationsImplicit<T = f64> + 'a, S: OdeSolverMethod<'a, E>>(
++        s: &mut S,
++        t: f64,
++    ) {
++        s.set_stop_time(t).unwrap();
++        while s.step().unwrap() != OdeSolverStopReason::TstopReached {}
++    }
++    #[test]
++    fn constant_mass_index_one_dae() {
++        macro_rules! check {
++            ($mat:ty, $ls:ty) => {{
++                let (p, sol) = exponential_decay_with_algebraic_problem::<$mat>(false);
++                test_ode_solver(&mut p.rodas5p::<$ls>().unwrap(), sol, None, false, false);
++                let (p, sol) = exponential_decay_with_algebraic_adjoint_problem::<$mat>(true);
++                let mut s = p.rodas5p::<$ls>().unwrap();
++                // The shared state harness applies out(y); this fixture instead expects integral(out).
++                for point in sol.solution_points {
++                    while s.state().t < point.t { s.step().unwrap(); }
++                    s.interpolate_out(point.t).unwrap().assert_eq_st(&point.state, 2e-5);
++                }
++            }};
++        }
++        check!(Mat, LS);
++        check!(FaerMat<f64>, FaerLU<f64>);
++    }
++    fn sine_problem(
++        lambda: f64,
++        integrate: bool,
++    ) -> OdeSolverProblem<
++        impl OdeEquationsImplicit<
++            M = Mat,
++            V = crate::NalgebraVec<f64>,
++            T = f64,
++            C = crate::NalgebraContext,
++        >,
++    > {
++        OdeBuilder::<Mat>::new()
++            .rtol(10.0)
++            .atol([10.0])
++            .rhs_implicit(
++                move |x, _, t, f| f[0] = lambda * (x[0] - t.sin()) + t.cos(),
++                move |_, _, _, v, jv| jv[0] = lambda * v[0],
++            )
++            .init(|_, _, y| y[0] = 0.0, 1)
++            .integrate_out(integrate)
++            .out_implicit(
++                |x, _, t, g| g[0] = x[0] * x[0] + t.powi(4),
++                |_, _, _, _, _| unreachable!("quadrature does not use output Jacobians"),
++                1,
++            )
++            .build()
++            .unwrap()
++    }
++    fn fixed_error(h: f64, lambda: f64) -> f64 {
++        let p = sine_problem(lambda, false);
++        let mut s = p.rodas5p::<LS>().unwrap();
++        *s.state_mut().h = h;
++        s.config_mut().maximum_timestep_growth = 1.0;
++        s.config_mut().minimum_timestep_growth = 1.0;
++        advance(&mut s, 1.0);
++        (s.state().y[0] - 1.0f64.sin()).abs()
++    }
++    #[test]
++    fn fifth_order_and_stiff_order_reduction() {
++        let coarse = fixed_error(0.2, -2.0);
++        let fine = fixed_error(0.1, -2.0);
++        assert!(coarse > 20.0 * fine, "{coarse} {fine}");
++        assert!(fixed_error(0.2, -1000.0) > fixed_error(0.1, -1000.0));
++    }
++    #[test]
++    fn continuous_extension_midpoint_convergence() {
++        let error = |h| {
++            let p = sine_problem(0.0, false);
++            let mut s = p.rodas5p::<LS>().unwrap();
++            *s.state_mut().h = h;
++            s.step().unwrap();
++            (s.interpolate(h / 2.0).unwrap()[0] - (h / 2.0).sin()).abs()
++        };
++        assert!(error(0.4) > 12.0 * error(0.2));
++    }
++    #[test]
++    fn embedded_difference_has_local_order_five() {
++        let error = |h| {
++            let p = sine_problem(-2.0, false);
++            let mut s = p.rodas5p::<LS>().unwrap();
++            *s.state_mut().h = h;
++            s.step().unwrap();
++            s.rk.error_norm(h, None::<&mut NoAug<_>>, |_| Ok(()))
++                .unwrap()
++                .sqrt()
++        };
++        let ratio = error(0.2) / error(0.1);
++        assert!((20.0..45.0).contains(&ratio), "{ratio}");
++    }
++    #[test]
++    fn nonlinear_jacobian_refreshes_at_the_accepted_state() {
++        use std::{cell::RefCell, rc::Rc};
++        let points = Rc::new(RefCell::new(Vec::new()));
++        let observed = points.clone();
++        let p = OdeBuilder::<Mat>::new()
++            .rtol(1e-7)
++            .atol([1e-9])
++            .rhs_implicit(
++                |x, _, _, f| f[0] = -x[0] * x[0],
++                move |x, _, t, v, jv| {
++                    observed.borrow_mut().push((t, x[0]));
++                    jv[0] = -2.0 * x[0] * v[0];
++                },
++            )
++            .init(|_, _, y| y[0] = 2.0, 1)
++            .build()
++            .unwrap();
++        let mut s = p.rodas5p::<LS>().unwrap();
++        s.step().unwrap();
++        let (t, y) = (s.state().t, s.state().y[0]);
++        s.step().unwrap();
++        assert!(points
++            .borrow()
++            .iter()
++            .any(|&(at, x)| at == t && (x - y).abs() < 1e-12));
++    }
++    #[test]
++    fn rejection_preserves_the_initial_solution() {
++        let p = OdeBuilder::<Mat>::new()
++            .rtol(1e-8)
++            .atol([1e-10])
++            .rhs_implicit(
++                |x, _, _, f| f[0] = -100.0 * x[0],
++                |_, _, _, v, jv| jv[0] = -100.0 * v[0],
++            )
++            .init(|_, _, y| y[0] = 1.0, 1)
++            .build()
++            .unwrap();
++        let mut s = p.rodas5p::<LS>().unwrap();
++        *s.state_mut().h = 0.1;
++        s.step().unwrap();
++        assert!(s.get_statistics().number_of_error_test_failures > 0);
++        assert!(s.state().t < 0.1);
++        assert!((s.state().y[0] - (-100.0 * s.state().t).exp()).abs() < 2e-5);
++        advance(&mut s, 0.1);
++        assert!((s.state().y[0] - (-10.0f64).exp()).abs() < 2e-5);
++    }
++    fn euler(gamma: f64, diagonal: f64, coupling: f64) -> Tableau<f64> {
++        Tableau::new_rosenbrock(
++            TableauMat::from_slice(1, 1, &[diagonal]),
++            TableauVec::from_slice(&[1.0]),
++            TableauVec::from_slice(&[0.0]),
++            TableauVec::from_slice(&[0.0]),
++            1,
++            None,
++            TableauMat::from_slice(1, 1, &[coupling]),
++            gamma,
++            TableauVec::from_slice(&[0.0]),
++            1,
++        )
++    }
++    #[test]
++    fn custom_tableau_and_single_stage_hermite_interpolation() {
++        let (p, _) = exponential_decay_problem::<Mat>(false);
++        let mut state = p.rodas5p_state::<LS>().unwrap();
++        state.h = 0.1;
++        let mut s = p
++            .rosenbrock_solver::<LS, Mat>(state, euler(1.0, 0.0, 0.0))
++            .unwrap();
++        let y0 = s.state().y[0];
++        let dy0 = s.state().dy[0];
++        s.step().unwrap();
++        assert!((s.state().y[0] - y0 / 1.01).abs() < 1e-12);
++        assert!((s.interpolate_dy(0.0).unwrap()[0] - dy0).abs() < 1e-12);
++        assert!((s.interpolate_dy(0.1).unwrap()[0] - s.state().dy[0]).abs() < 1e-12);
++    }
++    #[test]
++    fn invalid_tableaus_are_typed_errors() {
++        let (p, _) = exponential_decay_problem::<Mat>(false);
++        for tableau in [
++            euler(0.0, 0.0, 0.0),
++            euler(-1.0, 0.0, 0.0),
++            euler(f64::NAN, 0.0, 0.0),
++            euler(1.0, 1.0, 0.0),
++            euler(1.0, 0.0, 1.0),
++            Tableau::esdirk34(),
++        ] {
++            let error = p
++                .rosenbrock_solver::<LS, Mat>(p.rodas5p_state::<LS>().unwrap(), tableau)
++                .err()
++                .unwrap();
++            assert!(matches!(
++                error,
++                DiffsolError::OdeSolverError(OdeSolverError::InvalidTableau(_))
++            ));
++        }
++        let (p, _) = exponential_decay_with_algebraic_problem::<Mat>(false);
++        assert!(p
++            .rosenbrock_solver::<LS, Mat>(p.rodas5p_state::<LS>().unwrap(), euler(1.0, 0.0, 0.0))
++            .is_err());
++    }
++    #[test]
++    fn constant_integrated_output_is_consistent_and_dense() {
++        macro_rules! check {
++            ($mat:ty, $ls:ty) => {{
++                let p = test_problem::<$mat>(true);
++                let mut s = p.rodas5p::<$ls>().unwrap();
++                *s.state_mut().h = 0.1;
++                s.step().unwrap();
++                assert!((s.state().g[0] - 0.1 * s.state().y[0]).abs() < 1e-12);
++                assert!(
++                    (s.interpolate_out(0.05).unwrap()[0] - 0.05 * s.state().y[0]).abs() < 1e-12
++                );
++            }};
++        }
++        check!(Mat, LS);
++        check!(FaerMat<f64>, FaerLU<f64>);
++    }
++    #[test]
++    fn nonlinear_integrated_output_converges_and_restarts() {
++        let error = |h| {
++            let p = sine_problem(-2.0, true);
++            let mut s = p.rodas5p::<LS>().unwrap();
++            *s.state_mut().h = h;
++            s.config_mut().minimum_timestep_growth = 1.0;
++            s.config_mut().maximum_timestep_growth = 1.0;
++            advance(&mut s, 1.0);
++
++            let state = s.checkpoint();
++            let mut restarted = p.rodas5p_solver::<LS>(state).unwrap();
++            *restarted.config_mut() = s.config().clone();
++            advance(&mut s, 2.0);
++            advance(&mut restarted, 2.0);
++            assert!((s.state().g[0] - restarted.state().g[0]).abs() < 1e-12);
++            (s.interpolate_out(s.state().t).unwrap()[0] - (1.0 - (4.0f64).sin() / 4.0 + 32.0 / 5.0))
++                .abs()
++        };
++        let coarse = error(0.2);
++        let fine = error(0.1);
++        assert!(coarse > 20.0 * fine, "{coarse} {fine}");
++    }
++    #[test]
++    fn integrated_output_has_its_own_error_control() {
++        let p = OdeBuilder::<Mat>::new()
++            .rtol(1e-6)
++            .atol([1e-8])
++            .integrate_out(true)
++            .out_rtol(1e-8)
++            .out_atol([1e-10])
++            .rhs_implicit(|_, _, _, f| f[0] = 0.0, |_, _, _, _, jv| jv[0] = 0.0)
++            .init(|_, _, y| y[0] = 1.0, 1)
++            .out_implicit(
++                |_, _, t, g| g[0] = t.exp(),
++                |_, _, _, _, _| unreachable!("quadrature does not use output Jacobians"),
++                1,
++            )
++            .build()
++            .unwrap();
++        let mut s = p.rodas5p::<LS>().unwrap();
++        *s.state_mut().h = 1.0;
++        advance(&mut s, 1.0);
++        assert!(s.get_statistics().number_of_error_test_failures > 0);
++        assert!((s.state().g[0] - (1.0f64.exp() - 1.0)).abs() < 1e-8);
++    }
++
++    #[test]
++    fn paper_prothero_robinson_problem_two() {
++        const LAMBDA: f64 = 1e5;
++        let g = |t: f64| 10.0 - (10.0 + t) * (-t).exp();
++        let problem = OdeBuilder::<Mat>::new()
++            .rtol(1e-8)
++            .atol([1e-10])
++            .rhs_implicit(
++                |x, _, t, f| {
++                    let g = 10.0 - (10.0 + t) * (-t).exp();
++                    let dg = (9.0 + t) * (-t).exp();
++                    f[0] = -LAMBDA * (x[0] - g) + dg;
++                },
++                |_, _, _, v, jv| jv[0] = -LAMBDA * v[0],
++            )
++            .init(|_, _, y| y[0] = 0.0, 1)
++            .build()
++            .unwrap();
++        let mut solver = problem.rodas5p::<LS>().unwrap();
++        advance(&mut solver, 2.0);
++        let error = (solver.state().y[0] - g(2.0)).abs();
++        assert!(error < 1e-7, "paper problem 2 error={error}");
++    }
++    #[test]
++    fn paper_table_six_fixed_step_errors_and_order() {
++        let published_errors = [1.26e-9, 1.47e-10, 1.78e-11, 2.17e-12];
++        let mut errors = Vec::new();
++        for (h, published) in [0.25, 0.125, 0.0625, 0.03125]
++            .into_iter()
++            .zip(published_errors)
++        {
++            let problem = OdeBuilder::<Mat>::new()
++                .rtol(10.0)
++                .atol([10.0])
++                .rhs_implicit(
++                    |x, _, t, f| {
++                        let g = 10.0 - (10.0 + t) * (-t).exp();
++                        let dg = (9.0 + t) * (-t).exp();
++                        f[0] = -1e5 * (x[0] - g) + dg;
++                    },
++                    |_, _, _, v, jv| jv[0] = -1e5 * v[0],
++                )
++                .init(|_, _, y| y[0] = 0.0, 1)
++                .build()
++                .unwrap();
++            let mut solver = problem.rodas5p::<LS>().unwrap();
++            *solver.state_mut().h = h;
++            solver.config_mut().minimum_timestep_growth = 1.0;
++            solver.config_mut().maximum_timestep_growth = 1.0;
++            advance(&mut solver, 2.0);
++            let exact = 10.0 - 12.0 * (-2.0_f64).exp();
++            let error = (solver.state().y[0] - exact).abs();
++            assert!(
++                (error - published).abs() < 0.2 * published,
++                "h={h}, error={error}, published={published}"
++            );
++            errors.push(error);
++        }
++        for pair in errors.windows(2) {
++            let order = (pair[0] / pair[1]).log2();
++            assert!((order - 3.0).abs() < 0.2, "observed order={order}");
++        }
++    }
++    #[test]
++    fn paper_table_eight_index_two_order_reduction() {
++        let published_errors = [9.00e-5, 2.33e-5, 5.94e-6];
++        let mut errors = Vec::new();
++        for (h, published) in [0.03125, 0.015625, 0.0078125]
++            .into_iter()
++            .zip(published_errors)
++        {
++            let problem = OdeBuilder::<Mat>::new()
++                .t0(1.0)
++                .rtol(10.0)
++                .atol([10.0, 10.0])
++                .rhs_implicit(
++                    |x, _, t, f| {
++                        f[0] = x[1];
++                        f[1] = x[0] * x[0] - 1.0 / (t * t);
++                    },
++                    |x, _, _, v, jv| {
++                        jv[0] = v[1];
++                        jv[1] = 2.0 * x[0] * v[0];
++                    },
++                )
++                .mass(|v, _, _, beta, y| {
++                    y[0] = v[0] + beta * y[0];
++                    y[1] *= beta;
++                })
++                .init(
++                    |_, _, y| {
++                        y[0] = -1.0;
++                        y[1] = 1.0;
++                    },
++                    2,
++                )
++                .build()
++                .unwrap();
++            let mut solver = problem
++                .rodas5p_solver::<LS>(RkState::new(&problem, 5).unwrap())
++                .unwrap();
++            *solver.state_mut().h = h;
++            solver.config_mut().minimum_timestep_growth = 1.0;
++            solver.config_mut().maximum_timestep_growth = 1.0;
++            advance(&mut solver, 2.0);
++            let y = solver.state().y;
++            let error = (y[0] + 0.5).abs().max((y[1] - 0.25).abs());
++            assert!(
++                (error - published).abs() < 0.2 * published,
++                "h={h}, error={error}, published={published}"
++            );
++            errors.push(error);
++        }
++        for pair in errors.windows(2) {
++            let order = (pair[0] / pair[1]).log2();
++            assert!((order - 2.0).abs() < 0.2, "observed order={order}");
++        }
++    }
++    #[test]
++    fn paper_polynomial_dense_output_ode_component() {
++        for degree in 1_i32..=4 {
++            let problem = OdeBuilder::<Mat>::new()
++                .rtol(10.0)
++                .atol([10.0])
++                .rhs_implicit(
++                    move |_, _, t, f| f[0] = f64::from(degree) * t.powi(degree - 1),
++                    |_, _, _, _, jv| jv[0] = 0.0,
++                )
++                .init(|_, _, y| y[0] = 0.0, 1)
++                .build()
++                .unwrap();
++            let mut solver = problem.rodas5p::<LS>().unwrap();
++            *solver.state_mut().h = 2.0;
++            solver.step().unwrap();
++            for t in [0.25_f64, 0.5, 1.0, 1.5, 1.75] {
++                let error = (solver.interpolate(t).unwrap()[0] - t.powi(degree)).abs();
++                assert!(error < 1e-9, "degree={degree}, t={t}, error={error}");
++            }
++        }
++    }
++    #[test]
++    fn paper_index_one_dae_problem_one() {
++        // rtol=1e-7 matches this endpoint accuracy gate; fixed-step Table 5 checks order.
++        let problem = OdeBuilder::<Mat>::new()
++            .t0(2.0)
++            .rtol(1e-7)
++            .atol([1e-10, 1e-10])
++            .rhs_implicit(
++                |x, _, t, f| {
++                    f[0] = x[1] / x[0];
++                    f[1] = x[0] / x[1] - t;
++                },
++                |x, _, _, v, jv| {
++                    jv[0] = v[1] / x[0] - x[1] * v[0] / x[0].powi(2);
++                    jv[1] = v[0] / x[1] - x[0] * v[1] / x[1].powi(2);
++                },
++            )
++            .mass(|v, _, _, beta, y| {
++                y[0] = v[0] + beta * y[0];
++                y[1] *= beta;
++            })
++            .init(
++                |_, _, y| {
++                    y[0] = 2.0_f64.ln();
++                    y[1] = 2.0_f64.ln() / 2.0;
++                },
++                2,
++            )
++            .build()
++            .unwrap();
++        let mut solver = problem.rodas5p::<LS>().unwrap();
++        advance(&mut solver, 4.0);
++        let y = solver.state().y;
++        assert!((y[0] - 4.0_f64.ln()).abs() < 1e-7);
++        assert!((y[1] - 4.0_f64.ln() / 4.0).abs() < 1e-7);
++        assert!((y[0] / y[1] - 4.0).abs() < 1e-7);
++    }
++    #[test]
++    fn paper_table_five_fixed_step_dae_errors_and_order() {
++        let published_errors = [2.93e-8, 8.56e-10, 2.59e-11];
++        let mut errors = Vec::new();
++        for (h, published) in [0.125, 0.0625, 0.03125].into_iter().zip(published_errors) {
++            let problem = OdeBuilder::<Mat>::new()
++                .t0(2.0)
++                .rtol(10.0)
++                .atol([10.0, 10.0])
++                .rhs_implicit(
++                    |x, _, t, f| {
++                        f[0] = x[1] / x[0];
++                        f[1] = x[0] / x[1] - t;
++                    },
++                    |x, _, _, v, jv| {
++                        jv[0] = v[1] / x[0] - x[1] * v[0] / x[0].powi(2);
++                        jv[1] = v[0] / x[1] - x[0] * v[1] / x[1].powi(2);
++                    },
++                )
++                .mass(|v, _, _, beta, y| {
++                    y[0] = v[0] + beta * y[0];
++                    y[1] *= beta;
++                })
++                .init(
++                    |_, _, y| {
++                        y[0] = 2.0_f64.ln();
++                        y[1] = 2.0_f64.ln() / 2.0;
++                    },
++                    2,
++                )
++                .build()
++                .unwrap();
++            let mut solver = problem.rodas5p::<LS>().unwrap();
++            *solver.state_mut().h = h;
++            solver.config_mut().minimum_timestep_growth = 1.0;
++            solver.config_mut().maximum_timestep_growth = 1.0;
++            advance(&mut solver, 4.0);
++            let y = solver.state().y;
++            let error = (y[0] - 4.0_f64.ln())
++                .abs()
++                .max((y[1] - 4.0_f64.ln() / 4.0).abs());
++            assert!(
++                (error - published).abs() < 0.2 * published,
++                "h={h}, error={error}, published={published}"
++            );
++            errors.push(error);
++        }
++        for pair in errors.windows(2) {
++            let order = (pair[0] / pair[1]).log2();
++            assert!((order - 5.0).abs() < 0.25, "observed order={order}");
++        }
++    }
++    #[test]
++    fn paper_polynomial_dense_output_dae_problem_six() {
++        for degree in 1_i32..=5 {
++            let problem = OdeBuilder::<Mat>::new()
++                .rtol(10.0)
++                .atol([10.0, 10.0])
++                .rhs_implicit(
++                    move |x, _, t, f| {
++                        f[0] = f64::from(degree) * t.powi(degree - 1);
++                        f[1] = x[0] - x[1];
++                    },
++                    |_, _, _, v, jv| {
++                        jv[0] = 0.0;
++                        jv[1] = v[0] - v[1];
++                    },
++                )
++                .mass(|v, _, _, beta, y| {
++                    y[0] = v[0] + beta * y[0];
++                    y[1] *= beta;
++                })
++                .init(
++                    |_, _, y| {
++                        y[0] = 0.0;
++                        y[1] = 0.0;
++                    },
++                    2,
++                )
++                .build()
++                .unwrap();
++            let mut solver = problem.rodas5p::<LS>().unwrap();
++            *solver.state_mut().h = 2.0;
++            solver.step().unwrap();
++            assert!((solver.state().y[0] - 2.0_f64.powi(degree)).abs() < 1e-9);
++            assert!((solver.state().y[1] - 2.0_f64.powi(degree)).abs() < 1e-9);
++            let exact_derivative = f64::from(degree) * 2.0_f64.powi(degree - 1);
++            if degree <= 4 {
++                assert!((solver.state().dy[0] - exact_derivative).abs() < 1e-9);
++                assert!((solver.state().dy[1] - exact_derivative).abs() < 1e-9);
++            }
++            for t in [0.25_f64, 0.5, 1.0, 1.5, 1.75] {
++                let y = solver.interpolate(t).unwrap();
++                let exact = t.powi(degree);
++                for component in 0..2 {
++                    let error = (y[component] - exact).abs();
++                    if degree <= 4 {
++                        assert!(
++                            error < 1e-10,
++                            "degree={degree}, t={t}, component={component}, error={error}"
++                        );
++                    } else if t == 1.0 {
++                        // Table 9: fifth-order endpoint accuracy but only
++                        // fourth-order continuous interpolation.
++                        assert!(
++                            (error - 0.312).abs() < 0.02,
++                            "degree={degree}, component={component}, error={error}"
++                        );
++                    }
++                }
++            }
++        }
++    }
++
++    #[test]
++    fn nonautonomous_constant_mass_dae() {
++        // y0 = sin(t), y1 = y0; f_t acts on the differential equation.
++        let p = OdeBuilder::<Mat>::new()
++            .rtol(1e-8)
++            .atol([1e-10, 1e-10])
++            .rhs_implicit(
++                |x, _, t, f| {
++                    f[0] = -x[0] + t.sin() + t.cos();
++                    f[1] = x[0] - x[1];
++                },
++                |_, _, _, v, jv| {
++                    jv[0] = -v[0];
++                    jv[1] = v[0] - v[1];
++                },
++            )
++            .mass(|v, _, _, beta, y| {
++                y[0] = v[0] + beta * y[0];
++                y[1] *= beta;
++            })
++            .init(
++                |_, _, y| {
++                    y[0] = 0.0;
++                    y[1] = 0.0;
++                },
++                2,
++            )
++            .build()
++            .unwrap();
++        let mut s = p.rodas5p::<LS>().unwrap();
++        advance(&mut s, 1.0);
++        for i in 0..2 {
++            assert!((s.state().y[i] - 1.0f64.sin()).abs() < 1e-7);
++        }
++    }
++    #[test]
++    fn integrated_output_requires_continuous_extension() {
++        let p = sine_problem(0.0, true);
++        let err = p
++            .rosenbrock_solver::<LS, Mat>(p.rodas5p_state::<LS>().unwrap(), euler(1.0, 0.0, 0.0))
++            .err()
++            .unwrap();
++        assert!(matches!(
++            err,
++            DiffsolError::OdeSolverError(OdeSolverError::InvalidTableau(_))
++        ));
++    }
++    fn stability_step(z: f64) -> f64 {
++        let p = OdeBuilder::<Mat>::new()
++            .rtol(1e30)
++            .atol([1e30])
++            .rhs_implicit(
++                move |x, _, _, f| f[0] = z * x[0],
++                move |_, _, _, v, jv| jv[0] = z * v[0],
++            )
++            .init(|_, _, y| y[0] = 1.0, 1)
++            .build()
++            .unwrap();
++        let mut s = p.rodas5p::<LS>().unwrap();
++        *s.state_mut().h = 1.0;
++        s.step().unwrap();
++        s.state().y[0]
++    }
++    #[test]
++    fn rodas5p_transformed_stiff_accuracy_and_l_stability() {
++        let t = Tableau::<f64>::rodas5p();
++        // In transformed form the final correction u8 completes the last stage state:
++        // b = A[7,:] + e8, not b = A[7,:] (the latter has a zero diagonal).
++        for i in 0..8 {
++            assert!((t.b()[i] - t.a(7, i) - if i == 7 { 1.0 } else { 0.0 }).abs() < 1e-15);
++        }
++        assert!(stability_step(-1e8).abs() < 1e-6);
++        assert!(stability_step(-1e14).abs() < 1e-10);
++    }
++
++    // Isolate the method from the existing, non-overridable blanket central f_t helper.
++    // Test-only: production continues to use NonLinearOpTimePartial unchanged.
++    fn analytic_step<
++        E: OdeEquationsImplicit<
++            T = f64,
++            M = Mat,
++            V = crate::NalgebraVec<f64>,
++            C = crate::NalgebraContext,
++        >,
++    >(
++        s: &mut Rosenbrock<'_, E, LS>,
++        h: f64,
++        ft: f64,
++    ) -> f64 {
++        let _ = s.rk.start_step().unwrap();
++        let mut analytic_ft = s.ft.clone();
++        analytic_ft[0] = ft;
++        let err = s
++            .attempt(h, SolverState::StepSuccess, Some(&analytic_ft))
++            .unwrap()
++            .sqrt()
++            * (s.problem().atol[0] + s.problem().rtol * s.state().y[0].abs());
++        s.rk.store_rosenbrock_hermite_derivatives(h);
++        s.rk.step_accepted(h, h, false).unwrap();
++        err
++    }
++    // Direct implementation 2a255e1, with analytic f_t to isolate stage arithmetic.
++    // Its within-step finite difference belongs to the downstream event policy.
++    #[test]
++    fn rosenbrock23_matches_direct_stage_oracles() {
++        let p = OdeBuilder::<Mat>::new()
++            .rtol(10.0)
++            .atol([10.0])
++            .rhs_implicit(
++                |x, _, _, f| f[0] = -x[0] * x[0],
++                |x, _, _, v, jv| jv[0] = -2.0 * x[0] * v[0],
++            )
++            .init(|_, _, y| y[0] = 2.0, 1)
++            .build()
++            .unwrap();
++        let mut s = p.rosenbrock23::<LS>().unwrap();
++        *s.state_mut().h = 0.01;
++        s.step().unwrap();
++        let estimate =
++            s.rk.error_norm(0.01, None::<&mut NoAug<_>>, |_| Ok(()))
++                .unwrap()
++                .sqrt()
++                * (10.0 + 10.0 * s.state().y[0].abs());
++        assert!((s.state().y[0] - 1.9607830804516306).abs() < 1e-14);
++        assert!((estimate - 1.2234237241393055e-6).abs() < 1e-14);
++        let p = sine_problem(-1000.0, false);
++        let mut s = p.rosenbrock23::<LS>().unwrap();
++        let estimate = analytic_step(&mut s, 0.01, 1000.0);
++        assert!(
++            (s.state().y[0] - 0.009999915159438611).abs() < 1e-14,
++            "actual={} estimate={estimate}",
++            s.state().y[0]
++        );
++        assert!((estimate - 1.0579454445214243e-7).abs() < 1e-14);
++    }
++    #[test]
++    fn rosenbrock23_second_order_and_quadratic_dense_output() {
++        let error = |h: f64, midpoint: bool| {
++            let p = OdeBuilder::<Mat>::new()
++                .rtol(10.0)
++                .atol([10.0])
++                .rhs_implicit(|x, _, _, f| f[0] = -x[0], |_, _, _, v, jv| jv[0] = -v[0])
++                .init(|_, _, y| y[0] = 1.0, 1)
++                .build()
++                .unwrap();
++            let mut s = p.rosenbrock23::<LS>().unwrap();
++            *s.state_mut().h = h;
++            s.config_mut().minimum_timestep_growth = 1.0;
++            s.config_mut().maximum_timestep_growth = 1.0;
++            if midpoint {
++                s.step().unwrap();
++                (s.interpolate(h / 2.0).unwrap()[0] - (-h / 2.0).exp()).abs()
++            } else {
++                advance(&mut s, 1.0);
++                (s.state().y[0] - (-1.0f64).exp()).abs()
++            }
++        };
++        let ratio = error(0.05, false) / error(0.025, false);
++        assert!((3.8..4.2).contains(&ratio), "{ratio}");
++        let ratio = error(0.05, true) / error(0.025, true);
++        assert!((7.0..9.0).contains(&ratio), "{ratio}");
++    }
++    #[test]
++    fn rosenbrock23_time_forcing_error_estimate_is_cubic() {
++        let estimate = |h: f64| {
++            let p = sine_problem(0.0, false);
++            let mut s = p.rosenbrock23::<LS>().unwrap();
++            *s.state_mut().t = 1.0;
++            *s.state_mut().h = h;
++            s.step().unwrap();
++            s.rk.error_norm(h, None::<&mut NoAug<_>>, |_| Ok(()))
++                .unwrap()
++                .sqrt()
++        };
++        let ratio = estimate(0.05) / estimate(0.025);
++        assert!((6.0..10.0).contains(&ratio), "{ratio}");
++    }
++    #[test]
++    fn rosenbrock23_integrated_outputs_converge_and_restart() {
++        let error = |h: f64| {
++            let p = sine_problem(-2.0, true);
++            let mut s = p.rosenbrock23::<LS>().unwrap();
++            *s.state_mut().h = h;
++            s.config_mut().minimum_timestep_growth = 1.0;
++            s.config_mut().maximum_timestep_growth = 1.0;
++            advance(&mut s, 1.0);
++            let mut restart = p.rosenbrock23_solver::<LS>(s.checkpoint()).unwrap();
++            *restart.config_mut() = s.config().clone();
++            advance(&mut s, 2.0);
++            advance(&mut restart, 2.0);
++            assert!((s.state().g[0] - restart.state().g[0]).abs() < 1e-12);
++            (s.state().g[0] - (1.0 - (4.0f64).sin() / 4.0 + 32.0 / 5.0)).abs()
++        };
++        let order = (error(0.05) / error(0.025)).log2();
++        assert!(order >= 2.0, "{order}");
++    }
++
++    #[test]
++    fn rodas5p_coefficients_match_julia_bit_for_bit() {
++        let data = include_str!(
++            "../ode_equations/test_models/rosenbrock_reference/rodas5p-julia-2.7.1.txt"
++        );
++        let values: Vec<f64> = data.lines().filter_map(|l| l.parse().ok()).collect();
++        assert_eq!(values.len(), 161);
++        let t = Tableau::<f64>::rodas5p();
++        let row = t.rosenbrock().unwrap();
++        let mut observed = vec![row.gamma];
++        for i in 0..8 {
++            for j in 0..8 {
++                observed.push(t.a(i, j));
++            }
++        }
++        for i in 0..8 {
++            for j in 0..7 {
++                observed.push(row.coupling[(i, j)]);
++            }
++        }
++        for i in 0..8 {
++            assert_eq!(row.coupling[(i, 7)], 0.0);
++        }
++        observed.extend_from_slice(t.c().as_slice());
++        observed.extend_from_slice(row.time.as_slice());
++        // Compare the beta transformation exactly, without inverting rounded sums to recover H.
++        for i in 0..8 {
++            let h = [values[137 + i], values[145 + i], values[153 + i]];
++            let beta = t.beta_t().unwrap().as_col_slice(i);
++            for (actual, expected) in
++                beta.iter()
++                    .zip([t.b()[i] + h[0], -h[0] + h[1], -h[1] + h[2], -h[2]])
++            {
++                assert_eq!(actual.to_bits(), expected.to_bits());
++            }
++        }
++        for (actual, expected) in observed.iter().zip(values) {
++            assert_eq!(actual.to_bits(), expected.to_bits());
++        }
++    }
++    #[test]
++    fn rodas5p_stability_matches_julia() {
++        assert!((stability_step(-1.0) - (0.3678803089370538)).abs() < 1e-13);
++        assert!((stability_step(-10.0) - (-0.04037298377966268)).abs() < 1e-13);
++        assert!((stability_step(-1000.0) - (-0.01205291678818721)).abs() < 1e-13);
++        assert!((stability_step(-1.0e8) - (-1.2520878608405691e-7)).abs() < 1e-13);
++        assert!((stability_step(-1.0e14) - (-1.2520883384046958e-13)).abs() < 1e-13);
++    }
++    #[test]
++    fn built_in_fixed_robertson_matches_julia() {
++        for (tableau, expected) in [
++            (
++                Tableau::rodas5p(),
++                [
++                    0.9996006841629056,
++                    3.6450479186134964e-5,
++                    0.0003628653579085962,
++                ],
++            ),
++            (
++                Tableau::rosenbrock23(),
++                [
++                    0.9996006819320089,
++                    3.645047866463391e-5,
++                    0.0003628675893263426,
++                ],
++            ),
++        ] {
++            let (mut p, _) = robertson_ode::<Mat>(false, 1);
++            p.rtol = 10.0;
++            p.atol.fill(10.0);
++            let mut s = p
++                .rosenbrock_solver::<LS, Mat>(p.rodas5p_state::<LS>().unwrap(), tableau)
++                .unwrap();
++            *s.state_mut().h = 0.001;
++            s.config_mut().minimum_timestep_growth = 1.0;
++            s.config_mut().maximum_timestep_growth = 1.0;
++            advance(&mut s, 0.01);
++            for (i, e) in expected.into_iter().enumerate() {
++                assert!(
++                    (s.state().y[i] - e).abs() < 1e-12 * e.abs(),
++                    "i={i}, actual={}, expected={e}",
++                    s.state().y[i]
++                );
++            }
++        }
++    }
++
++    #[test]
++    fn rosenbrock23_rejected_attempt_keeps_initial_state_intact() {
++        let problem = OdeBuilder::<Mat>::new()
++            .rtol(1e-8)
++            .atol([1e-10])
++            .rhs_implicit(
++                |x, _, _, f| f[0] = -100.0 * x[0],
++                |_, _, _, v, jv| jv[0] = -100.0 * v[0],
++            )
++            .init(|_, _, y| y[0] = 1.0, 1)
++            .build()
++            .unwrap();
++        let mut solver = problem.rosenbrock23::<LS>().unwrap();
++        *solver.state_mut().h = 0.1;
++        solver.step().unwrap();
++        assert!(solver.get_statistics().number_of_error_test_failures > 0);
++        assert!(
++            solver
++                .get_statistics()
++                .number_of_linear_solver_setups_from_error_test_fail
++                > 0
++        );
++        let t = solver.state().t;
++        assert!(t > 0.0 && t < 0.1);
++        assert!((solver.state().y[0] - (-100.0 * t).exp()).abs() < 1e-5);
++        advance(&mut solver, 0.1);
++        assert!((solver.state().y[0] - (-10.0f64).exp()).abs() < 1e-5);
++    }
++    #[test]
++    fn rosenbrock23_interpolation_and_root_event() {
++        let problem = OdeBuilder::<Mat>::new()
++            .rtol(1e-8)
++            .atol([1e-10])
++            .h0(0.8)
++            .rhs_implicit(|_, _, _, f| f[0] = 1.0, |_, _, _, _, jv| jv[0] = 0.0)
++            .init(|_, _, y| y[0] = 0.0, 1)
++            .root(|x, _, _, r| r[0] = x[0] - 0.5, 1)
++            .build()
++            .unwrap();
++        let mut solver = problem.rosenbrock23::<LS>().unwrap();
++        let mut found = None;
++        for _ in 0..100 {
++            if let OdeSolverStopReason::RootFound(t, index) = solver.step().unwrap() {
++                found = Some((t, index));
++                break;
++            }
++        }
++        let (root, index) = found.expect("root must be detected");
++        assert_eq!(index, 0);
++        assert!((root - 0.5).abs() < 1e-6);
++        assert!((solver.interpolate(root).unwrap()[0] - 0.5).abs() < 1e-6);
++        assert!((solver.interpolate_dy(root).unwrap()[0] - 1.0).abs() < 1e-6);
++        solver.state_mut_back(root).unwrap();
++        assert!((solver.state().y[0] - 0.5).abs() < 1e-6);
++    }
++    #[test]
++    fn rosenbrock23_nonlinear_jacobian_refreshes_after_an_accepted_step() {
++        use std::{cell::RefCell, rc::Rc};
++
++        let jacobian_states = Rc::new(RefCell::new(Vec::<(f64, f64)>::new()));
++        let observed = jacobian_states.clone();
++        let problem = OdeBuilder::<Mat>::new()
++            .rtol(1e-7)
++            .atol([1e-9])
++            .h0(0.05)
++            .rhs_implicit(
++                |x, _, _, f| f[0] = -x[0] * x[0],
++                move |x, _, t, v, jv| {
++                    observed.borrow_mut().push((t, x[0]));
++                    jv[0] = -2.0 * x[0] * v[0];
++                },
++            )
++            .init(|_, _, y| y[0] = 2.0, 1)
++            .build()
++            .unwrap();
++        let mut solver = problem.rosenbrock23::<LS>().unwrap();
++        solver.step().unwrap();
++        let first_time = solver.state().t;
++        let first_value = solver.state().y[0];
++        assert!(first_time > 0.0 && first_value < 2.0);
++        solver.step().unwrap();
++        let second_time = solver.state().t;
++        let second_value = solver.state().y[0];
++        assert!(second_time > first_time);
++        assert!(
++            jacobian_states
++                .borrow()
++                .iter()
++                .any(|(t, y)| { *t == first_time && (*y - first_value).abs() < 1e-12 }),
++            "the nonlinear Jacobian was not evaluated at the first accepted state"
++        );
++        let exact = 2.0 / (1.0 + 2.0 * second_time);
++        assert!((second_value - exact).abs() < 1e-4);
++    }
++    #[test]
++    fn built_in_fixed_nonautonomous_matches_julia_with_analytic_ft() {
++        for (name, tableau, lambda, h, expected) in [
++            (
++                "rodas5p",
++                Tableau::rodas5p(),
++                0.0,
++                0.01,
++                0.09983341664682904,
++            ),
++            (
++                "rodas5p",
++                Tableau::rodas5p(),
++                -1000.0,
++                0.001,
++                0.009999833334166675,
++            ),
++            (
++                "rosenbrock23",
++                Tableau::rosenbrock23(),
++                0.0,
++                0.01,
++                0.09983383262061077,
++            ),
++            (
++                "rosenbrock23",
++                Tableau::rosenbrock23(),
++                -1000.0,
++                0.001,
++                0.009999834105815892,
++            ),
++        ] {
++            let p = sine_problem(lambda, false);
++            let mut s = p
++                .rosenbrock_solver::<LS, Mat>(p.rodas5p_state::<LS>().unwrap(), tableau)
++                .unwrap();
++            for _ in 0..10 {
++                let t = s.state().t;
++                analytic_step(&mut s, h, -lambda * t.cos() - t.sin());
++            }
++            let error = (s.state().y[0] - expected).abs();
++            assert!(error < 1e-13, "{name}, lambda={lambda}, {error}");
++        }
++    }
++
++    // Statistics snapshots, as for the SDIRK and BDF solvers: one Jacobian and one
++    // factorisation per accepted step, no nonlinear iterations.
++
++    #[test]
++    fn test_rosenbrock23_nalgebra_exponential_decay() {
++        let (problem, soln) = exponential_decay_problem::<Mat>(false);
++        let mut s = problem.rosenbrock23::<LS>().unwrap();
++        test_ode_solver(&mut s, soln, None, false, false);
++        insta::assert_yaml_snapshot!(s.get_statistics(), @r###"
++        number_of_linear_solver_setups: 30
++        number_of_steps: 30
++        number_of_error_test_failures: 0
++        number_of_nonlinear_solver_iterations: 0
++        number_of_nonlinear_solver_fails: 0
++        number_of_linear_solver_setups_from_checkpoint: 0
++        number_of_linear_solver_setups_from_first_convergence_fail: 0
++        number_of_linear_solver_setups_from_second_convergence_fail: 0
++        number_of_linear_solver_setups_from_error_test_fail: 0
++        number_of_linear_solver_setups_from_step_success: 30
++        "###);
++        insta::assert_yaml_snapshot!(problem.eqn.rhs().statistics(), @r###"
++        number_of_calls: 182
++        number_of_jac_muls: 60
++        number_of_matrix_evals: 30
++        number_of_jac_adj_muls: 0
++        "###);
++    }
++
++    #[test]
++    fn test_rosenbrock23_nalgebra_robertson_ode() {
++        let (problem, soln) = robertson_ode::<Mat>(false, 1);
++        let mut s = problem.rosenbrock23::<LS>().unwrap();
++        test_ode_solver(&mut s, soln, None, false, false);
++        insta::assert_yaml_snapshot!(s.get_statistics(), @r###"
++        number_of_linear_solver_setups: 386
++        number_of_steps: 386
++        number_of_error_test_failures: 0
++        number_of_nonlinear_solver_iterations: 0
++        number_of_nonlinear_solver_fails: 0
++        number_of_linear_solver_setups_from_checkpoint: 0
++        number_of_linear_solver_setups_from_first_convergence_fail: 0
++        number_of_linear_solver_setups_from_second_convergence_fail: 0
++        number_of_linear_solver_setups_from_error_test_fail: 0
++        number_of_linear_solver_setups_from_step_success: 386
++        "###);
++        insta::assert_yaml_snapshot!(problem.eqn.rhs().statistics(), @r###"
++        number_of_calls: 2318
++        number_of_jac_muls: 1158
++        number_of_matrix_evals: 386
++        number_of_jac_adj_muls: 0
++        "###);
++    }
++
++    #[test]
++    fn test_rodas5p_nalgebra_exponential_decay() {
++        let (problem, soln) = exponential_decay_problem::<Mat>(false);
++        let mut s = problem.rodas5p::<LS>().unwrap();
++        test_ode_solver(&mut s, soln, None, false, false);
++        insta::assert_yaml_snapshot!(s.get_statistics(), @r###"
++        number_of_linear_solver_setups: 8
++        number_of_steps: 8
++        number_of_error_test_failures: 0
++        number_of_nonlinear_solver_iterations: 0
++        number_of_nonlinear_solver_fails: 0
++        number_of_linear_solver_setups_from_checkpoint: 0
++        number_of_linear_solver_setups_from_first_convergence_fail: 0
++        number_of_linear_solver_setups_from_second_convergence_fail: 0
++        number_of_linear_solver_setups_from_error_test_fail: 0
++        number_of_linear_solver_setups_from_step_success: 8
++        "###);
++        insta::assert_yaml_snapshot!(problem.eqn.rhs().statistics(), @r###"
++        number_of_calls: 90
++        number_of_jac_muls: 16
++        number_of_matrix_evals: 8
++        number_of_jac_adj_muls: 0
++        "###);
++    }
++
++    #[test]
++    fn test_rodas5p_nalgebra_robertson_ode() {
++        let (problem, soln) = robertson_ode::<Mat>(false, 1);
++        let mut s = problem.rodas5p::<LS>().unwrap();
++        test_ode_solver(&mut s, soln, None, false, false);
++        insta::assert_yaml_snapshot!(s.get_statistics(), @r###"
++        number_of_linear_solver_setups: 129
++        number_of_steps: 129
++        number_of_error_test_failures: 0
++        number_of_nonlinear_solver_iterations: 0
++        number_of_nonlinear_solver_fails: 0
++        number_of_linear_solver_setups_from_checkpoint: 0
++        number_of_linear_solver_setups_from_first_convergence_fail: 0
++        number_of_linear_solver_setups_from_second_convergence_fail: 0
++        number_of_linear_solver_setups_from_error_test_fail: 0
++        number_of_linear_solver_setups_from_step_success: 129
++        "###);
++        insta::assert_yaml_snapshot!(problem.eqn.rhs().statistics(), @r###"
++        number_of_calls: 1421
++        number_of_jac_muls: 387
++        number_of_matrix_evals: 129
++        number_of_jac_adj_muls: 0
++        "###);
++    }
++
++    /// Both Rosenbrock tableaus through the shared solver harness.
++    mod harness {
++        use crate::{
++            matrix::dense_nalgebra_serial::NalgebraMat,
++            ode_equations::test_models::{
++                exponential_decay::{
++                    exponential_decay_problem, exponential_decay_problem_with_root,
++                    negative_exponential_decay_problem,
++                },
++                heat2d::head2d_problem,
++                robertson_ode::robertson_ode,
++            },
++            ode_solver::tests::{
++                test_checkpointing, test_config, test_interpolate, test_interpolate_dy,
++                test_ode_solver, test_problem, test_state_mut, test_state_mut_on_problem,
++            },
++            FaerLU, FaerMat, FaerSparseLU, FaerSparseMat, NalgebraLU, OdeSolverMethod,
++        };
++
++        type M = NalgebraMat<f64>;
++        type LS = NalgebraLU<f64>;
++
++        macro_rules! harness {
++            ($modname:ident, $ctor:ident) => {
++                mod $modname {
++                    use super::*;
++                    #[test]
++                    fn t_state_mut() {
++                        test_state_mut(test_problem::<M>(false).$ctor::<LS>().unwrap());
++                    }
++                    #[test]
++                    fn t_config() {
++                        test_config(robertson_ode::<M>(false, 1).0.$ctor::<LS>().unwrap());
++                    }
++                    #[test]
++                    fn t_interpolate() {
++                        test_interpolate(test_problem::<M>(false).$ctor::<LS>().unwrap());
++                        test_interpolate(test_problem::<M>(true).$ctor::<LS>().unwrap());
++                    }
++                    #[test]
++                    fn t_interpolate_dy() {
++                        test_interpolate_dy(test_problem::<M>(false).$ctor::<LS>().unwrap());
++                    }
++                    #[test]
++                    fn t_checkpointing() {
++                        let (problem, soln) = exponential_decay_problem::<M>(false);
++                        let s1 = problem.$ctor::<LS>().unwrap();
++                        let s2 = problem.$ctor::<LS>().unwrap();
++                        test_checkpointing(soln, s1, s2);
++                    }
++                    #[test]
++                    fn t_state_mut_on_problem() {
++                        let (p, soln) = exponential_decay_problem::<M>(false);
++                        let mut s = p.$ctor::<LS>().unwrap();
++                        // Isolate state reinitialisation from accumulated adaptive global error.
++                        // The shared controller estimates local error; Rosenbrock23's default
++                        // trajectory reaches 19.28 tolerance units against this harness's 19.
++                        *s.state_mut().h = 0.1;
++                        s.config_mut().maximum_timestep_growth = 1.0;
++                        s.config_mut().minimum_timestep_growth = 1.0;
++                        test_state_mut_on_problem(s, soln);
++                    }
++                    #[test]
++                    fn t_exponential_decay() {
++                        let (problem, soln) = exponential_decay_problem::<M>(false);
++                        let mut s = problem.$ctor::<LS>().unwrap();
++                        test_ode_solver(&mut s, soln, None, false, false);
++                    }
++                    #[test]
++                    fn t_exponential_decay_tstop() {
++                        let (problem, soln) = exponential_decay_problem::<M>(false);
++                        let mut s = problem.$ctor::<LS>().unwrap();
++                        test_ode_solver(&mut s, soln, None, true, false);
++                    }
++                    #[test]
++                    fn t_negative_exponential_decay() {
++                        let (problem, soln) = negative_exponential_decay_problem::<M>(false);
++                        let mut s = problem.$ctor::<LS>().unwrap();
++                        test_ode_solver(&mut s, soln, Some(30.), false, false);
++                    }
++                    #[test]
++                    fn t_exponential_decay_with_root() {
++                        let (problem, soln) =
++                            exponential_decay_problem_with_root::<M>(false, false);
++                        let mut s = problem.$ctor::<LS>().unwrap();
++                        test_ode_solver(&mut s, soln, None, false, false);
++                    }
++                    #[test]
++                    fn t_robertson_ode() {
++                        let (problem, soln) = robertson_ode::<M>(false, 1);
++                        let mut s = problem.$ctor::<LS>().unwrap();
++                        test_ode_solver(&mut s, soln, None, false, false);
++                        assert_eq!(
++                            s.get_statistics().number_of_linear_solver_setups,
++                            s.get_statistics().number_of_steps
++                                + s.get_statistics().number_of_error_test_failures
++                        );
++                        assert_eq!(s.get_statistics().number_of_nonlinear_solver_iterations, 0);
++                        let (problem, soln) = robertson_ode::<FaerMat<f64>>(false, 1);
++                        let mut s = problem.$ctor::<FaerLU<f64>>().unwrap();
++                        test_ode_solver(&mut s, soln, None, false, false);
++                        assert_eq!(
++                            s.get_statistics().number_of_linear_solver_setups,
++                            s.get_statistics().number_of_steps
++                                + s.get_statistics().number_of_error_test_failures
++                        );
++                        assert_eq!(s.get_statistics().number_of_nonlinear_solver_iterations, 0);
++                    }
++                    #[test]
++                    fn t_robertson_ode_tstop() {
++                        let (problem, soln) = robertson_ode::<M>(false, 1);
++                        let mut s = problem.$ctor::<LS>().unwrap();
++                        test_ode_solver(&mut s, soln, None, true, false);
++                    }
++                    #[test]
++                    fn t_heat2d_faer_sparse() {
++                        let (problem, soln) = head2d_problem::<FaerSparseMat<f64>, 10>();
++                        let mut s = problem.$ctor::<FaerSparseLU<f64>>().unwrap();
++                        test_ode_solver(&mut s, soln, None, false, false);
++                    }
++                }
++            };
++        }
++
++        harness!(rosenbrock23, rosenbrock23);
++        harness!(rodas5p, rodas5p);
++    }
++}
+diff --git a/crates/diffsol/src/ode_solver/runge_kutta.rs b/crates/diffsol/src/ode_solver/runge_kutta.rs
+index 172eac1..91d7696 100644
+--- a/crates/diffsol/src/ode_solver/runge_kutta.rs
++++ b/crates/diffsol/src/ode_solver/runge_kutta.rs
+@@ -10,8 +10,8 @@ use crate::RootFinder;
+ use crate::Tableau;
+ use crate::{
+     ode_solver_error, AugmentedOdeEquations, Convergence, DefaultDenseMatrix, DenseMatrix,
+-    NonLinearOp, NonLinearSolver, OdeEquations, OdeSolverProblem, OdeSolverState, Op, Scalar,
+-    Vector, VectorViewMut,
++    LinearOp, LinearSolver, NonLinearOp, NonLinearSolver, OdeEquations, OdeSolverProblem,
++    OdeSolverState, Op, Scalar, Vector, VectorViewMut,
+ };
+ use crate::{TableauMat, TableauVec};
+ use log::info;
+@@ -24,6 +24,18 @@ use super::pi_controller::pi_controller_raw;
+ use super::OdeSolverStatistics;
+ use std::ops::{MulAssign, SubAssign};
+ 
++// Five evaluations combine Gauss-3 and Gauss-2; their difference has local order five.
++const ROSENBROCK_OUTPUT_STAGES: usize = 5;
++const ROSENBROCK_OUTPUT_ERROR_ORDER: usize = 5;
++
++#[derive(Clone)]
++struct RosenbrockOutput<T: Scalar> {
++    nodes: [f64; ROSENBROCK_OUTPUT_STAGES],
++    weights: TableauVec<T>,
++    error_weights: TableauVec<T>,
++    beta: TableauMat<T>,
++}
++
+ /// A Runge-Kutta method.
+ ///
+ /// The particular method is defined by the [Tableau] used to create the solver.
+@@ -48,6 +60,7 @@ where
+     sdiff: M,
+     sgdiff: M,
+     gdiff: M,
++    rosenbrock_output: Option<Box<RosenbrockOutput<Eqn::T>>>,
+     old_state: Box<RkState<Eqn::V>>,
+     is_state_mutated: bool,
+ 
+@@ -90,6 +103,7 @@ where
+             sdiff: self.sdiff.clone(),
+             sgdiff: self.sgdiff.clone(),
+             gdiff: self.gdiff.clone(),
++            rosenbrock_output: self.rosenbrock_output.clone(),
+             error: self.error.clone(),
+             out_error: self.out_error.clone(),
+             sens_error: self.sens_error.clone(),
+@@ -141,13 +155,27 @@ where
+             None
+         };
+ 
+-        let diff = M::zeros(nstates, order, ctx.clone());
++        // Hermite interpolation needs two endpoint derivative columns, even for a one-stage method.
++        let diff_cols = if tableau.rosenbrock().is_some() && tableau.beta_t().is_none() {
++            order.max(2)
++        } else {
++            order
++        };
++        let diff = M::zeros(nstates, diff_cols, ctx.clone());
+         let gdiff_rows = if problem.integrate_out {
+             problem.eqn.out().unwrap().nout()
+         } else {
+             0
+         };
+-        let gdiff = M::zeros(gdiff_rows, order, ctx.clone());
++        let gdiff = M::zeros(
++            gdiff_rows,
++            if tableau.rosenbrock().is_some() {
++                ROSENBROCK_OUTPUT_STAGES
++            } else {
++                order
++            },
++            ctx.clone(),
++        );
+ 
+         let old_state = state.clone();
+ 
+@@ -173,6 +201,16 @@ where
+             is_state_mutated: false,
+             diff,
+             gdiff,
++            rosenbrock_output: (tableau.rosenbrock().is_some() && problem.integrate_out).then(
++                || {
++                    Box::new(RosenbrockOutput {
++                        nodes: Self::rosenbrock_output_nodes(),
++                        weights: Self::rosenbrock_output_weights(false),
++                        error_weights: Self::rosenbrock_output_weights(true),
++                        beta: Self::rosenbrock_output_beta(),
++                    })
++                },
++            ),
+             sdiff: M::zeros(0, 0, ctx.clone()),
+             sgdiff: M::zeros(0, 0, ctx.clone()),
+             error,
+@@ -272,7 +310,7 @@ where
+     }
+ 
+     pub(crate) fn skip_first_stage(&self) -> bool {
+-        self.tableau.a(0, 0) == Eqn::T::zero()
++        self.tableau.rosenbrock().is_none() && self.tableau.a(0, 0) == Eqn::T::zero()
+     }
+ 
+     pub(crate) fn check_sdirk_rk(tableau: &Tableau<Eqn::T>) -> Result<(), DiffsolError> {
+@@ -465,7 +503,14 @@ where
+             self.prev_error_norm,
+             self.problem().ode_options.pi_control_integral,
+             self.problem().ode_options.pi_control_proportional,
+-            self.order() + 1,
++            // Rosenbrock embedded differences have their own local order.
++            self.tableau.rosenbrock().map_or(self.order() + 1, |row| {
++                if self.out_error.is_some() {
++                    row.error_order.min(ROSENBROCK_OUTPUT_ERROR_ORDER)
++                } else {
++                    row.error_order
++                }
++            }),
+         );
+ 
+         let mut factor = safety * raw;
+@@ -622,6 +667,179 @@ where
+         }
+     }
+ 
++    /// Solve one Rosenbrock stage in the preallocated state scratch and `diff` columns.
++    /// The Jacobian factorization is frozen at the attempt's initial state and shared by all stages.
++    pub(crate) fn do_stage_rosenbrock<LS: LinearSolver<Eqn::M>>(
++        &mut self,
++        i: usize,
++        h: Eqn::T,
++        op: &SdirkCallable<&Eqn>,
++        linear_solver: &mut LS,
++        ft: &Eqn::V,
++    ) -> Result<(), DiffsolError>
++    where
++        Eqn: OdeEquationsImplicit,
++    {
++        let row = self.tableau.rosenbrock().unwrap();
++        let t = self.state.t + self.tableau.c()[i] * h;
++        self.old_state.y.copy_from(&self.state.y);
++        self.diff.gemv_cols(
++            0,
++            i,
++            Eqn::T::one(),
++            self.tableau.stage_coeffs(i),
++            Eqn::T::one(),
++            &mut self.old_state.y,
++        );
++        op.eqn()
++            .rhs()
++            .call_inplace(&self.old_state.y, t, &mut self.old_state.dy);
++        self.old_state.dy.axpy(h * row.time[i], ft, Eqn::T::one());
++        let mut weights = TableauVec::zeros(i);
++        for (j, w) in weights.as_mut_slice().iter_mut().enumerate() {
++            *w = row.coupling[(i, j)] / h;
++        }
++        self.diff.gemv_cols(
++            0,
++            i,
++            Eqn::T::one(),
++            weights.as_slice(),
++            Eqn::T::zero(),
++            &mut self.old_state.y,
++        );
++        if let Some(mass) = op.eqn().mass() {
++            mass.gemv_inplace(
++                &self.old_state.y,
++                self.state.t,
++                Eqn::T::one(),
++                &mut self.old_state.dy,
++            );
++        } else {
++            self.old_state
++                .dy
++                .axpy(Eqn::T::one(), &self.old_state.y, Eqn::T::one());
++        }
++        linear_solver.solve_in_place(&mut self.old_state.dy)?;
++        self.old_state.dy *= scale(row.gamma * h);
++        self.diff.column_mut(i).copy_from(&self.old_state.dy);
++        Ok(())
++    }
++
++    /// Form the accepted endpoint and its derivative before the existing RK state swap.
++    pub(crate) fn finish_step_rosenbrock(&mut self, h: Eqn::T)
++    where
++        Eqn: OdeEquationsImplicit,
++    {
++        self.old_state.y.copy_from(&self.state.y);
++        self.diff.gemv_cols(
++            0,
++            self.tableau.s(),
++            Eqn::T::one(),
++            self.tableau.b().as_slice(),
++            Eqn::T::one(),
++            &mut self.old_state.y,
++        );
++        if self.problem.eqn.mass().is_some() {
++            let weights = Self::interpolate_beta_weights_deriv(
++                Eqn::T::one(),
++                self.tableau.beta_t().unwrap(),
++                Eqn::T::one() / h,
++            );
++            self.diff.gemv_cols(
++                0,
++                weights.len(),
++                Eqn::T::one(),
++                weights.as_slice(),
++                Eqn::T::zero(),
++                &mut self.old_state.dy,
++            );
++        } else {
++            self.problem.eqn.rhs().call_inplace(
++                &self.old_state.y,
++                self.state.t + h,
++                &mut self.old_state.dy,
++            );
++        }
++    }
++    pub(crate) fn store_rosenbrock_hermite_derivatives(&mut self, h: Eqn::T) {
++        if self.tableau.beta_t().is_none() {
++            // Existing Hermite interpolation expects endpoint derivatives scaled by h.
++            self.diff
++                .column_mut(0)
++                .axpy(h, &self.state.dy, Eqn::T::zero());
++            self.diff
++                .column_mut(self.diff.ncols() - 1)
++                .axpy(h, &self.old_state.dy, Eqn::T::zero());
++        }
++    }
++
++    /// Integrate outputs along the state continuous extension with Gauss-3 and embedded
++    /// Gauss-2 quadrature (local error order five), using preallocated vector storage.
++    pub(crate) fn integrate_rosenbrock_outputs(&mut self, h: Eqn::T, scratch: &mut Eqn::V) {
++        let out = self.problem.eqn.out().unwrap();
++        for (i, node) in self
++            .rosenbrock_output
++            .as_ref()
++            .unwrap()
++            .nodes
++            .into_iter()
++            .enumerate()
++        {
++            let theta = Eqn::T::from_f64(node).unwrap();
++            let weights = Self::interpolate_beta_weights(
++                theta,
++                self.tableau.beta_t().unwrap(),
++                Eqn::T::one(),
++            );
++            Self::interpolate_from_diff(&self.state.y, weights.as_slice(), &self.diff, scratch);
++            out.call_inplace(scratch, self.state.t + theta * h, &mut self.old_state.dg);
++            self.gdiff
++                .column_mut(i)
++                .axpy(h, &self.old_state.dg, Eqn::T::zero());
++        }
++        out.call_inplace(&self.old_state.y, self.state.t + h, &mut self.old_state.dg);
++    }
++    fn rosenbrock_output_nodes() -> [f64; ROSENBROCK_OUTPUT_STAGES] {
++        let a = (3.0_f64 / 5.0).sqrt() / 2.0;
++        let b = 1.0 / (2.0 * 3.0_f64.sqrt());
++        [0.5 - a, 0.5 - b, 0.5, 0.5 + b, 0.5 + a]
++    }
++    fn rosenbrock_output_weights(error: bool) -> TableauVec<Eqn::T> {
++        let embedded = if error { -0.5 } else { 0.0 };
++        TableauVec::from_slice(
++            &[5.0 / 18.0, embedded, 4.0 / 9.0, embedded, 5.0 / 18.0]
++                .map(|x| Eqn::T::from_f64(x).unwrap()),
++        )
++    }
++    fn rosenbrock_output_beta() -> TableauMat<Eqn::T> {
++        // Integrate the Lagrange basis at the five nodes. The resulting polynomial
++        // uses the existing beta interpolation path and matches Gauss-3 at theta=1.
++        let nodes = Self::rosenbrock_output_nodes();
++        let mut beta = TableauMat::zeros(ROSENBROCK_OUTPUT_STAGES, ROSENBROCK_OUTPUT_STAGES);
++        for (i, xi) in nodes.into_iter().enumerate() {
++            let mut coefficients = {
++                let mut c = [0.0; ROSENBROCK_OUTPUT_STAGES];
++                c[0] = 1.0;
++                c
++            };
++            let mut degree = 0;
++            for (j, xj) in nodes.into_iter().enumerate() {
++                if i == j {
++                    continue;
++                }
++                degree += 1;
++                for k in (0..=degree).rev() {
++                    let previous = if k == 0 { 0.0 } else { coefficients[k - 1] };
++                    coefficients[k] = (previous - xj * coefficients[k]) / (xi - xj);
++                }
++            }
++            for (k, coefficient) in coefficients.into_iter().enumerate() {
++                beta[(k, i)] = Eqn::T::from_f64(coefficient / (k + 1) as f64).unwrap();
++            }
++        }
++        beta
++    }
++
+     pub(crate) fn do_stage_sdirk<AugEqn>(
+         &mut self,
+         i: usize,
+@@ -798,11 +1016,16 @@ where
+ 
+         if let Some(out_error) = self.out_error.as_mut() {
+             // output errors
++            let weights = if self.tableau.rosenbrock().is_some() {
++                self.rosenbrock_output.as_ref().unwrap().error_weights
++            } else {
++                *self.tableau.d()
++            };
+             self.gdiff.gemv_cols(
+                 0,
+-                s,
++                weights.len(),
+                 Eqn::T::one(),
+-                self.tableau.d().as_slice(),
++                weights.as_slice(),
+                 Eqn::T::zero(),
+                 out_error,
+             );
+@@ -909,11 +1132,16 @@ where
+         // step accepted, so integrate output functions
+         if self.problem.integrate_out {
+             self.old_state.g.copy_from(&self.state.g);
++            let weights = if self.tableau.rosenbrock().is_some() {
++                self.rosenbrock_output.as_ref().unwrap().weights
++            } else {
++                *self.tableau.b()
++            };
+             self.gdiff.gemv_cols(
+                 0,
+-                s,
++                weights.len(),
+                 Eqn::T::one(),
+-                self.tableau.b().as_slice(),
++                weights.as_slice(),
+                 Eqn::T::one(),
+                 &mut self.old_state.g,
+             );
+@@ -1212,7 +1440,12 @@ where
+             (t - self.old_state.t) / dt
+         };
+         let scale_diff = Eqn::T::one();
+-        if let Some(beta_t) = self.tableau.beta_t() {
++        if let Some(beta_t) = self
++            .rosenbrock_output
++            .as_ref()
++            .map(|output| &output.beta)
++            .or_else(|| self.tableau.beta_t())
++        {
+             let beta_f = Self::interpolate_beta_weights(theta, beta_t, scale_diff);
+             Self::interpolate_from_diff(&self.old_state.g, beta_f.as_slice(), &self.gdiff, g);
+         } else {
+diff --git a/crates/diffsol/src/ode_solver/tableau.rs b/crates/diffsol/src/ode_solver/tableau.rs
+index e05fe32..67f9772 100644
+--- a/crates/diffsol/src/ode_solver/tableau.rs
++++ b/crates/diffsol/src/ode_solver/tableau.rs
+@@ -11,6 +11,36 @@ pub type TableauMat<T> = SmallMat<T, { MAX_SMALL_COLS * MAX_SMALL_COLS }>;
+ /// The `b`, `c` and `d` vectors of a [`Tableau`], `s` long.
+ pub type TableauVec<T> = SmallVec<T, MAX_SMALL_COLS>;
+ 
++/// Coefficients for transformed Rosenbrock-Wanner stages:
++/// `(M - gamma*h*J) k_i = gamma*h * (f(Y_i, t+c_i*h) + h*d_i*f_t
++/// + M*sum_{j<i}(c_ij*k_j/h))`, where `Y_i = y_0 + sum_{j<i}(a_ij*k_j)`
++/// and `y_1 = y_0 + sum_i(b_i*k_i)`. `J` is frozen at the step's initial state.
++#[derive(Clone, Copy, Debug)]
++pub struct RosenbrockTableau<T: Scalar> {
++    pub(crate) coupling: TableauMat<T>,
++    pub(crate) gamma: T,
++    pub(crate) time: TableauVec<T>,
++    pub(crate) error_order: usize,
++}
++impl<T: Scalar> RosenbrockTableau<T> {
++    /// Common diagonal factor in the linear stage system.
++    pub fn gamma(&self) -> T {
++        self.gamma
++    }
++    /// Strictly lower triangular transformed coupling matrix, in natural orientation.
++    pub fn coupling(&self) -> &TableauMat<T> {
++        &self.coupling
++    }
++    /// Weights of `h*f_t` in the stages.
++    pub fn time_weights(&self) -> &TableauVec<T> {
++        &self.time
++    }
++    /// Local order of the embedded error difference.
++    pub fn error_order(&self) -> usize {
++        self.error_order
++    }
++}
++
+ /// A butcher tableau for a Runge-Kutta method.
+ ///
+ /// The tableau is defined by the matrices `a`, `b`, `c` and `d` and the order of the method.
+@@ -37,6 +67,7 @@ pub type TableauVec<T> = SmallVec<T, MAX_SMALL_COLS>;
+ pub struct Tableau<T: Scalar> {
+     /// `a` transposed: column `i` is stage `i`'s coefficient run.
+     a_t: TableauMat<T>,
++    rosenbrock: Option<RosenbrockTableau<T>>,
+     b: TableauVec<T>,
+     c: TableauVec<T>,
+     d: TableauVec<T>,
+@@ -46,6 +77,186 @@ pub struct Tableau<T: Scalar> {
+ }
+ 
+ impl<T: Scalar> Tableau<T> {
++    /// Construct a transformed Rosenbrock tableau. `a` and `coupling` use natural
++    /// orientation and must be strictly lower triangular. `d` is the embedded error
++    /// difference; `time` supplies partial-time weights. Solvers validate the coefficients.
++    #[allow(clippy::too_many_arguments)]
++    pub fn new_rosenbrock(
++        a: TableauMat<T>,
++        b: TableauVec<T>,
++        c: TableauVec<T>,
++        d: TableauVec<T>,
++        order: usize,
++        beta: Option<TableauMat<T>>,
++        coupling: TableauMat<T>,
++        gamma: T,
++        time: TableauVec<T>,
++        error_order: usize,
++    ) -> Self {
++        let mut ret = Self::new(a, b, c, d, order, beta);
++        ret.rosenbrock = Some(RosenbrockTableau {
++            coupling,
++            gamma,
++            time,
++            error_order,
++        });
++        ret
++    }
++    /// Rosenbrock coefficients, absent for ordinary Runge-Kutta tableaus.
++    pub fn rosenbrock(&self) -> Option<&RosenbrockTableau<T>> {
++        self.rosenbrock.as_ref()
++    }
++    /// Three-stage second-order Rosenbrock23 (the third stage estimates the error).
++    /// Shampine & Reichelt (1997), section 3, <https://doi.org/10.1137/S1064827594276424>.
++    ///
++    /// With `g = 1/(2+sqrt(2))` and `q = 6+sqrt(2)`, eliminating reused RHS values
++    /// gives the ROW matrix `Gamma = g*[1,0,0; -1,1,0; q-2,-q,1]` and
++    /// `alpha = [0,0,0; 1/2,0,0; 0,1,0]`. Hairer & Wanner IV.7 transforms these
++    /// using `A = alpha*Gamma^-1`, `C = I/g-Gamma^-1`, `b = [0,1,0]*Gamma^-1`.
++    /// The embedded difference is `[1,-2,1]*Gamma^-1/6`; time weights are the
++    /// row sums of Gamma. This retains `g*h*f_t` in the direct third stage.
++    /// The quadratic continuous extension is the transformed `ntrp23s` polynomial.
++    pub fn rosenbrock23() -> Self {
++        let g = 1.0 / (2.0 + 2.0_f64.sqrt());
++        let q = 6.0 + 2.0_f64.sqrt();
++        let cv = |x| T::from_f64(x).unwrap();
++        let mut a = TableauMat::zeros(3, 3);
++        a[(1, 0)] = cv(0.5 / g);
++        a[(2, 0)] = cv(1.0 / g);
++        a[(2, 1)] = cv(1.0 / g);
++        let mut coupling = TableauMat::zeros(3, 3);
++        coupling[(1, 0)] = cv(-1.0 / g);
++        coupling[(2, 0)] = cv(-2.0 / g);
++        coupling[(2, 1)] = cv(-q / g);
++        let mut beta = TableauMat::zeros(3, 2);
++        beta[(0, 0)] = cv(1.0 / g);
++        beta[(1, 0)] = cv(-2.0 / (1.0 - 2.0 * g));
++        beta[(1, 1)] = cv(1.0 / (g * (1.0 - 2.0 * g)));
++        Self::new_rosenbrock(
++            a,
++            TableauVec::from_slice(&[cv(1.0 / g), cv(1.0 / g), T::zero()]),
++            TableauVec::from_slice(&[T::zero(), cv(0.5), T::one()]),
++            TableauVec::from_slice(&[
++                cv(1.0 / (6.0 * g)),
++                cv((q - 2.0) / (6.0 * g)),
++                cv(1.0 / (6.0 * g)),
++            ]),
++            2,
++            Some(beta),
++            coupling,
++            cv(g),
++            TableauVec::from_slice(&[cv(g), T::zero(), cv(-g)]),
++            3,
++        )
++    }
++
++    /// Eight-stage fifth-order Rodas5P, with a fourth-order continuous extension.
++    /// Steinebach (2023), <https://doi.org/10.1007/s10543-023-00967-x>.
++    pub fn rodas5p() -> Self {
++        const GAMMA: f64 = 0.21193756319429014;
++
++        // Natural row/column orientation: A[i][j] and C[i][j] are used only for j<i.
++        // Source: G. Steinebach, BIT Numerical Mathematics 63, article 27 (2023),
++        // https://doi.org/10.1007/s10543-023-00967-x; coefficient transcription
++        // checked against OrdinaryDiffEqRosenbrock 2.4.0's MIT-licensed Rodas5P
++        // tableau (`src/rosenbrock_tableaus.jl`, RODAS5PA/PC/Pc/Pd/PH). See
++        // https://github.com/SciML/OrdinaryDiffEq.jl/tree/master/lib/OrdinaryDiffEqRosenbrock.
++        #[rustfmt::skip]
++        const A: [&[f64]; 5] = [
++            &[],
++            &[3.0],
++            &[2.849394379747939, 0.45842242204463923],
++            &[-6.954028509809101, 2.489845061869568, -10.358996098473584],
++            &[2.8029986275628964, 0.5072464736228206, -0.3988312541770524, -0.04721187230404641],
++        ];
++
++        #[rustfmt::skip]
++        const C: [&[f64]; 8] = [
++            &[],
++            &[-14.155112264123755],
++            &[-17.97296035885952, -2.859693295451294],
++            &[147.12150275711716, -1.41221402718213, 71.68940251302358],
++            &[165.43517024871676, -0.4592823456491126, 42.90938336958603, -5.961986721573306],
++            &[24.854864614690072, -3.0009227002832186, 47.4931110020768, 5.5814197821558125, -0.6610691825249471],
++            &[30.91273214028599, -3.1208243349937974, 77.79954646070892, 34.28646028294783, -19.097331116725623, -28.087943162872662],
++            &[37.80277123390563, -3.2571969029072276, 112.26918849496327, 66.9347231244047, -40.06618937091002, -54.66780262877968, -9.48861652309627],
++        ];
++
++        const TIMES: [f64; 8] = [
++            0.0,
++            0.6358126895828704,
++            0.4095798393397535,
++            0.9769306725060716,
++            0.4288403609558664,
++            1.0,
++            1.0,
++            1.0,
++        ];
++        const D: [f64; 8] = [
++            0.21193756319429014,
++            -0.42387512638858027,
++            -0.3384627126235924,
++            1.8046452872882734,
++            2.325825639765069,
++            0.0,
++            0.0,
++            0.0,
++        ];
++        const B: [f64; 8] = [
++            -7.502846399306121,
++            2.561846144803919,
++            -11.627539656261098,
++            -0.18268767659942256,
++            0.030198172008377946,
++            1.0,
++            1.0,
++            1.0,
++        ];
++        // H rows define the continuous extension
++        // y(theta)=(1-theta)y0 + theta[y1+(1-theta)(K1+theta(K2+theta K3))].
++        #[rustfmt::skip]
++        const H: [[f64; 8]; 3] = [
++            [25.948786856663858, -2.5579724845846235, 10.433815404888879, -2.3679251022685204, 0.524948541321073, 1.1241088310450404, 0.4272876194431874, -0.17202221070155493],
++            [-9.91568850695171, -0.9689944594115154, 3.0438037242978453, -24.495224566215796, 20.176138334709044, 15.98066361424651, -6.789040303419874, -6.710236069923372],
++            [11.419903575922262, 2.8879645146136994, 72.92137995996029, 80.12511834622643, -52.072871366152654, -59.78993625266729, -0.15582684282751913, 4.883087185713722],
++        ];
++
++        let mut beta = TableauMat::zeros(8, 4);
++        let mut a = TableauMat::zeros(8, 8);
++        let mut coupling = TableauMat::zeros(8, 8);
++        for i in 0..8 {
++            for j in 0..i {
++                a[(i, j)] = T::from_f64(if i < 5 { A[i][j] } else { B[j] }).unwrap();
++                coupling[(i, j)] = T::from_f64(C[i][j]).unwrap();
++            }
++            for (p, value) in [
++                B[i] + H[0][i],
++                -H[0][i] + H[1][i],
++                -H[1][i] + H[2][i],
++                -H[2][i],
++            ]
++            .iter()
++            .enumerate()
++            {
++                beta[(i, p)] = T::from_f64(*value).unwrap();
++            }
++        }
++        let mut error = TableauVec::zeros(8);
++        error[7] = T::one();
++        Self::new_rosenbrock(
++            a,
++            TableauVec::from_slice(&B.map(|x| T::from_f64(x).unwrap())),
++            TableauVec::from_slice(&TIMES.map(|x| T::from_f64(x).unwrap())),
++            error,
++            5,
++            Some(beta),
++            coupling,
++            T::from_f64(GAMMA).unwrap(),
++            TableauVec::from_slice(&D.map(|x| T::from_f64(x).unwrap())),
++            5,
++        )
++    }
++
+     /// TR-BDF2 method
+     /// from R.E. Bank, W.M. Coughran Jr, W. Fichtner, E.H. Grosse, D.J. Rose and R.K. Smith, Transient simulation of silicon devices and circuits, IEEE Trans. Comput.-Aided Design 4 (1985) 436-451.
+     /// analysed in M.E. Hosea and L.F. Shampine. Analysis and implementation of TR-BDF2. Applied Numerical Mathematics, 20:21–37, 1996.
+@@ -306,6 +517,7 @@ impl<T: Scalar> Tableau<T> {
+         }
+         Self {
+             a_t: a.transposed(),
++            rosenbrock: None,
+             b,
+             c,
+             d,
+diff --git a/examples/intro-logistic-closures/src/create_solvers.rs b/examples/intro-logistic-closures/src/create_solvers.rs
+index 0899279..90c8408 100644
+--- a/examples/intro-logistic-closures/src/create_solvers.rs
++++ b/examples/intro-logistic-closures/src/create_solvers.rs
+@@ -9,6 +9,8 @@ pub fn create_solvers() {
+     // Create a tr_bdf2 or esdirk34 solvers directly (both are SDIRK solvers with different tableaus)
+     let _tr_bdf2 = problem.tr_bdf2::<LS>();
+     let _esdirk34 = problem.esdirk34::<LS>();
++    let _rosenbrock23 = problem.rosenbrock23::<LS>();
++    let _rodas5p = problem.rodas5p::<LS>();
+ 
+     // Create a TSIT45 solver (a ERK method), this does not require a linear solver
+     let _tsit45 = problem.tsit45();
