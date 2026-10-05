@@ -279,6 +279,10 @@ where
     }
 }
 #[cfg(test)]
+#[path = "rosenbrock_harness_tests.rs"]
+mod harness_tests;
+
+#[cfg(test)]
 mod tests {
     use super::*;
     use crate::{
@@ -290,10 +294,7 @@ mod tests {
             },
             robertson_ode::robertson_ode,
         },
-        ode_solver::tests::{
-            test_checkpointing, test_config, test_interpolate, test_interpolate_dy,
-            test_ode_solver, test_problem, test_state_mut,
-        },
+        ode_solver::tests::{test_ode_solver, test_problem},
         FaerLU, FaerMat, NalgebraLU, NalgebraMat, OdeBuilder, TableauMat, TableauVec,
     };
     type Mat = NalgebraMat<f64>;
@@ -304,44 +305,6 @@ mod tests {
     ) {
         s.set_stop_time(t).unwrap();
         while s.step().unwrap() != OdeSolverStopReason::TstopReached {}
-    }
-    macro_rules! contract {
-        ($mat:ty, $ls:ty) => {{
-            test_state_mut(test_problem::<$mat>(false).rodas5p::<$ls>().unwrap());
-            test_interpolate(test_problem::<$mat>(false).rodas5p::<$ls>().unwrap());
-            test_interpolate(test_problem::<$mat>(true).rodas5p::<$ls>().unwrap());
-            test_interpolate_dy(test_problem::<$mat>(false).rodas5p::<$ls>().unwrap());
-            test_config(robertson_ode::<$mat>(false, 1).0.rodas5p::<$ls>().unwrap());
-            let (p, sol) = exponential_decay_problem::<$mat>(false);
-            test_checkpointing(
-                sol,
-                p.rodas5p::<$ls>().unwrap(),
-                p.rodas5p::<$ls>().unwrap(),
-            );
-            for (p, sol) in [
-                exponential_decay_problem::<$mat>(false),
-                exponential_decay_problem::<$mat>(true),
-            ] {
-                let mut s = p.rodas5p::<$ls>().unwrap();
-                test_ode_solver(&mut s, sol, None, false, false);
-                let stats = s.get_statistics();
-                assert_eq!(
-                    stats.number_of_linear_solver_setups,
-                    stats.number_of_steps + stats.number_of_error_test_failures
-                );
-                assert_eq!(stats.number_of_nonlinear_solver_iterations, 0);
-            }
-            let (p, sol) = robertson_ode::<$mat>(false, 1);
-            test_ode_solver(&mut p.rodas5p::<$ls>().unwrap(), sol, None, false, false);
-        }};
-    }
-    #[test]
-    fn nalgebra_shared_contract() {
-        contract!(Mat, LS);
-    }
-    #[test]
-    fn faer_shared_contract() {
-        contract!(FaerMat<f64>, FaerLU<f64>);
     }
     #[test]
     fn constant_mass_index_one_dae() {
@@ -617,10 +580,6 @@ mod tests {
         let mut solver = problem.rodas5p::<LS>().unwrap();
         advance(&mut solver, 2.0);
         let error = (solver.state().y[0] - g(2.0)).abs();
-        println!(
-            "paper,B3,{error:.17e},{}",
-            solver.get_statistics().number_of_steps
-        );
         assert!(error < 1e-7, "paper problem 2 error={error}");
     }
     #[test]
@@ -652,7 +611,6 @@ mod tests {
             advance(&mut solver, 2.0);
             let exact = 10.0 - 12.0 * (-2.0_f64).exp();
             let error = (solver.state().y[0] - exact).abs();
-            println!("paper,B5,{h},{published:.17e},{error:.17e}");
             assert!(
                 (error - published).abs() < 0.2 * published,
                 "h={h}, error={error}, published={published}"
@@ -708,7 +666,6 @@ mod tests {
             advance(&mut solver, 2.0);
             let y = solver.state().y;
             let error = (y[0] + 0.5).abs().max((y[1] - 0.25).abs());
-            println!("paper,B7,{h},{published:.17e},{error:.17e}");
             assert!(
                 (error - published).abs() < 0.2 * published,
                 "h={h}, error={error}, published={published}"
@@ -744,6 +701,7 @@ mod tests {
     }
     #[test]
     fn paper_index_one_dae_problem_one() {
+        // rtol=1e-7 matches this endpoint accuracy gate; fixed-step Table 5 checks order.
         let problem = OdeBuilder::<Mat>::new()
             .t0(2.0)
             .rtol(1e-7)
@@ -774,12 +732,6 @@ mod tests {
         let mut solver = problem.rodas5p::<LS>().unwrap();
         advance(&mut solver, 4.0);
         let y = solver.state().y;
-        println!(
-            "paper,B2,{:.17e},{:.17e},{}",
-            (y[0] - 4.0_f64.ln()).abs(),
-            (y[1] - 4.0_f64.ln() / 4.0).abs(),
-            solver.get_statistics().number_of_steps
-        );
         assert!((y[0] - 4.0_f64.ln()).abs() < 1e-7);
         assert!((y[1] - 4.0_f64.ln() / 4.0).abs() < 1e-7);
         assert!((y[0] / y[1] - 4.0).abs() < 1e-7);
@@ -825,7 +777,6 @@ mod tests {
             let error = (y[0] - 4.0_f64.ln())
                 .abs()
                 .max((y[1] - 4.0_f64.ln() / 4.0).abs());
-            println!("paper,B4,{h},{published:.17e},{error:.17e}");
             assert!(
                 (error - published).abs() < 0.2 * published,
                 "h={h}, error={error}, published={published}"
@@ -974,39 +925,6 @@ mod tests {
         assert!(stability_step(-1e14).abs() < 1e-10);
     }
 
-    #[test]
-    fn rosenbrock23_shared_contract() {
-        macro_rules! check {
-            ($mat:ty,$ls:ty) => {{
-                test_state_mut(test_problem::<$mat>(false).rosenbrock23::<$ls>().unwrap());
-                test_interpolate(test_problem::<$mat>(false).rosenbrock23::<$ls>().unwrap());
-                test_interpolate(test_problem::<$mat>(true).rosenbrock23::<$ls>().unwrap());
-                test_config(
-                    robertson_ode::<$mat>(false, 1)
-                        .0
-                        .rosenbrock23::<$ls>()
-                        .unwrap(),
-                );
-                let (p, sol) = exponential_decay_problem::<$mat>(false);
-                test_checkpointing(
-                    sol,
-                    p.rosenbrock23::<$ls>().unwrap(),
-                    p.rosenbrock23::<$ls>().unwrap(),
-                );
-                let (p, sol) = robertson_ode::<$mat>(false, 1);
-                let mut s = p.rosenbrock23::<$ls>().unwrap();
-                test_ode_solver(&mut s, sol, None, false, false);
-                assert_eq!(
-                    s.get_statistics().number_of_linear_solver_setups,
-                    s.get_statistics().number_of_steps
-                        + s.get_statistics().number_of_error_test_failures
-                );
-                assert_eq!(s.get_statistics().number_of_nonlinear_solver_iterations, 0);
-            }};
-        }
-        check!(Mat, LS);
-        check!(FaerMat<f64>, FaerLU<f64>);
-    }
     // Isolate the method from the existing, non-overridable blanket central f_t helper.
     // Test-only: production continues to use NonLinearOpTimePartial unchanged.
     fn analytic_step<
@@ -1366,10 +1284,6 @@ mod tests {
                 analytic_step(&mut s, h, -lambda * t.cos() - t.sin());
             }
             let error = (s.state().y[0] - expected).abs();
-            println!(
-                "analytic_fixed,{name},{lambda},{h},{expected:.17e},{:.17e},{error:.17e}",
-                s.state().y[0]
-            );
             assert!(error < 1e-13, "{name}, lambda={lambda}, {error}");
         }
     }
