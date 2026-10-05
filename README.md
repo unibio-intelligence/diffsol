@@ -92,17 +92,21 @@ The following ODE solvers are available in diffsol
 1. A variable order Backwards Difference Formulae (BDF) solver, suitable for stiff problems and singular mass matrices. The basic algorithm is derived in [(Byrne & Hindmarsh, 1975)](#1), however this particular implementation follows that implemented in the Matlab routine ode15s [(Shampine & Reichelt, 1997)](#4) and the SciPy implementation [(Virtanen et al., 2020)](#5), which features the NDF formulas for improved stability
 2. A Singly Diagonally Implicit Runge-Kutta (SDIRK or ESDIRK) solver, suitable for moderately stiff problems and singular mass matrices. Two different butcher tableau are provided, TR-BDF2 [(Hosea & Shampine, 1996)](#2) and ESDIRK34 [(Jørgensen et al., 2018)](#3), or users can supply their own.
 3. A variable order Explict Runge-Kutta (ERK) solver, suitable for non-stiff problems. One butcher tableau is provided, the 4th order TSIT45 [(Tsitouras, 2011)](#5), or users can supply their own.
-4. A tableau-driven Rosenbrock solver for stiff ODEs and constant-mass index-1 DAEs. Two tableaus are provided, Rosenbrock23 ([Shampine & Reichelt, 1997](https://doi.org/10.1137/S1064827594276424)) and Rodas5P ([Steinebach, 2023](https://doi.org/10.1007/s10543-023-00967-x)), or users can supply their own. Integrated outputs use the continuous extension (global order four for Rodas5P, two for Rosenbrock23). Sensitivities are not yet implemented for this class.
+4. Rosenbrock23, an adaptive second-order Rosenbrock method with a third-order embedded estimate, for stiff ODEs and constant-mass index-1 DAEs. It requires a right-hand-side Jacobian action and provides a continuous extension, roots, stop times, and integrated outputs (global order two).
+5. Rodas5P, an eight-stage, fifth-order Rosenbrock-Wanner solver with a fourth-order embedded estimate and continuous extension [(Steinebach, 2023)](https://doi.org/10.1007/s10543-023-00967-x). It supports stiff ODEs and constant-mass index-1 DAEs with a right-hand-side Jacobian action. Integrated outputs use quadrature along the continuous extension and have global order four.
 
-All solvers feature:
+The solvers provide these capabilities where supported by the selected method:
 
 - Linear algebra containers and linear solvers from the nalgebra or faer crates, including both dense and sparse matrix support.
-- Adaptive step-size control to given relative and absolute tolerances. Tolerances can be set separately for the main equations, quadrature of the output function, and sensitivity analysis.
+- Adaptive step-size control to given relative and absolute tolerances. The solvers that support integrated outputs and sensitivities also allow separate tolerances for those quantities.
 - Dense output, interpolating to times provided by the user.
 - Event handling, stopping when a given condition $g_e(t, y , p)$ is met or at a specific time.
-- Numerical quadrature of an optional output $g_o(t, y, p)$ function over time.
-- Forward sensitivity analysis, calculating the gradient of an output function or the solver states $y$ with respect to the parameters $p$.
-- Adjoint sensitivity analysis, calculating the gradient of cost function $G(p)$ with respect to the parameters $p$. The cost function can be the integral of a continuous output function $g(t, y, p)$ or a sum of a set of discrete functions $h_i(t_i, y_i, p)$ at time points $t_i$.
+
+BDF, SDIRK, and ERK also support numerical quadrature of an optional output $g_o(t, y, p)$, forward sensitivities of outputs or solver states with respect to parameters, and adjoint sensitivities of cost functions. The Rosenbrock methods support integrated outputs when the tableau supplies a continuous extension; forward and adjoint sensitivities are not implemented for this solver class. Mass-matrix Rosenbrock problems also require a continuous extension. Time-varying mass matrices and higher-index DAEs are outside the supported Rosenbrock contract.
+
+Rosenbrock23 controls differential embedded errors and algebraic endpoint residuals separately. Scale algebraic RHS rows so their residuals have the meaning of the corresponding absolute tolerances. This does not project dense output or establish a global-error bound.
+
+For either Rosenbrock method, use `set_discontinuity_stop_time(t)` for a known forcing jump so endpoint stages use the incoming side; use `set_stop_time(t)` for ordinary output targets. `set_time_derivative_within_step(true)` confines numerical time-derivative probes to the attempted step. `set_maximum_step(h)` can constrain interpolation error, but is not a global-error guarantee.
 
 ## Citation
 

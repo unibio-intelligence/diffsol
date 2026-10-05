@@ -257,6 +257,37 @@ macro_rules! gemv_cols_data {
             start + nc <= $self.ncols(),
             concat!($op, ": column range out of bounds")
         );
+        // Solver history has at most a handful of columns. In deterministic mode,
+        // retain column order instead of target-specific SIMD reduction/FMA paths.
+        // Sparse factorisation and the full matrix-vector product stay unchanged.
+        #[cfg(feature = "deterministic")]
+        if nc != 0 {
+            assert!(
+                start + nc <= $self.ncols(),
+                "gemv_cols: column range out of bounds"
+            );
+            assert_eq!(
+                $self.data.nrows(),
+                $y.data.nrows(),
+                "gemv_cols: row mismatch"
+            );
+            let nb = $y.data.ncols();
+            for b in 0..nb {
+                let first = $self.col_bcast(b, start, nb);
+                for i in 0..$self.data.nrows() {
+                    let mut sum = T::zero();
+                    for j in 0..nc {
+                        sum = sum + $self.data[(i, first + j)] * $x[j];
+                    }
+                    $y.data[(i, b)] = if $beta.is_zero() {
+                        $a * sum
+                    } else {
+                        $a * sum + $beta * $y.data[(i, b)]
+                    };
+                }
+            }
+            return;
+        }
         // an empty column range contributes nothing, leaving y = beta * y
         if nc == 0 {
             if $beta.is_zero() {

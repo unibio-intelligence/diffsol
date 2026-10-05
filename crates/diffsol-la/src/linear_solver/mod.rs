@@ -16,6 +16,7 @@ pub mod cuda;
 pub mod cuda_oxide;
 
 pub use faer::lu::LU as FaerLU;
+pub use nalgebra::adaptive_lu::AdaptiveLU;
 pub use nalgebra::lu::LU as NalgebraNativeLU;
 pub use nalgebra::reusable_lu::ReusableLU as NalgebraLU;
 

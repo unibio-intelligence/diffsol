@@ -23,7 +23,7 @@ fn root_fast<T: Scalar>(x: T, n: IndexType) -> T {
         2 => x.sqrt(),
         3 => x.cbrt(),
         4 => x.sqrt().sqrt(),
-        _ => x.pow(T::one() / T::from_usize(n).unwrap()),
+        _ => x.powf_solver(T::one() / T::from_usize(n).unwrap()),
     }
 }
 
@@ -47,11 +47,15 @@ impl<'a, V: Vector> Convergence<'a, V> {
         self.eta
     }
     pub fn reset_eta(&mut self) {
-        self.eta = V::T::from_f64(20.0.pow(1.25)).unwrap();
+        self.eta = V::T::from_f64(20.0)
+            .unwrap()
+            .powf_solver(V::T::from_f64(1.25).unwrap());
     }
 
     pub fn reset_eta_timestep_change(&mut self) {
-        self.eta = V::T::from_f64(100.0.pow(1.25)).unwrap();
+        self.eta = V::T::from_f64(100.0)
+            .unwrap()
+            .powf_solver(V::T::from_f64(1.25).unwrap());
     }
 
     pub fn new(rtol: V::T, atol: &'a V) -> Self {
@@ -65,7 +69,9 @@ impl<'a, V: Vector> Convergence<'a, V> {
             tol,
             max_iter: 10,
             old_norm: None,
-            eta: V::T::from_f64(20.0.pow(1.25)).unwrap(),
+            eta: V::T::from_f64(20.0)
+                .unwrap()
+                .powf_solver(V::T::from_f64(1.25).unwrap()),
             niter: 0,
         }
     }
@@ -119,7 +125,7 @@ impl<'a, V: Vector> Convergence<'a, V> {
             if self.eta < min_eta {
                 self.eta = min_eta;
             }
-            self.eta = self.eta.pow(V::T::from_f64(0.8).unwrap());
+            self.eta = self.eta.powf_solver(V::T::from_f64(0.8).unwrap());
             trace!(
                 "  First iteration, set eta = {:.3e}",
                 self.eta.to_f64().unwrap()

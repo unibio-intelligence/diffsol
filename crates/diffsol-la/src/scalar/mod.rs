@@ -52,6 +52,10 @@ pub trait Scalar:
     fn is_nan(self) -> bool;
     /// Square root.
     fn sqrt(self) -> Self;
+    /// Solver fractional power. The deterministic feature pins the math implementation.
+    fn powf_solver(self, exponent: Self) -> Self {
+        self.pow(exponent)
+    }
     /// Cube root.
     fn cbrt(self) -> Self;
     /// Exponential.
@@ -113,17 +117,55 @@ impl Scalar for f64 {
     fn sqrt(self) -> Self {
         self.sqrt()
     }
+    fn powf_solver(self, exponent: Self) -> Self {
+        #[cfg(feature = "deterministic")]
+        {
+            libm::pow(self, exponent)
+        }
+        #[cfg(not(feature = "deterministic"))]
+        {
+            self.powf(exponent)
+        }
+    }
     fn cbrt(self) -> Self {
-        self.cbrt()
+        #[cfg(feature = "deterministic")]
+        {
+            libm::cbrt(self)
+        }
+        #[cfg(not(feature = "deterministic"))]
+        {
+            self.cbrt()
+        }
     }
     fn exp(self) -> Self {
-        self.exp()
+        #[cfg(feature = "deterministic")]
+        {
+            libm::exp(self)
+        }
+        #[cfg(not(feature = "deterministic"))]
+        {
+            self.exp()
+        }
     }
     fn sin(self) -> Self {
-        self.sin()
+        #[cfg(feature = "deterministic")]
+        {
+            libm::sin(self)
+        }
+        #[cfg(not(feature = "deterministic"))]
+        {
+            self.sin()
+        }
     }
     fn cos(self) -> Self {
-        self.cos()
+        #[cfg(feature = "deterministic")]
+        {
+            libm::cos(self)
+        }
+        #[cfg(not(feature = "deterministic"))]
+        {
+            self.cos()
+        }
     }
     fn max(self, other: Self) -> Self {
         self.max(other)
@@ -156,17 +198,55 @@ impl Scalar for f32 {
     fn sqrt(self) -> Self {
         self.sqrt()
     }
+    fn powf_solver(self, exponent: Self) -> Self {
+        #[cfg(feature = "deterministic")]
+        {
+            libm::powf(self, exponent)
+        }
+        #[cfg(not(feature = "deterministic"))]
+        {
+            self.powf(exponent)
+        }
+    }
     fn cbrt(self) -> Self {
-        self.cbrt()
+        #[cfg(feature = "deterministic")]
+        {
+            libm::cbrtf(self)
+        }
+        #[cfg(not(feature = "deterministic"))]
+        {
+            self.cbrt()
+        }
     }
     fn exp(self) -> Self {
-        self.exp()
+        #[cfg(feature = "deterministic")]
+        {
+            libm::expf(self)
+        }
+        #[cfg(not(feature = "deterministic"))]
+        {
+            self.exp()
+        }
     }
     fn sin(self) -> Self {
-        self.sin()
+        #[cfg(feature = "deterministic")]
+        {
+            libm::sinf(self)
+        }
+        #[cfg(not(feature = "deterministic"))]
+        {
+            self.sin()
+        }
     }
     fn cos(self) -> Self {
-        self.cos()
+        #[cfg(feature = "deterministic")]
+        {
+            libm::cosf(self)
+        }
+        #[cfg(not(feature = "deterministic"))]
+        {
+            self.cos()
+        }
     }
     fn max(self, other: Self) -> Self {
         self.max(other)

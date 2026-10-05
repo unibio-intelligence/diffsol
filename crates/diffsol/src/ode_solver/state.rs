@@ -1,6 +1,6 @@
 use log::debug;
 use num_traits::FromPrimitive;
-use num_traits::{One, Pow, Signed, Zero};
+use num_traits::{One, Signed, Zero};
 
 use crate::error::NonLinearSolverError;
 use crate::Scalar;
@@ -831,8 +831,9 @@ impl<V: Vector> StateRefMut<'_, V> {
                     h1
                 }
             } else {
-                (Eqn::T::from_f64(0.01).unwrap() / max_d)
-                    .pow(Eqn::T::one() / Eqn::T::from_f64(1.0 + solver_order as f64).unwrap())
+                (Eqn::T::from_f64(0.01).unwrap() / max_d).powf_solver(
+                    Eqn::T::one() / Eqn::T::from_f64(1.0 + solver_order as f64).unwrap(),
+                )
             };
             (h0, h1)
         };
@@ -1216,8 +1217,9 @@ pub trait OdeSolverState<V: Vector>: Clone + Sized + Send {
                     h1
                 }
             } else {
-                (Eqn::T::from_f64(0.01).unwrap() / max_d)
-                    .pow(Eqn::T::one() / Eqn::T::from_f64(1.0 + solver_order as f64).unwrap())
+                (Eqn::T::from_f64(0.01).unwrap() / max_d).powf_solver(
+                    Eqn::T::one() / Eqn::T::from_f64(1.0 + solver_order as f64).unwrap(),
+                )
             };
             (h0, h1)
         };

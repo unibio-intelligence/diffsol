@@ -20,8 +20,10 @@ cuda-oxide = ["dep:cuda-core", "dep:cudarc"]
 #oxide# cuda-oxide = ["dep:cuda-device", "dep:cuda-host", "dep:cuda-core", "dep:cudarc"]
 suitesparse = ["dep:suitesparse_sys"]
 algebraic-ops = []
+deterministic = ["dep:libm"]
 
 [dependencies]
+libm = { version = "=0.2.16", optional = true }
 nalgebra = { workspace = true }
 num-traits = { workspace = true }
 thiserror = "2.0"

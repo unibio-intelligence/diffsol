@@ -21,6 +21,7 @@ pub struct RosenbrockTableau<T: Scalar> {
     pub(crate) gamma: T,
     pub(crate) time: TableauVec<T>,
     pub(crate) error_order: usize,
+    pub(crate) algebraic_error_control: bool,
 }
 impl<T: Scalar> RosenbrockTableau<T> {
     /// Common diagonal factor in the linear stage system.
@@ -99,6 +100,7 @@ impl<T: Scalar> Tableau<T> {
             gamma,
             time,
             error_order,
+            algebraic_error_control: false,
         });
         ret
     }
@@ -132,7 +134,7 @@ impl<T: Scalar> Tableau<T> {
         beta[(0, 0)] = cv(1.0 / g);
         beta[(1, 0)] = cv(-2.0 / (1.0 - 2.0 * g));
         beta[(1, 1)] = cv(1.0 / (g * (1.0 - 2.0 * g)));
-        Self::new_rosenbrock(
+        let mut tableau = Self::new_rosenbrock(
             a,
             TableauVec::from_slice(&[cv(1.0 / g), cv(1.0 / g), T::zero()]),
             TableauVec::from_slice(&[T::zero(), cv(0.5), T::one()]),
@@ -147,7 +149,9 @@ impl<T: Scalar> Tableau<T> {
             cv(g),
             TableauVec::from_slice(&[cv(g), T::zero(), cv(-g)]),
             3,
-        )
+        );
+        tableau.rosenbrock.as_mut().unwrap().algebraic_error_control = true;
+        tableau
     }
 
     /// Eight-stage fifth-order Rodas5P, with a fourth-order continuous extension.

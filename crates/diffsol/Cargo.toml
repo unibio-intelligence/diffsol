@@ -20,6 +20,7 @@ nalgebra = ["diffsol-la/nalgebra", "diffsol-nl/nalgebra"]
 cuda = ["diffsol-la/cuda", "diffsol-nl/cuda"]
 cuda-oxide = ["diffsol-la/cuda-oxide", "diffsol-nl/cuda-oxide"]
 algebraic-ops = ["diffsol-la/algebraic-ops"]
+deterministic = ["diffsol-la/deterministic"]
 sundials = ["suitesparse_sys", "bindgen", "cc"]
 suitesparse = [
   "suitesparse_sys",

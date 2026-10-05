@@ -76,6 +76,10 @@ impl<'a, C: Op> ParameterisedOp<'a, C> {
 
 /// trait interface for operators used in the [builder pattern](crate::OdeBuilder)
 pub trait BuilderOp: Op {
+    /// Validate a supplied structural pattern after dimensions have been set.
+    fn valid_structural_sparsity(&self) -> bool {
+        true
+    }
     fn set_nstates(&mut self, nstates: usize);
     fn set_nparams(&mut self, nparams: usize);
     fn set_nout(&mut self, nout: usize);
@@ -195,6 +199,9 @@ impl<C: Op> Op for &mut C {
 }
 
 impl<C: NonLinearOp> NonLinearOp for &C {
+    fn time_partial_inplace(&self, x: &Self::V, t: Self::T, y: &mut Self::V) -> bool {
+        C::time_partial_inplace(*self, x, t, y)
+    }
     fn call_inplace(&self, x: &Self::V, t: Self::T, y: &mut Self::V) {
         C::call_inplace(*self, x, t, y)
     }

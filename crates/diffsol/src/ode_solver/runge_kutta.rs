@@ -676,12 +676,17 @@ where
         op: &SdirkCallable<&Eqn>,
         linear_solver: &mut LS,
         ft: &Eqn::V,
+        endpoint_time: Eqn::T,
     ) -> Result<(), DiffsolError>
     where
         Eqn: OdeEquationsImplicit,
     {
         let row = self.tableau.rosenbrock().unwrap();
-        let t = self.state.t + self.tableau.c()[i] * h;
+        let t = if self.tableau.c()[i] == Eqn::T::one() {
+            endpoint_time
+        } else {
+            self.state.t + self.tableau.c()[i] * h
+        };
         self.old_state.y.copy_from(&self.state.y);
         self.diff.gemv_cols(
             0,
@@ -726,8 +731,20 @@ where
     }
 
     /// Form the accepted endpoint and its derivative before the existing RK state swap.
-    pub(crate) fn finish_step_rosenbrock(&mut self, h: Eqn::T)
+    #[cfg(test)]
+    pub(crate) fn finish_step_rosenbrock(&mut self, h: Eqn::T, endpoint_time: Eqn::T)
     where
+        Eqn: OdeEquationsImplicit,
+    {
+        self.finish_step_rosenbrock_compensated(h, endpoint_time, None);
+    }
+
+    pub(crate) fn finish_step_rosenbrock_compensated(
+        &mut self,
+        h: Eqn::T,
+        endpoint_time: Eqn::T,
+        compensation: Option<(&Eqn::V, &mut Eqn::V)>,
+    ) where
         Eqn: OdeEquationsImplicit,
     {
         self.old_state.y.copy_from(&self.state.y);
@@ -736,12 +753,29 @@ where
             self.tableau.s(),
             Eqn::T::one(),
             self.tableau.b().as_slice(),
-            Eqn::T::one(),
+            if compensation.is_some() {
+                Eqn::T::zero()
+            } else {
+                Eqn::T::one()
+            },
             &mut self.old_state.y,
         );
-        if let Some(beta) = self.tableau.beta_t() {
-            // The extension supplies the endpoint derivative for both ODEs and DAEs.
-            // Preserve the stage columns and avoid an extra RHS evaluation per attempt.
+        if let Some((previous, trial)) = compensation {
+            for i in 0..self.state.y.len() {
+                let start = self.state.y.get_index(i);
+                let increment = self.old_state.y.get_index(i) - previous.get_index(i);
+                let end = start + increment;
+                trial.set_index(i, (end - start) - increment);
+                self.old_state.y.set_index(i, end);
+            }
+        }
+        if let Some(beta) = self
+            .tableau
+            .beta_t()
+            .filter(|_| self.problem.eqn.mass().is_some())
+        {
+            // A singular mass matrix prevents evaluating dy as the RHS directly.
+            // DAEs retain the derivative of the qualified continuous extension.
             let weights =
                 Self::interpolate_beta_weights_deriv(Eqn::T::one(), beta, Eqn::T::one() / h);
             self.diff.gemv_cols(
@@ -755,11 +789,33 @@ where
         } else {
             self.problem.eqn.rhs().call_inplace(
                 &self.old_state.y,
-                self.state.t + h,
+                endpoint_time,
                 &mut self.old_state.dy,
             );
         }
     }
+    /// Check trials before reduction: floating-point max can suppress NaNs in
+    /// an error norm. A rejected trial must never replace the accepted state.
+    pub(crate) fn rosenbrock_trial_y(&self) -> &Eqn::V {
+        &self.old_state.y
+    }
+
+    pub(crate) fn rosenbrock_trial_is_finite(&self) -> bool {
+        let finite_vector =
+            |v: &Eqn::V| (0..v.len()).all(|i| v.get_index(i).to_f64().is_some_and(f64::is_finite));
+        let finite_matrix = |m: &M| {
+            (0..m.nrows()).all(|i| {
+                (0..m.ncols()).all(|j| m.get_index(i, j).to_f64().is_some_and(f64::is_finite))
+            })
+        };
+        finite_vector(&self.old_state.y)
+            && finite_vector(&self.old_state.dy)
+            && finite_vector(&self.old_state.g)
+            && finite_vector(&self.old_state.dg)
+            && finite_matrix(&self.diff)
+            && finite_matrix(&self.gdiff)
+    }
+
     pub(crate) fn store_rosenbrock_hermite_derivatives(&mut self, h: Eqn::T) {
         if self.tableau.beta_t().is_none() {
             // Existing Hermite interpolation expects endpoint derivatives scaled by h.
@@ -1127,6 +1183,15 @@ where
         new_h: Eqn::T,
         rescale_dy: bool,
     ) -> Result<OdeSolverStopReason<Eqn::T>, DiffsolError> {
+        self.step_accepted_at_time(h, new_h, rescale_dy, self.state.t + h)
+    }
+    pub(crate) fn step_accepted_at_time(
+        &mut self,
+        h: Eqn::T,
+        new_h: Eqn::T,
+        rescale_dy: bool,
+        end: Eqn::T,
+    ) -> Result<OdeSolverStopReason<Eqn::T>, DiffsolError> {
         let s = self.tableau.s();
         // step accepted, so integrate output functions
         if self.problem.integrate_out {
@@ -1159,7 +1224,7 @@ where
         }
 
         // take the step
-        self.old_state.t = self.state.t + h;
+        self.old_state.t = end;
         self.old_state.h = new_h;
         if rescale_dy {
             self.old_state.dy *= scale(Eqn::T::one() / h);

@@ -19,6 +19,7 @@ where
     nout: usize,
     nparams: usize,
     coloring: Option<JacobianColoring<M>>,
+    structural: Option<Vec<(usize, usize)>>,
     sparsity: Option<M::Sparsity>,
     statistics: RefCell<OpStatistics>,
     ctx: M::C,
@@ -46,13 +47,20 @@ where
             nout,
             statistics: RefCell::new(OpStatistics::default()),
             coloring: None,
+            structural: None,
             sparsity: None,
             ctx,
         }
     }
+    pub fn set_structural_sparsity(&mut self, pattern: Vec<(usize, usize)>) {
+        self.structural = Some(pattern);
+    }
     pub fn calculate_sparsity(&mut self, y0: &M::V, t0: M::T, p: &M::V) {
         let param_op = ParameterisedOp { op: self, p };
-        let non_zeros = find_jacobian_non_zeros(&param_op, y0, t0);
+        let non_zeros = self
+            .structural
+            .clone()
+            .unwrap_or_else(|| find_jacobian_non_zeros(&param_op, y0, t0));
         self.sparsity = Some(
             MatrixSparsity::try_from_indices(self.nout(), self.nstates(), non_zeros.clone())
                 .expect("invalid sparsity pattern"),
@@ -71,6 +79,11 @@ where
     F: Fn(&[M::T], &[M::T], M::T, &mut [M::T]),
     G: Fn(&[M::T], &[M::T], M::T, &[M::T], &mut [M::T]),
 {
+    fn valid_structural_sparsity(&self) -> bool {
+        self.structural
+            .as_ref()
+            .is_none_or(|p| p.iter().all(|&(r, c)| r < self.nout && c < self.nstates))
+    }
     fn calculate_sparsity(&mut self, y0: &M::V, t0: M::T, p: &M::V) {
         self.calculate_sparsity(y0, t0, p);
     }

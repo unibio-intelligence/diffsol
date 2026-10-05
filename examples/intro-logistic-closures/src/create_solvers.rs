@@ -9,7 +9,10 @@ pub fn create_solvers() {
     // Create a tr_bdf2 or esdirk34 solvers directly (both are SDIRK solvers with different tableaus)
     let _tr_bdf2 = problem.tr_bdf2::<LS>();
     let _esdirk34 = problem.esdirk34::<LS>();
-    let _rosenbrock23 = problem.rosenbrock23::<LS>();
+
+    // Create a Rosenbrock23 solver for an identity-mass ODE with a Jacobian.
+    let _rosenbrock23 = problem.rosenbrock23::<LS>().unwrap();
+    // Rodas5P for stiff identity-mass ODEs with a Jacobian action.
     let _rodas5p = problem.rodas5p::<LS>();
 
     // Create a TSIT45 solver (a ERK method), this does not require a linear solver

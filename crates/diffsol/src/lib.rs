@@ -82,8 +82,8 @@
 //! to compile the equations to efficient machine code. The LLVM JIT backend also uses the EnzymeAD
 //! library to compute the jacobian and sensitivity/adjoint equations.
 //!
-//! You can use DiffSL with diffsol using the [`DiffSl`](https://docs.rs/diffsol/latest/diffsol/struct.DiffSl.html) struct, which is created using the
-//! [`OdeBuilder::build_from_diffsl`](https://docs.rs/diffsol/latest/diffsol/struct.OdeBuilder.html#method.build_from_diffsl) method. You need to enable one of the `diffsl-llvm*` features
+//! You can use DiffSL with diffsol using the [DiffSl] struct, which is created using the
+//! [OdeBuilder::build_from_diffsl] method. You need to enable one of the `diffsl-llvm*` features
 //! corresponding to the version of LLVM you have installed. E.g. to use your LLVM 17 installation,
 //! enable the `diffsl-llvm17` feature. Or you can use the `diffsl-cranelift` feature to use the
 //! Cranelift backend.
@@ -316,7 +316,7 @@ pub mod nonlinear_solver;
 /// - [OdeEquationsAdjoint] for adjoint sensitivity equations
 ///
 /// It also provides implementations:
-/// - [`DiffSl`](https://docs.rs/diffsol/latest/diffsol/struct.DiffSl.html) for equations specified in the DiffSL domain-specific language
+/// - [DiffSl] for equations specified in the DiffSL domain-specific language
 /// - [SensEquations] and [AdjointEquations] for sensitivity computations
 ///
 /// All the test equations used in diffsol's test suite are also provided here.
@@ -378,7 +378,7 @@ pub mod sundials_sys;
 
 pub use diffsol_la::LinearOp as LaLinearOp;
 pub use linear_solver::LinearSolver;
-pub use linear_solver::{FaerLU, FaerSparseLU, NalgebraLU, NalgebraNativeLU};
+pub use linear_solver::{AdaptiveLU, FaerLU, FaerSparseLU, NalgebraLU, NalgebraNativeLU};
 
 pub use diffsol_la::{Context, FaerContext, NalgebraContext};
 
@@ -438,13 +438,15 @@ pub use ode_solver::{
     method::OdeSolverStopReason,
     no_checkpointing_solver::NoCheckpointingSolver,
     problem::{InitialConditionSolverOptions, OdeSolverOptions, OdeSolverProblem},
-    rosenbrock::Rosenbrock,
+    rodas5p::Rodas5P,
+    rosenbrock::{refine_sampled_trajectory, RefinedTrajectory, Rosenbrock},
+    rosenbrock23::Rosenbrock23,
     sdirk::Sdirk,
     sdirk_state::RkState,
     sensitivities::SensitivitiesOdeSolverMethod,
     solution::Solution,
     state::OdeSolverState,
-    tableau::{RosenbrockTableau, Tableau},
+    tableau::Tableau,
     tableau::{TableauMat, TableauVec},
 };
 pub use op::constant_op::{ConstantOp, ConstantOpSens, ConstantOpSensAdjoint};

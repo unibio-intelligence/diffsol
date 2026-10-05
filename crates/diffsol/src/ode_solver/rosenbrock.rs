@@ -1,17 +1,220 @@
 use super::{jacobian_update::SolverState, runge_kutta::Rk, OdeSolverStatistics};
 use crate::{
     error::DiffsolError, error::OdeSolverError, ode_solver_error, op::sdirk::SdirkCallable,
-    DefaultDenseMatrix, DenseMatrix, ExplicitRkConfig, LinearSolver, NoAug, NonLinearOpTimePartial,
-    OdeEquationsImplicit, OdeSolverMethod, OdeSolverProblem, OdeSolverState, OdeSolverStopReason,
-    Op, RkState, StateRef, StateRefMut, Tableau, Vector,
+    DefaultDenseMatrix, DenseMatrix, ExplicitRkConfig, LinearSolver, Matrix, MatrixOp, NoAug,
+    NonLinearOp, NonLinearOpJacobian, NonLinearOpTimePartial, OdeEquationsImplicit,
+    OdeSolverMethod, OdeSolverProblem, OdeSolverState, OdeSolverStopReason, Op, RkState, Scalar,
+    StateRef, StateRefMut, Tableau, Vector,
 };
-use num_traits::{One, Signed, ToPrimitive, Zero};
+use num_traits::{FromPrimitive, One, Signed, ToPrimitive, Zero};
+
+// Reorthogonalized, pivoted Gram-Schmidt on a scaled constant mass matrix.
+// Cache the row space (differential state increments) and the orthogonal
+// complement of the column space (algebraic equations), independently of backend.
+fn orthonormal_basis<T: Scalar>(mut candidates: Vec<Vec<T>>, n: usize) -> Vec<Vec<T>> {
+    let mut basis: Vec<Vec<T>> = Vec::new();
+    let threshold = T::EPSILON * T::from_f64((8 * n) as f64).unwrap();
+    while !candidates.is_empty() {
+        for v in &mut candidates {
+            for _ in 0..2 {
+                for q in &basis {
+                    let dot = v.iter().zip(q).fold(T::zero(), |sum, (a, b)| sum + *a * *b);
+                    for (a, b) in v.iter_mut().zip(q) {
+                        *a -= dot * *b;
+                    }
+                }
+            }
+        }
+        let norms: Vec<T> = candidates
+            .iter()
+            .map(|v| v.iter().fold(T::zero(), |sum, x| sum + *x * *x).sqrt())
+            .collect();
+        let pivot = (0..norms.len())
+            .max_by(|&a, &b| {
+                norms[a]
+                    .partial_cmp(&norms[b])
+                    .unwrap_or(std::cmp::Ordering::Equal)
+            })
+            .unwrap();
+        let norm = norms[pivot];
+        if norm <= threshold {
+            break;
+        }
+        let mut q = candidates.swap_remove(pivot);
+        for x in &mut q {
+            *x /= norm;
+        }
+        basis.push(q);
+    }
+    basis
+}
+fn mass_error_subspaces<T: Scalar>(mut rows: Vec<Vec<T>>) -> (Vec<Vec<T>>, Vec<Vec<T>>) {
+    let n = rows.len();
+    let largest = rows
+        .iter()
+        .flatten()
+        .fold(T::zero(), |a, b| if a > b.abs() { a } else { b.abs() });
+    for x in rows.iter_mut().flatten() {
+        *x /= largest;
+    }
+    let columns = (0..n)
+        .map(|j| rows.iter().map(|r| r[j]).collect())
+        .collect();
+    let differential = orthonormal_basis(rows, n);
+    let column_space = orthonormal_basis(columns, n);
+    let mut complement = Vec::new();
+    for i in 0..n {
+        let mut q = vec![T::zero(); n];
+        q[i] = T::one();
+        for _ in 0..2 {
+            for v in &column_space {
+                let dot = q.iter().zip(v).fold(T::zero(), |sum, (a, b)| sum + *a * *b);
+                for (a, b) in q.iter_mut().zip(v) {
+                    *a -= dot * *b;
+                }
+            }
+        }
+        complement.push(q);
+    }
+    let algebraic = orthonormal_basis(complement, n);
+    (differential, algebraic)
+}
+
+/// Result of bounded convergence checking at caller-selected observation times.
+#[derive(Clone, Debug)]
+pub struct RefinedTrajectory<T> {
+    /// The finer sampled trajectory that satisfied the convergence criterion.
+    pub samples: Vec<Vec<T>>,
+    /// Number of complete solves, including the first unrefined solve.
+    pub passes: usize,
+    /// Maximum componentwise change in units of the original tolerance scale.
+    pub maximum_scaled_change: f64,
+    /// Multiplier applied to both original local tolerances in the final solve.
+    pub local_tolerance_factor: T,
+}
+
+/// Refine complete sampled trajectories with the same method and initial data.
+///
+/// `solve(factor)` must restart the same interval and return the same observation
+/// times/components with local tolerances multiplied by `factor`. Factors are
+/// 1, 0.1, 0.01, ...; events must not be replayed outside that interval. The
+/// callback owns work limits and must share its budget across all passes.
+/// The finer trajectory is returned when successive samples agree within
+/// agreement_fraction * (atol_i + rtol * max(abs(coarse_i), abs(fine_i))).
+/// A fraction of 0.25 leaves room for the unresolved error of the finer solve. This is sampled
+/// convergence evidence, not a certified bound on the true global error.
+/// Failed solves, non-finite data, shape changes and exhausted passes fail closed.
+/// Refinement also fails closed after three changes improve by less than 5%,
+/// or after a change below one tolerance unit grows more than eightfold (pass >=4).
+/// Diagnostics report the pass, sample change and local tolerance factor; these
+/// guards identify stalled/deteriorating convergence, not its physical cause.
+/// Local solver/controller defaults and the method's dense extension are unchanged.
+pub fn refine_sampled_trajectory<T, E>(
+    rtol: T,
+    atol: &[T],
+    maximum_passes: usize,
+    agreement_fraction: f64,
+    mut solve: impl FnMut(T) -> Result<Vec<Vec<T>>, E>,
+    map_error: impl Fn(DiffsolError) -> E,
+) -> Result<RefinedTrajectory<T>, E>
+where
+    T: Scalar,
+{
+    let invalid = |message: &str| map_error(ode_solver_error!(Other, message));
+    let relative = rtol.to_f64().unwrap_or(f64::NAN);
+    let absolute: Vec<_> = atol
+        .iter()
+        .map(|v| v.to_f64().unwrap_or(f64::NAN))
+        .collect();
+    if !agreement_fraction.is_finite()
+        || agreement_fraction <= 0.0
+        || agreement_fraction > 1.0
+        || !(2..=16).contains(&maximum_passes)
+        || !relative.is_finite()
+        || relative <= 0.0
+        || absolute.is_empty()
+        || absolute.iter().any(|v| !v.is_finite() || *v <= 0.0)
+    {
+        return Err(invalid(
+            "Invalid sampled refinement tolerances or pass limit",
+        ));
+    }
+    let mut previous: Option<Vec<Vec<T>>> = None;
+    let mut previous_change: Option<f64> = None;
+    let mut stalled_changes = 0;
+    let mut factor = T::one();
+    for pass in 1..=maximum_passes {
+        let current = solve(factor)?;
+        let width = current.first().map_or(0, Vec::len);
+        if width == 0
+            || (absolute.len() != 1 && absolute.len() != width)
+            || current.iter().any(|row| {
+                row.len() != width || row.iter().any(|v| !v.to_f64().is_some_and(f64::is_finite))
+            })
+        {
+            return Err(invalid("Invalid sampled refinement trajectory"));
+        }
+        if let Some(coarse) = &previous {
+            if coarse.len() != current.len() || coarse[0].len() != width {
+                return Err(invalid("Sampled refinement trajectory shape changed"));
+            }
+            let mut maximum = 0.0_f64;
+            for (a, b) in coarse.iter().zip(&current) {
+                for (i, (a, b)) in a.iter().zip(b).enumerate() {
+                    let a = a.to_f64().unwrap();
+                    let b = b.to_f64().unwrap();
+                    let scale = absolute[if absolute.len() == 1 { 0 } else { i }]
+                        + relative * a.abs().max(b.abs());
+                    let change = (a - b).abs() / scale;
+                    if !scale.is_finite() || !change.is_finite() {
+                        return Err(invalid("Non-finite sampled refinement error scale"));
+                    }
+                    maximum = maximum.max(change);
+                }
+            }
+            if maximum <= agreement_fraction {
+                return Ok(RefinedTrajectory {
+                    samples: current,
+                    passes: pass,
+                    maximum_scaled_change: maximum,
+                    local_tolerance_factor: factor,
+                });
+            }
+            if let Some(before) = previous_change {
+                if pass >= 4 && before <= 1.0 && maximum > 8.0 * before {
+                    return Err(invalid(&format!("Sampled refinement worsened at pass {pass}: change {maximum:e} tolerance units (previous {before:e}); local tolerance factor {:e}",factor.to_f64().unwrap())));
+                }
+                stalled_changes = if maximum >= 0.95 * before {
+                    stalled_changes + 1
+                } else {
+                    0
+                };
+                if stalled_changes >= 3 {
+                    return Err(invalid(&format!("Sampled refinement stalled at pass {pass}: change {maximum:e} tolerance units; local tolerance factor {:e}",factor.to_f64().unwrap())));
+                }
+            }
+            previous_change = Some(maximum);
+        }
+        previous = Some(current);
+        factor *= T::from_f64(0.1).unwrap();
+    }
+    Err(invalid(
+        &format!("Sampled trajectory did not converge within {maximum_passes} refinement passes; last change {:e} tolerance units",previous_change.unwrap_or(f64::NAN)),
+    ))
+}
 
 /// A tableau-driven class of linearly implicit Rosenbrock-Wanner methods.
 /// Each attempted step freezes the Jacobian and reuses one linear factorization.
 /// A tableau's continuous extension supplies dense output; otherwise Hermite interpolation is used.
-/// With a continuous extension, `state().dy` is its endpoint derivative.
+/// For ODEs, `state().dy` is the RHS at the accepted endpoint. For mass-matrix
+/// DAEs it is the continuous extension's endpoint derivative.
 /// Constant mass matrices are supported for index-1 DAEs with a continuous extension.
+/// Rosenbrock23 controls differential embedded errors and
+/// algebraic endpoint residuals separately. Algebraic RHS rows must be scaled so
+/// their residuals have the meaning of the corresponding absolute tolerances.
+/// Non-diagonal constant mass uses cached orthogonal subspaces with numerical
+/// rank threshold 8*n*epsilon after scaling by the largest matrix entry.
+/// This does not project dense output or provide a global-error bound.
 /// Integrated outputs use quadrature along the required state continuous extension;
 /// Rodas5P outputs have global order four.
 /// After mutating the state, keep `dy` consistent: Hermite interpolation uses it
@@ -30,6 +233,15 @@ where
     ft: Eqn::V,
     scratch: Eqn::V,
     config: ExplicitRkConfig<Eqn::T>,
+    discontinuity_stop: Option<Eqn::T>,
+    time_derivative_within_step: bool,
+    maximum_step: Option<Eqn::T>,
+    state_compensation: Eqn::V,
+    trial_compensation: Eqn::V,
+    time_compensation: Eqn::T,
+    algebraic_indices: Vec<usize>,
+    differential_basis: Vec<Vec<Eqn::T>>,
+    algebraic_basis: Vec<Vec<Eqn::T>>,
 }
 impl<Eqn, LS, M> Clone for Rosenbrock<'_, Eqn, LS, M>
 where
@@ -49,6 +261,15 @@ where
             ft: self.ft.clone(),
             scratch: self.scratch.clone(),
             config: self.config.clone(),
+            discontinuity_stop: self.discontinuity_stop,
+            time_derivative_within_step: self.time_derivative_within_step,
+            maximum_step: self.maximum_step,
+            state_compensation: self.state_compensation.clone(),
+            trial_compensation: self.trial_compensation.clone(),
+            time_compensation: self.time_compensation,
+            algebraic_indices: self.algebraic_indices.clone(),
+            differential_basis: self.differential_basis.clone(),
+            algebraic_basis: self.algebraic_basis.clone(),
         }
     }
 }
@@ -126,16 +347,328 @@ where
         }
         let ft = Eqn::V::zeros(state.y.len(), problem.context().clone());
         let op = SdirkCallable::new(&problem.eqn, Eqn::T::one(), problem.context().clone());
+        // Rosenbrock23's embedded third-order ODE formula is not an
+        // algebraic-state error estimate. Control endpoint constraints separately.
+        // Diagonal mass retains its inexpensive exact-coordinate specialization.
+        let mut algebraic_indices = Vec::new();
+        let mut differential_basis = Vec::new();
+        let mut algebraic_basis = Vec::new();
+        if row.algebraic_error_control && problem.eqn.mass().is_some() {
+            let mass = op.mass(state.t);
+            let mut algebraic = vec![true; state.y.len()];
+            let mut diagonal = true;
+            let (positions, values) = mass.triplet_iter();
+            for ((i, j), value) in positions.zip(values) {
+                if value != Eqn::T::zero() {
+                    diagonal &= i == j;
+                    algebraic[i] = false;
+                }
+            }
+            if diagonal {
+                algebraic_indices = algebraic
+                    .into_iter()
+                    .enumerate()
+                    .filter_map(|(i, zero)| zero.then_some(i))
+                    .collect();
+            } else {
+                let mut rows = vec![vec![Eqn::T::zero(); state.y.len()]; state.y.len()];
+                let (positions, values) = mass.triplet_iter();
+                for ((i, j), value) in positions.zip(values) {
+                    rows[i][j] = value;
+                }
+                (differential_basis, algebraic_basis) = mass_error_subspaces(rows);
+            }
+        }
         linear_solver.set_problem(&op);
         Ok(Self {
             rk: Rk::new(problem, state, tableau)?,
             linear_solver,
             op,
             scratch: ft.clone(),
-            ft,
             config: ExplicitRkConfig::new(&problem.ode_options),
+            discontinuity_stop: None,
+            time_derivative_within_step: false,
+            maximum_step: None,
+            state_compensation: ft.clone(),
+            trial_compensation: ft.clone(),
+            time_compensation: Eqn::T::zero(),
+            ft,
+            algebraic_indices,
+            differential_basis,
+            algebraic_basis,
         })
     }
+    /// Bound the absolute step size, including when adaptive endpoint estimates
+    /// permit larger steps. This can improve dense-output and derivative accuracy.
+    /// A step bound supplements tolerances; it is not a global-error guarantee.
+    pub fn set_maximum_step(&mut self, maximum: Eqn::T) -> Result<(), DiffsolError> {
+        if maximum <= Eqn::T::zero() || !maximum.to_f64().is_some_and(f64::is_finite) {
+            return Err(ode_solver_error!(
+                Other,
+                "Maximum Rosenbrock step must be finite and positive"
+            ));
+        }
+        self.maximum_step = Some(maximum);
+        Ok(())
+    }
+
+    /// Restrict numerical time-derivative probes to the attempted step.
+    /// Use this for piecewise forcing; analytic overrides still take precedence.
+    pub fn set_time_derivative_within_step(&mut self, enabled: bool) {
+        self.time_derivative_within_step = enabled;
+    }
+
+    /// Stop at a known forcing jump, evaluating endpoint stages on its incoming side.
+    /// Numerical time probes remain inside the step until this stop is reached.
+    pub fn set_discontinuity_stop_time(&mut self, tstop: Eqn::T) -> Result<(), DiffsolError> {
+        self.rk.set_stop_time(tstop)?;
+        self.discontinuity_stop = Some(tstop);
+        Ok(())
+    }
+
+    fn endpoint_eval_time(&self, h: Eqn::T) -> Result<Eqn::T, DiffsolError> {
+        let start = self.rk.state().t;
+        let end = start + h;
+        let Some(stop) = self.discontinuity_stop else {
+            return Ok(end);
+        };
+        let roundoff = Eqn::T::from_f64(100.0).unwrap() * Eqn::T::EPSILON * (end.abs() + h.abs());
+        if (end - stop).abs() > roundoff {
+            return Ok(end);
+        }
+        let nominal = Eqn::T::EPSILON * (Eqn::T::one() + end.abs());
+        let quarter = h.abs() / Eqn::T::from_f64(4.0).unwrap();
+        let delta = if nominal < quarter { nominal } else { quarter };
+        let shifted = if h >= Eqn::T::zero() {
+            end - delta
+        } else {
+            end + delta
+        };
+        if (h >= Eqn::T::zero() && start < shifted && shifted < end)
+            || (h < Eqn::T::zero() && end < shifted && shifted < start)
+        {
+            Ok(shifted)
+        } else {
+            Err(ode_solver_error!(
+                Other,
+                "Rosenbrock discontinuity has no representable incoming endpoint"
+            ))
+        }
+    }
+
+    fn update_time_partial(&mut self, h: Eqn::T) -> Result<(), DiffsolError> {
+        let state = self.rk.state();
+        let rhs = self.rk.problem().eqn.rhs();
+        if rhs.time_partial_inplace(&state.y, state.t, &mut self.ft) {
+            return Ok(());
+        }
+        if !self.time_derivative_within_step && self.discontinuity_stop.is_none() {
+            rhs.time_derive_inplace(&state.y, state.t, &mut self.ft);
+            return Ok(());
+        }
+        let t = state.t;
+        let third = Eqn::T::from_f64(1.0 / 3.0).unwrap();
+        let nominal = Eqn::T::EPSILON.cbrt() * (Eqn::T::one() + t.abs());
+        let bounded = if nominal < h.abs() * third {
+            nominal
+        } else {
+            h.abs() * third
+        };
+        let delta = if h >= Eqn::T::zero() {
+            bounded
+        } else {
+            -bounded
+        };
+        let p1 = t + delta;
+        let p2 = t + delta + delta;
+        let end = t + h;
+        if !((h >= Eqn::T::zero() && t < p1 && p1 < p2 && p2 < end)
+            || (h < Eqn::T::zero() && end < p2 && p2 < p1 && p1 < t))
+        {
+            return Err(ode_solver_error!(
+                Other,
+                "Rosenbrock time-derivative probes cannot advance within this step"
+            ));
+        }
+        let f0 = rhs.call(&state.y, t);
+        rhs.call_inplace(&state.y, p1, &mut self.ft);
+        rhs.call_inplace(&state.y, p2, &mut self.scratch);
+        self.ft.axpy(-Eqn::T::one(), &f0, Eqn::T::one());
+        self.scratch.axpy(-Eqn::T::one(), &f0, Eqn::T::one());
+        // Account for the actual representable probe spacings; subtract the
+        // baseline first so an autonomous RHS produces exactly zero.
+        let a = p1 - t;
+        let b = p2 - t;
+        self.ft *= crate::scale(b / (a * (b - a)));
+        self.ft
+            .axpy(-a / (b * (b - a)), &self.scratch, Eqn::T::one());
+        Ok(())
+    }
+
+    /// Sample the existing extension, then enforce index-1 algebraic consistency.
+    ///
+    /// This opt-in observation correction leaves stages, the accepted trajectory,
+    /// and the published dense extension unchanged. Corrections lie in ker(M),
+    /// so M*y is preserved. It is useful when an approximate Jacobian degrades
+    /// algebraic dense output. It does not restore the extension's order or
+    /// certify differential-state accuracy. Use only within a smooth step.
+    /// The supplied Jacobian must permit convergence of the reduced constraint
+    /// Newton solve. Residuals are scaled by equation absolute tolerances;
+    /// singular/non-finite corrections and exhausted iterations fail closed.
+    pub fn interpolate_consistent(
+        &self,
+        t: Eqn::T,
+        maximum_iterations: usize,
+    ) -> Result<Eqn::V, DiffsolError> {
+        if !(1..=16).contains(&maximum_iterations) || !t.to_f64().is_some_and(f64::is_finite) {
+            return Err(ode_solver_error!(
+                Other,
+                "Invalid algebraic interpolation iteration limit"
+            ));
+        }
+        let mut y = self.interpolate(t)?;
+        if (0..y.len()).any(|i| !y.get_index(i).to_f64().is_some_and(f64::is_finite)) {
+            return Err(ode_solver_error!(Other, "Non-finite interpolation state"));
+        }
+        if self.problem().eqn.mass().is_none() {
+            return Ok(y);
+        }
+        let n = y.len();
+        let mass = self.op.mass(self.rk.state().t);
+        let mut rows = vec![vec![Eqn::T::zero(); n]; n];
+        let (positions, values) = mass.triplet_iter();
+        for ((i, j), v) in positions.zip(values) {
+            rows[i][j] = v;
+        }
+        drop(mass);
+        let diagonal = (0..n).all(|i| (0..n).all(|j| i == j || rows[i][j] == Eqn::T::zero()));
+        let (left, right) = if diagonal {
+            let q: Vec<Vec<_>> = (0..n)
+                .filter(|&i| rows[i][i] == Eqn::T::zero())
+                .map(|i| {
+                    let mut q = vec![Eqn::T::zero(); n];
+                    q[i] = Eqn::T::one();
+                    q
+                })
+                .collect();
+            (q.clone(), q)
+        } else {
+            let (differential, left) = mass_error_subspaces(rows);
+            let mut candidates = Vec::new();
+            for i in 0..n {
+                let mut q = vec![Eqn::T::zero(); n];
+                q[i] = Eqn::T::one();
+                for _ in 0..2 {
+                    for v in &differential {
+                        let dot = q
+                            .iter()
+                            .zip(v)
+                            .fold(Eqn::T::zero(), |a, (b, c)| a + *b * *c);
+                        for (a, b) in q.iter_mut().zip(v) {
+                            *a -= dot * *b;
+                        }
+                    }
+                }
+                candidates.push(q);
+            }
+            (left, orthonormal_basis(candidates, n))
+        };
+        let k = left.len();
+        if k == 0 {
+            return Ok(y);
+        }
+        if right.len() != k {
+            return Err(ode_solver_error!(Other, "Inconsistent mass null spaces"));
+        }
+        let ctx = self.problem().context().clone();
+        let rhs = self.problem().eqn.rhs();
+        let tolerances: Vec<_> = left
+            .iter()
+            .map(|q| {
+                q.iter()
+                    .enumerate()
+                    .fold(Eqn::T::zero(), |a, (i, v)| {
+                        let z = *v * self.problem().atol.get_index(i);
+                        a + z * z
+                    })
+                    .sqrt()
+            })
+            .collect();
+        let mut f = Eqn::V::zeros(n, ctx.clone());
+        let mut direction = f.clone();
+        let mut jac = f.clone();
+        for iteration in 0..=maximum_iterations {
+            rhs.call_inplace(&y, t, &mut f);
+            let residuals: Vec<_> = left
+                .iter()
+                .map(|q| {
+                    q.iter()
+                        .enumerate()
+                        .fold(Eqn::T::zero(), |a, (i, v)| a + *v * f.get_index(i))
+                })
+                .collect();
+            if residuals.iter().zip(&tolerances).all(|(r, a)| {
+                (*r / *a)
+                    .to_f64()
+                    .is_some_and(|v| v.is_finite() && v.abs() <= 0.01)
+            }) {
+                return Ok(y);
+            }
+            if iteration == maximum_iterations {
+                break;
+            }
+            let mut positions = Vec::with_capacity(k * k);
+            let mut values = Vec::with_capacity(k * k);
+            for (j, q) in right.iter().enumerate() {
+                for (i, v) in q.iter().enumerate() {
+                    direction.set_index(i, *v);
+                }
+                rhs.jac_mul_inplace(&y, t, &direction, &mut jac);
+                for (i, q) in left.iter().enumerate() {
+                    positions.push((i, j));
+                    values.push(
+                        q.iter()
+                            .enumerate()
+                            .fold(Eqn::T::zero(), |a, (r, v)| a + *v * jac.get_index(r)),
+                    );
+                }
+            }
+            if values
+                .iter()
+                .chain(&residuals)
+                .any(|x| !x.to_f64().is_some_and(f64::is_finite))
+            {
+                return Err(ode_solver_error!(
+                    Other,
+                    "Non-finite algebraic interpolation correction"
+                ));
+            }
+            let matrix = Eqn::M::try_from_triplets(k, k, positions, values, ctx.clone())?;
+            let op = MatrixOp::new(matrix);
+            let mut solver = LS::default();
+            solver.set_problem(&op);
+            let mut correction =
+                Eqn::V::from_vec(residuals.into_iter().map(|x| -x).collect(), ctx.clone());
+            LinearSolver::set_linearisation(&mut solver, &op, &correction, t);
+            solver.solve_in_place(&mut correction)?;
+            for (j, q) in right.iter().enumerate() {
+                for (i, v) in q.iter().enumerate() {
+                    y.set_index(i, y.get_index(i) + *v * correction.get_index(j));
+                }
+            }
+            if (0..n).any(|i| !y.get_index(i).to_f64().is_some_and(f64::is_finite)) {
+                return Err(ode_solver_error!(
+                    Other,
+                    "Non-finite algebraic interpolation state"
+                ));
+            }
+        }
+        Err(ode_solver_error!(
+            Other,
+            "Algebraic interpolation did not converge within the iteration limit"
+        ))
+    }
+
     pub fn get_statistics(&self) -> &OdeSolverStatistics {
         self.rk.get_statistics()
     }
@@ -162,6 +695,8 @@ where
         self.rk.state().as_ref()
     }
     fn state_mut(&mut self) -> StateRefMut<'_, Eqn::V> {
+        self.state_compensation.fill(Eqn::T::zero());
+        self.time_compensation = Eqn::T::zero();
         self.rk.state_mut().as_mut()
     }
     fn state_clone(&self) -> Self::State {
@@ -174,6 +709,8 @@ where
         self.rk.into_state()
     }
     fn set_state(&mut self, state: Self::State) {
+        self.state_compensation.fill(Eqn::T::zero());
+        self.time_compensation = Eqn::T::zero();
         self.rk.set_state(state);
     }
     fn order(&self) -> usize {
@@ -199,6 +736,11 @@ where
     }
     fn step(&mut self) -> Result<OdeSolverStopReason<Eqn::T>, DiffsolError> {
         let mut h = self.rk.start_step()?;
+        if let Some(maximum) = self.maximum_step {
+            if h.abs() > maximum {
+                h = h.signum() * maximum;
+            }
+        }
         if h.abs() < self.config.minimum_timestep {
             return Err(OdeSolverError::StepSizeTooSmall {
                 time: self.rk.state().t.to_f64().unwrap(),
@@ -210,13 +752,17 @@ where
         let (factor, error) = loop {
             let state = self.rk.state();
             self.op.zero_phi();
+            if state.t + h == state.t || state.t + (h - self.time_compensation) == state.t {
+                return Err(OdeSolverError::StepSizeTooSmall {
+                    time: self.rk.state().t.to_f64().unwrap(),
+                }
+                .into());
+            }
             self.op.set_h(gamma * h);
             self.op.set_jacobian_is_stale();
             LinearSolver::set_linearisation(&mut self.linear_solver, &self.op, &state.y, state.t);
-            self.problem()
-                .eqn
-                .rhs()
-                .time_derive_inplace(&state.y, state.t, &mut self.ft);
+            self.update_time_partial(h)?;
+            let endpoint_time = self.endpoint_eval_time(h)?;
             self.rk
                 .statistics_mut()
                 .record_linear_solver_setup(if attempts == 0 {
@@ -226,23 +772,102 @@ where
                 });
             self.rk.start_step_attempt(h, None::<&mut NoAug<Eqn>>);
             for i in 0..self.rk.tableau().s() {
-                self.rk
-                    .do_stage_rosenbrock(i, h, &self.op, &mut self.linear_solver, &self.ft)?;
+                self.rk.do_stage_rosenbrock(
+                    i,
+                    h,
+                    &self.op,
+                    &mut self.linear_solver,
+                    &self.ft,
+                    endpoint_time,
+                )?;
             }
-            self.rk.finish_step_rosenbrock(h);
+            self.rk.finish_step_rosenbrock_compensated(
+                h,
+                endpoint_time,
+                Some((&self.state_compensation, &mut self.trial_compensation)),
+            );
             if self.problem().integrate_out {
                 self.rk.integrate_rosenbrock_outputs(h, &mut self.scratch);
             }
             // Use diffsol's shared RK error scaling at the starting state, not the endpoint.
-            let error = self.rk.error_norm(h, None::<&mut NoAug<Eqn>>, |_| Ok(()))?;
-            let factor = self.rk.factor(
-                error,
-                1.0,
-                self.config.minimum_timestep_shrink,
-                self.config.maximum_timestep_shrink,
-                self.config.minimum_timestep_growth,
-                self.config.maximum_timestep_growth,
-            );
+            let error = if self.rk.rosenbrock_trial_is_finite() {
+                let embedded = self.rk.error_norm(h, None::<&mut NoAug<Eqn>>, |error| {
+                    for &i in &self.algebraic_indices {
+                        error.set_index(i, Eqn::T::zero());
+                    }
+                    if !self.algebraic_basis.is_empty() {
+                        let original: Vec<_> =
+                            (0..error.len()).map(|i| error.get_index(i)).collect();
+                        error.fill(Eqn::T::zero());
+                        for q in &self.differential_basis {
+                            let dot = q
+                                .iter()
+                                .zip(&original)
+                                .fold(Eqn::T::zero(), |sum, (a, b)| sum + *a * *b);
+                            for (i, x) in q.iter().enumerate() {
+                                error.set_index(i, error.get_index(i) + dot * *x);
+                            }
+                        }
+                    }
+                    Ok(())
+                })?;
+                if self.algebraic_indices.is_empty() && self.algebraic_basis.is_empty() {
+                    embedded
+                } else {
+                    self.op.eqn().rhs().call_inplace(
+                        self.rk.rosenbrock_trial_y(),
+                        endpoint_time,
+                        &mut self.scratch,
+                    );
+                    let mut constraint = Eqn::T::zero();
+                    for &i in &self.algebraic_indices {
+                        let value = self.scratch.get_index(i) / self.problem().atol.get_index(i);
+                        if !value.to_f64().is_some_and(f64::is_finite) {
+                            constraint = Eqn::T::from_f64(f64::INFINITY).unwrap();
+                            break;
+                        }
+                        constraint += value * value;
+                    }
+                    for q in &self.algebraic_basis {
+                        let residual = q.iter().enumerate().fold(Eqn::T::zero(), |sum, (i, x)| {
+                            sum + *x * self.scratch.get_index(i)
+                        });
+                        let tolerance = q
+                            .iter()
+                            .enumerate()
+                            .fold(Eqn::T::zero(), |sum, (i, x)| {
+                                let a = *x * self.problem().atol.get_index(i);
+                                sum + a * a
+                            })
+                            .sqrt();
+                        let value = residual / tolerance;
+                        if !value.to_f64().is_some_and(f64::is_finite) {
+                            constraint = Eqn::T::from_f64(f64::INFINITY).unwrap();
+                            break;
+                        }
+                        constraint += value * value;
+                    }
+                    constraint /= Eqn::T::from_f64(self.scratch.len() as f64).unwrap();
+                    let norm = embedded.sqrt() + constraint.sqrt();
+                    norm * norm
+                }
+            } else {
+                Eqn::T::from_f64(f64::INFINITY).unwrap()
+            };
+            let factor = if error.to_f64().is_some_and(f64::is_finite) {
+                self.rk.factor(
+                    error,
+                    1.0,
+                    self.config.minimum_timestep_shrink,
+                    self.config.maximum_timestep_shrink,
+                    self.config.minimum_timestep_growth,
+                    self.config.maximum_timestep_growth,
+                )
+            } else {
+                // Non-finite stage evaluations are recoverable trials. Shrink
+                // deterministically, bounded by the usual failure/minimum-step guards.
+                self.config.minimum_timestep_shrink
+            };
             if error < Eqn::T::one() {
                 break (factor, error);
             }
@@ -258,10 +883,22 @@ where
         };
         self.rk.store_rosenbrock_hermite_derivatives(h);
         self.rk.set_prev_error(error);
-        self.rk.step_accepted(h, h * factor, false)
+        let start = self.rk.state().t;
+        let increment = h - self.time_compensation;
+        let end = start + increment;
+        self.time_compensation = (end - start) - increment;
+        let reason = self.rk.step_accepted_at_time(h, h * factor, false, end)?;
+        self.state_compensation.copy_from(&self.trial_compensation);
+        if matches!(reason, OdeSolverStopReason::TstopReached) {
+            self.discontinuity_stop = None;
+            self.time_compensation = Eqn::T::zero();
+        }
+        Ok(reason)
     }
     fn set_stop_time(&mut self, t: Eqn::T) -> Result<(), DiffsolError> {
-        self.rk.set_stop_time(t)
+        self.rk.set_stop_time(t)?;
+        self.discontinuity_stop = None;
+        Ok(())
     }
     fn interpolate_inplace(&self, t: Eqn::T, out: &mut Eqn::V) -> Result<(), DiffsolError> {
         self.rk.interpolate_inplace(t, out)
@@ -276,6 +913,8 @@ where
         self.rk.interpolate_sens_inplace(t, out)
     }
     fn state_mut_back(&mut self, t: Eqn::T) -> Result<(), DiffsolError> {
+        self.state_compensation.fill(Eqn::T::zero());
+        self.time_compensation = Eqn::T::zero();
         self.rk.state_mut_back(t, self.rk.problem().integrate_out)
     }
 }
@@ -405,7 +1044,7 @@ mod tests {
             s.step().unwrap();
             let attempts = 1 + s.get_statistics().number_of_error_test_failures;
             // Each stage plus two probes from the shared central f_t implementation.
-            assert_eq!(calls.get(), attempts * (stages + 2));
+            assert_eq!(calls.get(), attempts * (stages + 3));
             s.interpolate_dy(s.state().t)
                 .unwrap()
                 .assert_eq_st(s.state().dy, 1e-12);
@@ -447,6 +1086,226 @@ mod tests {
         }
         check!(Mat, LS);
         check!(FaerMat<f64>, FaerLU<f64>);
+    }
+    #[test]
+    fn rosenbrock23_controls_nonlinear_algebraic_endpoint() {
+        macro_rules! check {
+            ($mat:ty, $ls:ty) => {{
+                // y' = z^2, 0 = z^2 - 2 - sin(t). Both states have analytic solutions.
+                let p = OdeBuilder::<$mat>::new()
+                    .rtol(1e-5)
+                    .atol([1e-7])
+                    .rhs_implicit(
+                        |x, _, t, f| {
+                            f[0] = x[1] * x[1];
+                            f[1] = x[1] * x[1] - 2.0 - t.sin();
+                        },
+                        |x, _, _, v, f| {
+                            f[0] = 2.0 * x[1] * v[1];
+                            f[1] = f[0];
+                        },
+                    )
+                    .mass(|v, _, _, beta, y| {
+                        y[0] = v[0] + beta * y[0];
+                        y[1] *= beta;
+                    })
+                    .init(
+                        |_, _, y| {
+                            y[0] = 0.0;
+                            y[1] = 2.0f64.sqrt();
+                        },
+                        2,
+                    )
+                    .build()
+                    .unwrap();
+                let mut s = p.rosenbrock23::<$ls>().unwrap();
+                s.set_stop_time(2.0).unwrap();
+                while s.state().t < 2.0 {
+                    s.step().unwrap();
+                    let t = s.state().t;
+                    let y = s.state().y;
+                    let residual = (y[1] * y[1] - 2.0 - t.sin()).abs();
+                    assert!(residual < 2e-7, "constraint residual {residual} at {t}");
+                    assert!(s.get_statistics().number_of_steps < 100_000);
+                }
+                assert!((s.state().y[0] - (5.0 - 2.0f64.cos())).abs() < 2e-5);
+                assert!((s.state().y[1] - (2.0 + 2.0f64.sin()).sqrt()).abs() < 2e-7);
+            }};
+        }
+        check!(Mat, LS);
+        check!(FaerMat<f64>, FaerLU<f64>);
+    }
+    #[test]
+    fn rosenbrock23_controls_rotated_algebraic_endpoint() {
+        macro_rules! check {
+            ($mat:ty, $ls:ty) => {{
+                let c = std::f64::consts::FRAC_1_SQRT_2;
+                // Rotate both equations and coordinates of y'=z², 0=z²-2-sin(t).
+                // Every mass row/column is nonzero, but the matrix has rank one.
+                let p = OdeBuilder::<$mat>::new()
+                    .rtol(1e-4)
+                    .atol([1e-7])
+                    .rhs_implicit(
+                        move |u, _, t, f| {
+                            let z = c * (u[1] - u[0]);
+                            let differential = z * z;
+                            let algebraic = differential - 2.0 - t.sin();
+                            f[0] = c * (differential - algebraic);
+                            f[1] = c * (differential + algebraic);
+                        },
+                        move |u, _, _, v, f| {
+                            let dz2 = 2.0 * c * (u[1] - u[0]) * c * (v[1] - v[0]);
+                            f[0] = 0.0;
+                            f[1] = 2.0 * c * dz2;
+                        },
+                    )
+                    .mass(|v, _, _, beta, y| {
+                        let d = 0.5 * (v[0] + v[1]);
+                        y[0] = d + beta * y[0];
+                        y[1] = d + beta * y[1];
+                    })
+                    .init(
+                        |_, _, y| {
+                            y[0] = -1.0;
+                            y[1] = 1.0;
+                        },
+                        2,
+                    )
+                    .build()
+                    .unwrap();
+                let mut solver = p.rosenbrock23::<$ls>().unwrap();
+                solver.set_stop_time(2.0).unwrap();
+                while solver.state().t < 2.0 {
+                    solver.step().unwrap();
+                    let u = solver.state().y;
+                    let z = c * (u[1] - u[0]);
+                    let residual = (z * z - 2.0 - solver.state().t.sin()).abs();
+                    assert!(residual < 2e-7, "rotated constraint residual {residual}");
+                    if solver.get_statistics().number_of_steps == 1 {
+                        let t = solver.state().t / 2.0;
+                        let raw = solver.interpolate(t).unwrap();
+                        let projected = solver.interpolate_consistent(t, 8).unwrap();
+                        assert!(
+                            (c * (raw[0] + raw[1] - projected[0] - projected[1])).abs() < 1e-14
+                        );
+                        let z = c * (projected[1] - projected[0]);
+                        assert!((z * z - 2.0 - t.sin()).abs() < 2e-9);
+                    }
+                    assert!(solver.get_statistics().number_of_steps < 100_000);
+                }
+                let u = solver.state().y;
+                assert!((c * (u[0] + u[1]) - (5.0 - 2.0f64.cos())).abs() < 2e-5);
+            }};
+        }
+        check!(Mat, LS);
+        check!(FaerMat<f64>, FaerLU<f64>);
+    }
+    #[test]
+    fn small_increments_accumulate_without_roundoff_drift() {
+        macro_rules! check {
+            ($mat:ty, $ls:ty) => {{
+                for tableau in [Tableau::rodas5p(), Tableau::rosenbrock23()] {
+                    let p = OdeBuilder::<$mat>::new()
+                        .rtol(1e-3)
+                        .atol([1.0])
+                        .rhs_implicit(|_, _, _, f| f[0] = 1.0, |_, _, _, _, f| f[0] = 0.0)
+                        .init(|_, _, y| y[0] = 1e8, 1)
+                        .build()
+                        .unwrap();
+                    let mut s = p
+                        .rosenbrock_solver::<$ls, $mat>(p.rodas5p_state::<$ls>().unwrap(), tableau)
+                        .unwrap();
+                    s.set_maximum_step(1e-8).unwrap();
+                    *s.state_mut().h = 1e-8;
+                    s.config_mut().minimum_timestep = 0.0;
+                    s.set_stop_time(1e-4).unwrap();
+                    while s.step().unwrap() != OdeSolverStopReason::TstopReached {}
+                    let error = (s.state().y[0] - 1e8 - 1e-4).abs();
+                    assert!(error < 2e-8, "accumulation error {error}");
+                }
+            }};
+        }
+        check!(Mat, LS);
+        check!(FaerMat<f64>, FaerLU<f64>);
+    }
+    #[test]
+    fn consistent_interpolation_preserves_differential_state() {
+        macro_rules! check {
+            ($mat:ty,$ls:ty) => {{
+                let p = OdeBuilder::<$mat>::new()
+                    .rtol(1e-2)
+                    .atol([1e-7])
+                    .rhs_implicit(
+                        |y, _, _, f| {
+                            f[0] = y[1];
+                            f[1] = y[0] * y[0] + y[1] * y[1] - 1.0;
+                        },
+                        |y, _, _, v, f| {
+                            f[0] = 0.0;
+                            f[1] = 2.0 * y[1] * v[1];
+                        },
+                    )
+                    .mass(|v, _, _, beta, y| {
+                        y[0] = v[0] + beta * y[0];
+                        y[1] *= beta;
+                    })
+                    .init(
+                        |_, _, y| {
+                            y[0] = 0.3;
+                            y[1] = 0.91f64.sqrt();
+                        },
+                        2,
+                    )
+                    .build()
+                    .unwrap();
+                let mut solver = p.rodas5p::<$ls>().unwrap();
+                solver.set_maximum_step(0.05).unwrap();
+                *solver.state_mut().h = 0.05;
+                solver.step().unwrap();
+                let t = solver.state().t / 2.0;
+                let raw = solver.interpolate(t).unwrap();
+                let before = solver.state().y.clone();
+                let steps = solver.get_statistics().number_of_steps;
+                assert!((raw[0] * raw[0] + raw[1] * raw[1] - 1.0).abs() > 1e-7);
+                let corrected = solver.interpolate_consistent(t, 8).unwrap();
+                assert_eq!(raw[0], corrected[0]);
+                assert!(
+                    (corrected[0] * corrected[0] + corrected[1] * corrected[1] - 1.0).abs() < 1e-9
+                );
+                solver.state().y.assert_eq_st(&before, 0.0);
+                assert_eq!(steps, solver.get_statistics().number_of_steps);
+                assert!(solver.interpolate_consistent(t, 0).is_err());
+                assert!(solver.interpolate_consistent(f64::NAN, 8).is_err());
+            }};
+        }
+        check!(Mat, LS);
+        check!(FaerMat<f64>, FaerLU<f64>);
+    }
+    #[test]
+    fn rosenbrock_rejects_steps_without_representable_progress() {
+        for tableau in [Tableau::rodas5p(), Tableau::rosenbrock23()] {
+            let p = OdeBuilder::<Mat>::new()
+                .rhs_implicit(|_, _, _, f| f[0] = 0.0, |_, _, _, _, f| f[0] = 0.0)
+                .init(|_, _, y| y[0] = 0.0, 1)
+                .build()
+                .unwrap();
+            let mut solver = p
+                .rosenbrock_solver::<LS, Mat>(p.rodas5p_state::<LS>().unwrap(), tableau)
+                .unwrap();
+            {
+                let state = solver.state_mut();
+                *state.t = 1.0;
+                *state.h = 1e-20;
+            }
+            solver.config_mut().minimum_timestep = 0.0;
+            assert!(matches!(
+                solver.step(),
+                Err(DiffsolError::OdeSolverError(
+                    OdeSolverError::StepSizeTooSmall { .. }
+                ))
+            ));
+            assert_eq!(solver.get_statistics().number_of_steps, 0);
+        }
     }
     #[test]
     fn constant_mass_index_one_dae() {
@@ -932,6 +1791,265 @@ mod tests {
         }
     }
     #[test]
+    fn forcing_jump_uses_incoming_endpoint_and_outgoing_restart() {
+        for tableau in [Tableau::rodas5p(), Tableau::rosenbrock23()] {
+            let p = OdeBuilder::<Mat>::new()
+                .rtol(1e-8)
+                .atol([1e-10])
+                .rhs_implicit(
+                    |_, _, t, f| f[0] = if t < 1.0 { 1.0 } else { 100.0 },
+                    |_, _, _, _, j| j[0] = 0.0,
+                )
+                .init(|_, _, y| y[0] = 0.0, 1)
+                .build()
+                .unwrap();
+            let state = p.rodas5p_state::<LS>().unwrap();
+            let mut s = p.rosenbrock_solver::<LS, Mat>(state, tableau).unwrap();
+            s.set_time_derivative_within_step(true);
+            s.set_discontinuity_stop_time(1.0).unwrap();
+            while s.step().unwrap() != OdeSolverStopReason::TstopReached {}
+            assert!((s.state().y[0] - 1.0).abs() < 1e-9);
+            assert!((s.state().dy[0] - 1.0).abs() < 1e-12);
+            s.set_stop_time(2.0).unwrap();
+            while s.step().unwrap() != OdeSolverStopReason::TstopReached {}
+            assert!((s.state().y[0] - 101.0).abs() < 1e-8);
+            assert!((s.state().dy[0] - 100.0).abs() < 1e-12);
+        }
+    }
+
+    #[test]
+    fn quintic_dense_error_reduces_with_step_size() {
+        let error = |h: f64| {
+            let p = OdeBuilder::<Mat>::new()
+                .rtol(10.0)
+                .atol([10.0])
+                .rhs_implicit(
+                    |_, _, t, f| f[0] = 5.0 * t.powi(4),
+                    |_, _, _, _, j| j[0] = 0.0,
+                )
+                .init(|_, _, y| y[0] = 0.0, 1)
+                .build()
+                .unwrap();
+            let mut s = p.rodas5p::<LS>().unwrap();
+            *s.state_mut().h = h;
+            s.step().unwrap();
+            (s.interpolate(h / 2.0).unwrap()[0] - (h / 2.0).powi(5)).abs()
+        };
+        assert!((30.0..34.0).contains(&(error(0.5) / error(0.25))));
+    }
+
+    #[test]
+    fn maximum_step_bounds_dense_output_and_survives_clone() {
+        let p = OdeBuilder::<Mat>::new()
+            .rtol(10.0)
+            .atol([10.0])
+            .rhs_implicit(
+                |_, _, t, f| f[0] = 5.0 * t.powi(4),
+                |_, _, _, _, j| j[0] = 0.0,
+            )
+            .init(|_, _, y| y[0] = 0.0, 1)
+            .build()
+            .unwrap();
+        let mut s = p.rodas5p::<LS>().unwrap();
+        assert!(s.set_maximum_step(0.0).is_err());
+        assert!(s.set_maximum_step(f64::NAN).is_err());
+        s.set_maximum_step(0.25).unwrap();
+        let mut s = s.clone();
+        *s.state_mut().h = 2.0;
+        s.step().unwrap();
+        assert_eq!(s.state().t, 0.25);
+        assert!((s.interpolate(0.125).unwrap()[0] - 0.125_f64.powi(5)).abs() < 1e-5);
+    }
+
+    #[test]
+    fn nonfinite_trial_stages_shrink_and_retry() {
+        for tableau in [Tableau::rodas5p(), Tableau::rosenbrock23()] {
+            let p = OdeBuilder::<Mat>::new()
+                .rtol(1e-6)
+                .atol([1e-9])
+                .rhs_implicit(
+                    |x, _, _, f| f[0] = if x[0] < 0.0 { f64::NAN } else { -100.0 * x[0] },
+                    |_, _, _, v, j| j[0] = -100.0 * v[0],
+                )
+                .init(|_, _, y| y[0] = 1.0, 1)
+                .build()
+                .unwrap();
+            let state = p.rodas5p_state::<LS>().unwrap();
+            let mut solver = p.rosenbrock_solver::<LS, Mat>(state, tableau).unwrap();
+            *solver.state_mut().h = 1.0;
+            solver.step().unwrap();
+            assert!(solver.state().y[0].is_finite());
+            assert!(solver.state().t < 1.0);
+            assert!(solver.get_statistics().number_of_error_test_failures > 0);
+        }
+    }
+
+    #[test]
+    fn persistent_nonfinite_rhs_fails_without_accepting_state() {
+        for tableau in [Tableau::rodas5p(), Tableau::rosenbrock23()] {
+            let p = OdeBuilder::<Mat>::new()
+                .rtol(1e-6)
+                .atol([1e-9])
+                .rhs_implicit(
+                    |_, _, t, f| f[0] = if t > 0.0 { f64::NAN } else { 0.0 },
+                    |_, _, _, _, j| j[0] = 0.0,
+                )
+                .init(|_, _, y| y[0] = 1.0, 1)
+                .build()
+                .unwrap();
+            let state = p.rodas5p_state::<LS>().unwrap();
+            let mut solver = p.rosenbrock_solver::<LS, Mat>(state, tableau).unwrap();
+            solver.config_mut().maximum_error_test_failures = 5;
+            assert!(solver.step().is_err());
+            assert_eq!(solver.state().t, 0.0);
+            assert_eq!(solver.state().y[0], 1.0);
+        }
+    }
+
+    #[test]
+    fn sampled_refinement_rejects_invalid_data_and_preserves_callback_errors() {
+        let mut calls = 0;
+        let result = refine_sampled_trajectory(
+            1e-3,
+            &[1e-5],
+            8,
+            0.25,
+            |factor| {
+                calls += 1;
+                Ok::<_, DiffsolError>(vec![vec![1.0 + factor * 0.002]])
+            },
+            |e| e,
+        )
+        .unwrap();
+        assert_eq!(calls, 3);
+        assert_eq!(result.passes, 3);
+        assert!(result.maximum_scaled_change <= 0.25);
+        for rows in [vec![], vec![vec![f64::NAN]], vec![vec![f64::INFINITY]]] {
+            assert!(refine_sampled_trajectory(
+                1e-3,
+                &[1e-5],
+                8,
+                0.25,
+                |_| Ok::<_, DiffsolError>(rows.clone()),
+                |e| e
+            )
+            .is_err());
+        }
+        let mut calls = 0;
+        let result = refine_sampled_trajectory(
+            1e-3,
+            &[1e-5],
+            8,
+            0.25,
+            |_| {
+                calls += 1;
+                if calls == 2 {
+                    Err("original shared work budget".to_owned())
+                } else {
+                    Ok(vec![vec![1.0]])
+                }
+            },
+            |e| e.to_string(),
+        );
+        assert_eq!(result.unwrap_err(), "original shared work budget");
+        assert_eq!(calls, 2);
+        let mut calls = 0;
+        assert!(refine_sampled_trajectory(
+            1e-3,
+            &[1e-5],
+            3,
+            0.25,
+            |_| {
+                calls += 1;
+                Ok::<_, DiffsolError>(vec![vec![if calls % 2 == 0 { 2.0 } else { 1.0 }]])
+            },
+            |e| e
+        )
+        .is_err());
+        assert_eq!(calls, 3);
+        let mut calls = 0;
+        assert!(refine_sampled_trajectory(
+            1e-3,
+            &[1e-5],
+            8,
+            0.25,
+            |_| {
+                calls += 1;
+                Ok::<_, DiffsolError>(vec![vec![1.0; calls]])
+            },
+            |e| e
+        )
+        .is_err());
+    }
+
+    #[test]
+    fn refinement_reports_deterioration_and_stalling() {
+        for (values, word) in [
+            (vec![1.0, 1.01, 1.011, 1.0], "worsened"),
+            (vec![1.0, 2.0, 1.0, 2.0, 1.0], "stalled"),
+        ] {
+            let mut calls = 0;
+            let error = refine_sampled_trajectory(
+                1e-3,
+                &[1e-5],
+                8,
+                0.25,
+                |_| {
+                    let value = values[calls.min(values.len() - 1)];
+                    calls += 1;
+                    Ok::<_, DiffsolError>(vec![vec![value]])
+                },
+                |e| e,
+            )
+            .unwrap_err();
+            assert!(error.to_string().contains(word), "{error}");
+            assert!(calls <= 5);
+        }
+    }
+    #[test]
+    fn polynomial_ode_endpoint_derivative_uses_rhs() {
+        let p = OdeBuilder::<Mat>::new()
+            .rtol(10.0)
+            .atol([10.0])
+            .rhs_implicit(
+                |_, _, t, f| f[0] = 5.0 * t.powi(4),
+                |_, _, _, _, j| j[0] = 0.0,
+            )
+            .init(|_, _, y| y[0] = 0.0, 1)
+            .build()
+            .unwrap();
+        let mut s = p.rodas5p::<LS>().unwrap();
+        *s.state_mut().h = 2.0;
+        s.step().unwrap();
+        assert!(
+            (s.state().dy[0] - 80.0).abs() < 1e-12,
+            "{}",
+            s.state().dy[0]
+        );
+    }
+
+    #[test]
+    fn central_time_partial_resolves_small_time_signal() {
+        use crate::{NonLinearOp, OdeEquations};
+        let p = OdeBuilder::<Mat>::new()
+            .rhs_implicit(
+                |_, _, t, f| f[0] = 1e4 + t.sin(),
+                |_, _, _, _, j| j[0] = 0.0,
+            )
+            .init(|_, _, y| y[0] = 0.0, 1)
+            .build()
+            .unwrap();
+        let mut ft = p
+            .eqn
+            .rhs()
+            .call(&crate::NalgebraVec::zeros(1, *p.context()), 1.0);
+        p.eqn
+            .rhs()
+            .time_derive_inplace(&crate::NalgebraVec::zeros(1, *p.context()), 1.0, &mut ft);
+        assert!((ft[0] - 1.0_f64.cos()).abs() < 5e-7, "{}", ft[0]);
+    }
+
+    #[test]
     fn paper_polynomial_dense_output_dae_problem_six() {
         for degree in 1_i32..=5 {
             let problem = OdeBuilder::<Mat>::new()
@@ -1150,10 +2268,10 @@ mod tests {
         s.ft[0] = ft;
         s.rk.start_step_attempt(h, None::<&mut NoAug<E>>);
         for i in 0..s.rk.tableau().s() {
-            s.rk.do_stage_rosenbrock(i, h, &s.op, &mut s.linear_solver, &s.ft)
+            s.rk.do_stage_rosenbrock(i, h, &s.op, &mut s.linear_solver, &s.ft, s.rk.state().t + h)
                 .unwrap();
         }
-        s.rk.finish_step_rosenbrock(h);
+        s.rk.finish_step_rosenbrock(h, s.rk.state().t + h);
         let err =
             s.rk.error_norm(h, None::<&mut NoAug<E>>, |_| Ok(()))
                 .unwrap()

@@ -11,6 +11,14 @@ pub trait NonLinearOp: Op {
     /// Compute the operator `F(x, t)` at a given state and time.
     fn call_inplace(&self, x: &Self::V, t: Self::T, y: &mut Self::V);
 
+    /// Optionally supply the exact partial time derivative at fixed `x`.
+    /// Return true after filling `y`; false selects the numerical fallback.
+    /// This hook is on NonLinearOp so the blanket time-partial trait does not
+    /// prevent analytic derivatives. The default preserves existing operators.
+    fn time_partial_inplace(&self, _x: &Self::V, _t: Self::T, _y: &mut Self::V) -> bool {
+        false
+    }
+
     /// Compute the operator `F(x, t)` at a given state and time, and return the result.
     /// Use `[Self::call_inplace]` to for a non-allocating version.
     fn call(&self, x: &Self::V, t: Self::T) -> Self::V {
@@ -26,15 +34,19 @@ pub trait NonLinearOpTimePartial: NonLinearOp {
     /// The default implementation estimates the derivative using a central finite difference
     /// at the supplied state and time.
     fn time_derive_inplace(&self, x: &Self::V, t: Self::T, y: &mut Self::V) {
-        let eps_sqrt = Self::T::EPSILON.sqrt();
-        let h = (Self::T::one() + t.abs()) * eps_sqrt;
+        if self.time_partial_inplace(x, t, y) {
+            return;
+        }
+        // Central differences balance O(h^2) truncation and O(epsilon/h) roundoff.
+        let relstep = Self::T::EPSILON.cbrt();
+        let h = (Self::T::one() + t.abs()) * relstep;
         let mut y_plus = Self::V::zeros(self.nout(), self.context().clone());
         let mut y_minus = Self::V::zeros(self.nout(), self.context().clone());
         self.call_inplace(x, t + h, &mut y_plus);
         self.call_inplace(x, t - h, &mut y_minus);
         y.copy_from(&y_plus);
         *y -= &y_minus;
-        *y *= scale(Self::T::one() / (h + h));
+        *y *= scale(Self::T::one() / ((t + h) - (t - h)));
     }
 
     /// Compute the partial time derivative `∂F/∂t(x, t)` and return it.
@@ -411,6 +423,50 @@ mod tests {
         assert_eq!(sens_adj.get_index(1, 0), -2.0);
         assert_eq!(sens_adj.get_index(0, 1), -3.0);
         assert_eq!(sens_adj.get_index(1, 1), -4.0);
+    }
+
+    struct AnalyticTimeOp {
+        ctx: NalgebraContext,
+    }
+    impl Op for AnalyticTimeOp {
+        type T = f64;
+        type V = crate::NalgebraVec<f64>;
+        type M = M;
+        type C = NalgebraContext;
+        fn context(&self) -> &Self::C {
+            &self.ctx
+        }
+        fn nstates(&self) -> usize {
+            1
+        }
+        fn nout(&self) -> usize {
+            1
+        }
+        fn nparams(&self) -> usize {
+            0
+        }
+    }
+    impl NonLinearOp for AnalyticTimeOp {
+        fn call_inplace(&self, _: &Self::V, _: f64, _: &mut Self::V) {
+            panic!("analytic time derivative must not probe the RHS");
+        }
+        fn time_partial_inplace(&self, _: &Self::V, t: f64, y: &mut Self::V) -> bool {
+            y[0] = t.cos();
+            true
+        }
+    }
+    #[test]
+    fn analytic_time_partial_survives_blanket_trait_and_reference_forwarding() {
+        let op = AnalyticTimeOp {
+            ctx: NalgebraContext::default(),
+        };
+        let x = crate::NalgebraVec::zeros(1, NalgebraContext::default());
+        assert_eq!(op.time_derive(&x, 1.0)[0], 1.0_f64.cos());
+        let reference = &op;
+        assert_eq!(
+            NonLinearOpTimePartial::time_derive(&reference, &x, 1.0)[0],
+            1.0_f64.cos()
+        );
     }
 
     #[test]

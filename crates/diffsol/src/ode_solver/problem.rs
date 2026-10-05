@@ -599,6 +599,73 @@ where
     for<'b> &'b Eqn::V: VectorRef<Eqn::V>,
     for<'b> &'b Eqn::M: MatrixRef<Eqn::M>,
 {
+    /// Create a Rosenbrock solver with a caller-supplied state and tableau.
+    pub fn rosenbrock_solver<
+        LS: LinearSolver<Eqn::M>,
+        DM: DenseMatrix<T = Eqn::T, V = Eqn::V, C = Eqn::C>,
+    >(
+        &self,
+        state: RkState<Eqn::V>,
+        tableau: Tableau<Eqn::T>,
+    ) -> Result<Rosenbrock<'_, Eqn, LS, DM>, DiffsolError>
+    where
+        Eqn: OdeEquationsImplicit,
+    {
+        Rosenbrock::new(self, state, tableau, LS::default())
+    }
+    /// Create a fifth-order Rodas5P Rosenbrock solver.
+    pub fn rodas5p<LS: LinearSolver<Eqn::M>>(&self) -> Result<Rosenbrock<'_, Eqn, LS>, DiffsolError>
+    where
+        Eqn: OdeEquationsImplicit,
+    {
+        self.rodas5p_solver(self.rodas5p_state::<LS>()?)
+    }
+    /// Restart a Rodas5P solver from a caller-supplied state.
+    pub fn rodas5p_solver<LS: LinearSolver<Eqn::M>>(
+        &self,
+        state: RkState<Eqn::V>,
+    ) -> Result<Rosenbrock<'_, Eqn, LS>, DiffsolError>
+    where
+        Eqn: OdeEquationsImplicit,
+    {
+        self.rosenbrock_solver(state, Tableau::rodas5p())
+    }
+    /// Create consistent initial conditions and an initial step size for Rodas5P.
+    pub fn rodas5p_state<LS: LinearSolver<Eqn::M>>(&self) -> Result<RkState<Eqn::V>, DiffsolError>
+    where
+        Eqn: OdeEquationsImplicit,
+    {
+        self.rk_state_and_consistent::<LS>(&Tableau::rodas5p())
+    }
+    /// Create a second-order Rosenbrock23 Rosenbrock solver.
+    pub fn rosenbrock23<LS: LinearSolver<Eqn::M>>(
+        &self,
+    ) -> Result<Rosenbrock<'_, Eqn, LS>, DiffsolError>
+    where
+        Eqn: OdeEquationsImplicit,
+    {
+        self.rosenbrock23_solver(self.rosenbrock23_state::<LS>()?)
+    }
+    /// Restart a Rosenbrock23 solver from a caller-supplied state.
+    pub fn rosenbrock23_solver<LS: LinearSolver<Eqn::M>>(
+        &self,
+        state: RkState<Eqn::V>,
+    ) -> Result<Rosenbrock<'_, Eqn, LS>, DiffsolError>
+    where
+        Eqn: OdeEquationsImplicit,
+    {
+        self.rosenbrock_solver(state, Tableau::rosenbrock23())
+    }
+    /// Create consistent initial conditions and an initial step size for Rosenbrock23.
+    pub fn rosenbrock23_state<LS: LinearSolver<Eqn::M>>(
+        &self,
+    ) -> Result<RkState<Eqn::V>, DiffsolError>
+    where
+        Eqn: OdeEquationsImplicit,
+    {
+        self.rk_state_and_consistent::<LS>(&Tableau::rosenbrock23())
+    }
+
     /// Create a new state for the Bdf solver. This will provide a consistent initial state,
     /// so might require solving a nonlinear system if a mass matrix is present.
     pub fn bdf_state<LS: LinearSolver<Eqn::M>>(&self) -> Result<BdfState<Eqn::V>, DiffsolError>
@@ -916,73 +983,6 @@ where
     {
         let linear_solver = LS::default();
         Sdirk::new(self, state, tableau, linear_solver)
-    }
-
-    /// Create a Rosenbrock solver with a caller-supplied state and tableau.
-    pub fn rosenbrock_solver<
-        LS: LinearSolver<Eqn::M>,
-        DM: DenseMatrix<T = Eqn::T, V = Eqn::V, C = Eqn::C>,
-    >(
-        &self,
-        state: RkState<Eqn::V>,
-        tableau: Tableau<Eqn::T>,
-    ) -> Result<Rosenbrock<'_, Eqn, LS, DM>, DiffsolError>
-    where
-        Eqn: OdeEquationsImplicit,
-    {
-        Rosenbrock::new(self, state, tableau, LS::default())
-    }
-    /// Create a fifth-order Rodas5P Rosenbrock solver.
-    pub fn rodas5p<LS: LinearSolver<Eqn::M>>(&self) -> Result<Rosenbrock<'_, Eqn, LS>, DiffsolError>
-    where
-        Eqn: OdeEquationsImplicit,
-    {
-        self.rodas5p_solver(self.rodas5p_state::<LS>()?)
-    }
-    /// Restart a Rodas5P solver from a caller-supplied state.
-    pub fn rodas5p_solver<LS: LinearSolver<Eqn::M>>(
-        &self,
-        state: RkState<Eqn::V>,
-    ) -> Result<Rosenbrock<'_, Eqn, LS>, DiffsolError>
-    where
-        Eqn: OdeEquationsImplicit,
-    {
-        self.rosenbrock_solver(state, Tableau::rodas5p())
-    }
-    /// Create consistent initial conditions and an initial step size for Rodas5P.
-    pub fn rodas5p_state<LS: LinearSolver<Eqn::M>>(&self) -> Result<RkState<Eqn::V>, DiffsolError>
-    where
-        Eqn: OdeEquationsImplicit,
-    {
-        self.rk_state_and_consistent::<LS>(&Tableau::rodas5p())
-    }
-    /// Create a second-order Rosenbrock23 Rosenbrock solver.
-    pub fn rosenbrock23<LS: LinearSolver<Eqn::M>>(
-        &self,
-    ) -> Result<Rosenbrock<'_, Eqn, LS>, DiffsolError>
-    where
-        Eqn: OdeEquationsImplicit,
-    {
-        self.rosenbrock23_solver(self.rosenbrock23_state::<LS>()?)
-    }
-    /// Restart a Rosenbrock23 solver from a caller-supplied state.
-    pub fn rosenbrock23_solver<LS: LinearSolver<Eqn::M>>(
-        &self,
-        state: RkState<Eqn::V>,
-    ) -> Result<Rosenbrock<'_, Eqn, LS>, DiffsolError>
-    where
-        Eqn: OdeEquationsImplicit,
-    {
-        self.rosenbrock_solver(state, Tableau::rosenbrock23())
-    }
-    /// Create consistent initial conditions and an initial step size for Rosenbrock23.
-    pub fn rosenbrock23_state<LS: LinearSolver<Eqn::M>>(
-        &self,
-    ) -> Result<RkState<Eqn::V>, DiffsolError>
-    where
-        Eqn: OdeEquationsImplicit,
-    {
-        self.rk_state_and_consistent::<LS>(&Tableau::rosenbrock23())
     }
 
     pub(crate) fn sdirk_solver_aug<

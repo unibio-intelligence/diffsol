@@ -2,7 +2,7 @@ use crate::{Matrix, NonLinearOpJacobian};
 use diffsol_la::LinearSolver as LaLinearSolver;
 use num_traits::Zero;
 
-pub use diffsol_la::{FaerLU, FaerSparseLU, NalgebraLU, NalgebraNativeLU};
+pub use diffsol_la::{AdaptiveLU, FaerLU, FaerSparseLU, NalgebraLU, NalgebraNativeLU};
 
 #[cfg(feature = "suitesparse")]
 pub use diffsol_la::KLU;

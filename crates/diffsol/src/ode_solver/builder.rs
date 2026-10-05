@@ -1855,6 +1855,11 @@ where
             reset.set_nparams(nparams);
         }
 
+        if !rhs.valid_structural_sparsity() {
+            return Err(DiffsolError::Other(
+                "invalid RHS structural sparsity indices".into(),
+            ));
+        }
         if self.use_coloring || M::is_sparse() {
             rhs.calculate_sparsity(&y0, self.t0, &p);
             if let Some(ref mut mass) = mass {
@@ -2001,6 +2006,26 @@ where
             ic_options,
             ode_options,
         )
+    }
+}
+
+impl<M, F, G, Init, Mass, Root, Out, Reset>
+    OdeBuilder<M, Closure<M, F, G>, Init, Mass, Root, Out, Reset>
+where
+    M: Matrix,
+    F: Fn(&[M::T], &[M::T], M::T, &mut [M::T]),
+    G: Fn(&[M::T], &[M::T], M::T, &[M::T], &mut [M::T]),
+{
+    /// Use a conservative, complete structural pattern instead of probing initial values.
+    /// Indices are checked by build; omitted mathematical dependencies are the caller's responsibility.
+    pub fn rhs_sparsity(mut self, pattern: Option<Vec<(usize, usize)>>) -> Self {
+        if let Some(pattern) = pattern {
+            if let Some(rhs) = self.rhs.as_mut() {
+                rhs.set_structural_sparsity(pattern);
+            }
+            self.use_coloring = true;
+        }
+        self
     }
 }
 
