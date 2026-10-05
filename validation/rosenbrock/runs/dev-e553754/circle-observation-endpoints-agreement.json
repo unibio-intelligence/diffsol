@@ -1,0 +1,54 @@
+{
+  "schema": "unibio.additional-sampled-agreement/v1",
+  "runs": [
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "mode": "endpoint-local",
+      "passes": 1,
+      "total_steps": 777,
+      "maximum_reference_tolerance_units": 0.3353423936975254,
+      "convergence_units": null,
+      "maximum_absolute_error": 2.640390318608965e-07,
+      "algebraic_residual": 4.863446336766941e-07
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "mode": "endpoint-sampled",
+      "passes": 3,
+      "total_steps": 8900,
+      "maximum_reference_tolerance_units": 0.004264023551581911,
+      "convergence_units": 0.036801737450883214,
+      "maximum_absolute_error": 2.6666833186084204e-09,
+      "algebraic_residual": 5.240215816826321e-09
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "endpoint-local",
+      "passes": 1,
+      "total_steps": 6075,
+      "maximum_reference_tolerance_units": 0.3808410815913254,
+      "convergence_units": null,
+      "maximum_absolute_error": 2.7848894301740756e-09,
+      "algebraic_residual": 5.423429261242063e-09
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "endpoint-sampled",
+      "passes": 3,
+      "total_steps": 84526,
+      "maximum_reference_tolerance_units": 0.00418098192073356,
+      "convergence_units": 0.03605743038888649,
+      "maximum_absolute_error": 2.300803991772682e-11,
+      "algebraic_residual": 4.026623479091995e-11
+    }
+  ],
+  "failures": []
+}

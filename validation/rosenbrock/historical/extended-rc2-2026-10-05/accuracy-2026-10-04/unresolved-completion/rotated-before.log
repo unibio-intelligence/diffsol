@@ -1,0 +1,22 @@
+   Compiling diffsol v0.17.1 (<build-path>)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 50.95s
+     Running unittests src/lib.rs (target/debug/deps/diffsol-df06ada1315ba5ad)
+
+running 1 test
+test ode_solver::rosenbrock::tests::rosenbrock23_controls_rotated_algebraic_endpoint ... FAILED
+
+failures:
+
+---- ode_solver::rosenbrock::tests::rosenbrock23_controls_rotated_algebraic_endpoint stdout ----
+
+thread 'ode_solver::rosenbrock::tests::rosenbrock23_controls_rotated_algebraic_endpoint' (187739598) panicked at crates/diffsol/src/ode_solver/rosenbrock.rs:838:9:
+rotated constraint residual 0.0000015025419951159025
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    ode_solver::rosenbrock::tests::rosenbrock23_controls_rotated_algebraic_endpoint
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 314 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p diffsol --lib`

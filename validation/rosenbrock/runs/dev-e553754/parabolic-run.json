@@ -1,0 +1,12 @@
+{
+  "source_commit": "e553754e5b984529864c044611f714f312c37329",
+  "source_tree": "1656884009fb87ed1015fe4ad4617c8d076f09aa",
+  "kind": "parabolic",
+  "environment": {},
+  "exit_code": 0,
+  "elapsed_seconds": 3.984115583007224,
+  "driver_sha256": "085ffa7d6c5936c76a535b782833b0c1fa9f08cf5cbe44cbacb9fd5cb8d3cbc1",
+  "command": "python3 validation/rosenbrock/run.py --source SOURCE --snapshot dev-e553754 --target-dir TARGET --extended",
+  "csv_sha256": "4c5b1ad85126642d9fc668c9487e6d61f91b21d5185a56712308dc64f91d5317",
+  "diagnostic_sha256": "0d8bdc51b2ba8deac24296bf06927157e07a7c9b38108ecfb566a1365047edc3"
+}

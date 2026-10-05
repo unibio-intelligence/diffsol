@@ -1,0 +1,71 @@
+{
+  "schema": "unibio.additional-sampled-agreement/v1",
+  "runs": [
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "mode": "local",
+      "passes": 1,
+      "total_steps": 273666,
+      "maximum_reference_tolerance_units": 2.7785087275619427,
+      "convergence_units": null,
+      "maximum_absolute_error": 2.873269089320729e-07,
+      "position_constraint_drift": 9.479441320792148e-08,
+      "velocity_constraint_drift": 1.0458367505350452e-08
+    },
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "mode": "pass0.1",
+      "passes": 1,
+      "total_steps": 1139056,
+      "maximum_reference_tolerance_units": 0.33949352476482636,
+      "convergence_units": null,
+      "maximum_absolute_error": 3.3944731470114675e-08,
+      "position_constraint_drift": 9.803176936884483e-09,
+      "velocity_constraint_drift": 1.046275954763587e-09
+    },
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "mode": "pass0.010000000000000002",
+      "passes": 1,
+      "total_steps": 3875637,
+      "maximum_reference_tolerance_units": 0.033508182672058934,
+      "convergence_units": null,
+      "maximum_absolute_error": 3.9301379928247115e-09,
+      "position_constraint_drift": 9.766774056174654e-10,
+      "velocity_constraint_drift": 1.0463097055435355e-10
+    },
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "mode": "pass0.0010000000000000002",
+      "passes": 1,
+      "total_steps": 12529442,
+      "maximum_reference_tolerance_units": 0.003383901269228652,
+      "convergence_units": null,
+      "maximum_absolute_error": 4.3707082397759223e-10,
+      "position_constraint_drift": 9.739942186115513e-11,
+      "velocity_constraint_drift": 1.0463629962487175e-11
+    },
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 4,
+      "total_steps": 12529442,
+      "maximum_reference_tolerance_units": 0.003383901269228652,
+      "convergence_units": 0.030124280393420393,
+      "maximum_absolute_error": 4.3707082397759223e-10,
+      "position_constraint_drift": 9.739942186115513e-11,
+      "velocity_constraint_drift": 1.0463629962487175e-11
+    }
+  ],
+  "failures": []
+}

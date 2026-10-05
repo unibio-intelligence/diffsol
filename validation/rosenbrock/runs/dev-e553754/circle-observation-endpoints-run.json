@@ -1,0 +1,16 @@
+{
+  "source_commit": "e553754e5b984529864c044611f714f312c37329",
+  "source_tree": "1656884009fb87ed1015fe4ad4617c8d076f09aa",
+  "kind": "additional",
+  "environment": {
+    "VALIDATION_PROBLEM": "circle_inexact",
+    "VALIDATION_METHOD": "rodas5p",
+    "VALIDATION_OBSERVATION_ENDPOINTS": "1"
+  },
+  "exit_code": 0,
+  "elapsed_seconds": 3.480646083015017,
+  "driver_sha256": "3aa3ba299adca885d242e8e2c06497097a539842ba0f27a65430ad0339712b85",
+  "command": "python3 validation/rosenbrock/run.py --source SOURCE --snapshot dev-e553754 --target-dir TARGET --extended",
+  "csv_sha256": "dbe29927330808f636f4a872aa8aaff2ca96870f24695159910c505f0e56b3d6",
+  "diagnostic_sha256": "c769d43b2dfe6da1f982ac51cfec5f11128fccac233df6beeff63e9bb18dea4a"
+}

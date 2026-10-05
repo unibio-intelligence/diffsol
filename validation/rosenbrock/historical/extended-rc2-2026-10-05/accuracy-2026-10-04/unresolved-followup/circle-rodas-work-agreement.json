@@ -1,0 +1,20 @@
+{
+  "schema": "unibio.additional-sampled-agreement/v1",
+  "runs": [
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "local",
+      "passes": 1,
+      "total_steps": 5926,
+      "maximum_reference_tolerance_units": 1156.5368499818255,
+      "convergence_units": null,
+      "maximum_absolute_error": 7.270677390258662e-06,
+      "algebraic_residual": 1.0737086283407749e-05
+    }
+  ],
+  "failures": [
+    "FAILED circle_inexact rodas5p 0.00000001: ODE solver error: Error: Sampled trajectory did not converge within the refinement pass limit"
+  ]
+}

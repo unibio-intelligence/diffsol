@@ -1,0 +1,35 @@
+   Compiling diffsol-pr-a-scientific v0.0.0 (<build-path>)
+    Finished `release` profile [optimized] target(s) in 1.04s
+     Running `<build-path>`
+hires rodas5p 0.000001 passes=4 steps=1276
+hires rodas5p 0.00000001 passes=4 steps=4458
+hires rosenbrock23 0.000001 passes=6 steps=84978
+hires rosenbrock23 0.00000001 passes=7 steps=915828
+oregonator rodas5p 0.000001 passes=3 steps=5347
+oregonator rodas5p 0.00000001 passes=3 steps=17647
+oregonator rosenbrock23 0.000001 passes=7 steps=1899310
+FAILED oregonator rosenbrock23 0.00000001: Error: validation step cap
+amplifier rodas5p 0.000001 passes=5 steps=16489
+amplifier rodas5p 0.00000001 passes=5 steps=50497
+amplifier rosenbrock23 0.000001 passes=4 steps=2655724
+FAILED amplifier rosenbrock23 0.00000001: Error: validation step cap
+pendulum rodas5p 0.000001 passes=6 steps=9864
+pendulum rodas5p 0.00000001 passes=6 steps=24712
+FAILED pendulum rosenbrock23 0.000001: Error: validation step cap
+FAILED pendulum rosenbrock23 0.00000001: Error: validation step cap
+circle rodas5p 0.000001 passes=4 steps=168
+circle rodas5p 0.00000001 passes=3 steps=281
+circle rosenbrock23 0.000001 passes=3 steps=9443
+circle rosenbrock23 0.00000001 passes=3 steps=94459
+circle_inexact rodas5p 0.000001 passes=8 steps=2743245
+FAILED circle_inexact rodas5p 0.00000001: Error: validation step cap
+FAILED circle_inexact rosenbrock23 0.000001: Error: validation step cap
+FAILED circle_inexact rosenbrock23 0.00000001: Error: validation step cap
+pollution rodas5p 0.000001 passes=3 steps=163
+pollution rodas5p 0.00000001 passes=3 steps=459
+pollution rosenbrock23 0.000001 passes=6 steps=13897
+pollution rosenbrock23 0.00000001 passes=7 steps=140512
+pv rodas5p 0.000001 passes=5 steps=89557
+pv rodas5p 0.00000001 passes=6 steps=292341
+FAILED pv rosenbrock23 0.000001: ODE solver error: Exceeded maximum number of error test failures (40) at time = 21496.228694939888
+FAILED pv rosenbrock23 0.00000001: ODE solver error: Exceeded maximum number of error test failures (40) at time = 7194.477542740929

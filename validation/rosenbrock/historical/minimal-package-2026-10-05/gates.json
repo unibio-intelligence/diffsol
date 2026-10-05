@@ -1,0 +1,81 @@
+{
+  "candidate_patch_sha256": "f1fd8f0f5b3fa6be763532a9f919e5c1ad6f240e8e34b58d395ab8a0a8299dd5",
+  "checks": [
+    {
+      "name": "format",
+      "exit_code": 0
+    },
+    {
+      "name": "nalgebra-tests",
+      "exit_code": 0
+    },
+    {
+      "name": "faer-tests",
+      "exit_code": 0
+    },
+    {
+      "name": "clippy",
+      "exit_code": 0
+    },
+    {
+      "name": "rustdoc",
+      "exit_code": 0
+    },
+    {
+      "name": "rosenbrock-filtered-tests",
+      "exit_code": 0
+    },
+    {
+      "name": "cranelift-tests",
+      "exit_code": 0
+    }
+  ],
+  "tests": {
+    "default-tests": [
+      {
+        "passed": 298,
+        "execution_seconds": 0.81
+      },
+      {
+        "passed": 4,
+        "execution_seconds": 1.42
+      }
+    ],
+    "nalgebra-tests": [
+      {
+        "passed": 298,
+        "execution_seconds": 1.65
+      },
+      {
+        "passed": 4,
+        "execution_seconds": 2.15
+      }
+    ],
+    "faer-tests": [
+      {
+        "passed": 298,
+        "execution_seconds": 1.18
+      },
+      {
+        "passed": 4,
+        "execution_seconds": 1.79
+      }
+    ],
+    "cranelift-tests": [
+      {
+        "passed": 329,
+        "execution_seconds": 2.84
+      },
+      {
+        "passed": 4,
+        "execution_seconds": 2.56
+      }
+    ],
+    "rosenbrock-filtered-tests": [
+      {
+        "passed": 58,
+        "execution_seconds": 0.62
+      }
+    ]
+  }
+}

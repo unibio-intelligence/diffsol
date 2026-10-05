@@ -1,0 +1,27 @@
+[deps]
+DelayDiffEq = "bcd4f6db-9728-5f36-b5f7-82caef46ccdb"
+DiffEqCallbacks = "459566f4-90b8-5000-8ac3-15dfb0a30def"
+DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
+ModelingToolkit = "961ee093-0014-501f-94e3-6117800e7a78"
+OpenSSL_jll = "458c3c95-2e84-50aa-8efc-19380b2a3a95"
+OrdinaryDiffEq = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
+OrdinaryDiffEqDefault = "50262376-6c5a-4cf5-baba-aaf4f84d72d7"
+OrdinaryDiffEqRosenbrock = "43230ef6-c299-4910-a778-202eb28ce4ce"
+OrdinaryDiffEqSDIRK = "2d112036-d095-4a1e-ab9a-08536f3ecdbf"
+PythonCall = "6099a3de-0909-46bc-b1f4-468b9a2dfc0d"
+StochasticDiffEq = "789caeaf-c7a9-5a7d-9973-96adeb23e2a0"
+Sundials = "c3572dad-4567-51f8-b174-8c6c989267f4"
+
+[compat]
+DelayDiffEq = "^5, ^6"
+DiffEqCallbacks = "^3, ^4"
+DifferentialEquations = "^7, ^8"
+ModelingToolkit = "^9, ^10, ^11"
+OpenSSL_jll = "3.0.0 - 3.5"
+OrdinaryDiffEq = "^6, ^7"
+OrdinaryDiffEqDefault = "^1, ^2"
+PythonCall = "=0.9.35"
+StochasticDiffEq = "^6, ^7"
+Sundials = "^4, ^5, ^6"
+
+[preferences]

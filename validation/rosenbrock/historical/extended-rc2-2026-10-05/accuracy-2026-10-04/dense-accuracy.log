@@ -1,0 +1,16 @@
+   Compiling diffsol-pr-a-scientific v0.0.0 (<build-path>)
+    Finished `release` profile [optimized] target(s) in 2.31s
+     Running `<build-path>`
+sampling,maximum_step,accepted_steps,maximum_sample_error
+dense,2,1,4.61267308499985873e-1
+dense,1,2,1.37639078768434231e-2
+dense,0.5,4,4.19454814087367490e-4
+dense,0.25,8,1.43770456935143898e-5
+dense,0.125,16,2.41485474700153802e-7
+dense,0.0625,32,1.40843911811128208e-8
+observation_endpoints,2,7,7.81597009336110204e-14
+observation_endpoints,1,7,7.81597009336110204e-14
+observation_endpoints,0.5,7,7.81597009336110204e-14
+observation_endpoints,0.25,12,9.94759830064140260e-14
+observation_endpoints,0.125,26,1.27897692436818033e-13
+observation_endpoints,0.0625,39,1.49213974509621039e-13

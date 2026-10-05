@@ -1,0 +1,22 @@
+{
+  "schema": "unibio.additional-sampled-agreement/v1",
+  "runs": [
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "local",
+      "passes": 1,
+      "total_steps": 2655869,
+      "maximum_reference_tolerance_units": 3.3987285466457244,
+      "convergence_units": null,
+      "maximum_absolute_error": 5.86181947426212e-09,
+      "position_constraint_drift": 1.0159153518429775e-09,
+      "velocity_constraint_drift": 1.1385470344293935e-10
+    }
+  ],
+  "failures": [
+    "FAILED pendulum rosenbrock23 1.0e-8 pass=5 Unstable",
+    "UNRESOLVED pendulum rosenbrock23 1.0e-8"
+  ]
+}

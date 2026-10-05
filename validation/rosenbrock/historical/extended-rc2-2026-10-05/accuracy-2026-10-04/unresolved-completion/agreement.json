@@ -1,0 +1,536 @@
+{
+  "schema": "unibio.completed-unresolved-investigation/v1",
+  "date": "2026-10-05",
+  "source_patch_sha256": "6428eb759a9fd56abcef7a5d2f8d68df1121e133146bbe60a8fde6afc741ed50",
+  "status": "uncommitted; Fable review/publication pending",
+  "standard_budget": {
+    "accepted_steps_per_pass": 5000000,
+    "maximum_passes": 8,
+    "completed": 24,
+    "total": 32,
+    "runs": [
+      {
+        "problem": "hires",
+        "method": "rodas5p",
+        "rtol": 1e-06,
+        "mode": "sampled",
+        "passes": 4,
+        "total_steps": 1276,
+        "maximum_reference_tolerance_units": 0.002793978182627791,
+        "convergence_units": 0.061037796576625454,
+        "maximum_absolute_error": 3.998934516857844e-11,
+        "mass_drift": 6.938893903907228e-18
+      },
+      {
+        "problem": "hires",
+        "method": "rodas5p",
+        "rtol": 1e-08,
+        "mode": "sampled",
+        "passes": 4,
+        "total_steps": 4458,
+        "maximum_reference_tolerance_units": 0.0006041202984915643,
+        "convergence_units": 0.013767971965388707,
+        "maximum_absolute_error": 8.426592756904938e-14,
+        "mass_drift": 3.469446951953614e-18
+      },
+      {
+        "problem": "hires",
+        "method": "rosenbrock23",
+        "rtol": 1e-06,
+        "mode": "sampled",
+        "passes": 6,
+        "total_steps": 84978,
+        "maximum_reference_tolerance_units": 0.030082499114787584,
+        "convergence_units": 0.10973543794919656,
+        "maximum_absolute_error": 1.8209219687648215e-09,
+        "mass_drift": 8.673617379884035e-19
+      },
+      {
+        "problem": "hires",
+        "method": "rosenbrock23",
+        "rtol": 1e-08,
+        "mode": "sampled",
+        "passes": 7,
+        "total_steps": 915828,
+        "maximum_reference_tolerance_units": 0.03005019587120268,
+        "convergence_units": 0.10945141750242186,
+        "maximum_absolute_error": 1.8157253478534585e-11,
+        "mass_drift": 8.673617379884035e-19
+      },
+      {
+        "problem": "oregonator",
+        "method": "rodas5p",
+        "rtol": 1e-06,
+        "mode": "sampled",
+        "passes": 3,
+        "total_steps": 5347,
+        "maximum_reference_tolerance_units": 0.018709230748126603,
+        "convergence_units": 0.16885772073097566,
+        "maximum_absolute_error": 0.000253008067375049
+      },
+      {
+        "problem": "oregonator",
+        "method": "rodas5p",
+        "rtol": 1e-08,
+        "mode": "sampled",
+        "passes": 3,
+        "total_steps": 17647,
+        "maximum_reference_tolerance_units": 0.018654893973420388,
+        "convergence_units": 0.1951306282653324,
+        "maximum_absolute_error": 2.278276951983571e-06
+      },
+      {
+        "problem": "oregonator",
+        "method": "rosenbrock23",
+        "rtol": 1e-06,
+        "mode": "sampled",
+        "passes": 7,
+        "total_steps": 1899310,
+        "maximum_reference_tolerance_units": 0.020863485401772533,
+        "convergence_units": 0.0926323396313879,
+        "maximum_absolute_error": 0.00014710688265040517
+      },
+      {
+        "problem": "amplifier",
+        "method": "rodas5p",
+        "rtol": 1e-06,
+        "mode": "sampled",
+        "passes": 5,
+        "total_steps": 16487,
+        "maximum_reference_tolerance_units": 0.004125214595436404,
+        "convergence_units": 0.1328339302411091,
+        "maximum_absolute_error": 3.830246120273273e-09,
+        "algebraic_residual": 1.9359322630217723e-12
+      },
+      {
+        "problem": "amplifier",
+        "method": "rodas5p",
+        "rtol": 1e-08,
+        "mode": "sampled",
+        "passes": 4,
+        "total_steps": 27241,
+        "maximum_reference_tolerance_units": 0.045589277280288755,
+        "convergence_units": 0.14939375463239182,
+        "maximum_absolute_error": 9.38343625023208e-10,
+        "algebraic_residual": 4.429610432794828e-13
+      },
+      {
+        "problem": "amplifier",
+        "method": "rosenbrock23",
+        "rtol": 1e-06,
+        "mode": "sampled",
+        "passes": 7,
+        "total_steps": 1499304,
+        "maximum_reference_tolerance_units": 0.010402439218021422,
+        "convergence_units": 0.10431638141360997,
+        "maximum_absolute_error": 1.9944906615165792e-08,
+        "algebraic_residual": 3.9464010401571437e-14
+      },
+      {
+        "problem": "pendulum",
+        "method": "rodas5p",
+        "rtol": 1e-06,
+        "mode": "sampled",
+        "passes": 6,
+        "total_steps": 9864,
+        "maximum_reference_tolerance_units": 0.010574571868260003,
+        "convergence_units": 0.08563663497122971,
+        "maximum_absolute_error": 9.549587787205382e-10,
+        "position_constraint_drift": 2.9396041156815045e-11,
+        "velocity_constraint_drift": 6.3513638792755955e-12
+      },
+      {
+        "problem": "pendulum",
+        "method": "rodas5p",
+        "rtol": 1e-08,
+        "mode": "sampled",
+        "passes": 6,
+        "total_steps": 24712,
+        "maximum_reference_tolerance_units": 0.011527668143968483,
+        "convergence_units": 0.09952864637580566,
+        "maximum_absolute_error": 2.155431388928264e-11,
+        "position_constraint_drift": 4.050093593832571e-13,
+        "velocity_constraint_drift": 6.661338147750939e-14
+      },
+      {
+        "problem": "circle",
+        "method": "rodas5p",
+        "rtol": 1e-06,
+        "mode": "sampled",
+        "passes": 4,
+        "total_steps": 168,
+        "maximum_reference_tolerance_units": 0.0016677674403845154,
+        "convergence_units": 0.022657602642961943,
+        "maximum_absolute_error": 1.524821824361311e-09,
+        "algebraic_residual": 2.8938411666956654e-09
+      },
+      {
+        "problem": "circle",
+        "method": "rodas5p",
+        "rtol": 1e-08,
+        "mode": "sampled",
+        "passes": 3,
+        "total_steps": 281,
+        "maximum_reference_tolerance_units": 0.01845092426265318,
+        "convergence_units": 0.17495935600650256,
+        "maximum_absolute_error": 1.8541590485199322e-10,
+        "algebraic_residual": 3.6909975076326873e-10
+      },
+      {
+        "problem": "circle",
+        "method": "rosenbrock23",
+        "rtol": 1e-06,
+        "mode": "sampled",
+        "passes": 2,
+        "total_steps": 15688,
+        "maximum_reference_tolerance_units": 0.0013561259928791117,
+        "convergence_units": 0.011822260011113596,
+        "maximum_absolute_error": 7.576425042898904e-10,
+        "algebraic_residual": 1.3953902477936708e-09
+      },
+      {
+        "problem": "circle",
+        "method": "rosenbrock23",
+        "rtol": 1e-08,
+        "mode": "sampled",
+        "passes": 2,
+        "total_steps": 156875,
+        "maximum_reference_tolerance_units": 0.0013760305840919828,
+        "convergence_units": 0.011200776716849208,
+        "maximum_absolute_error": 7.687628311714434e-12,
+        "algebraic_residual": 1.3955281374933293e-11
+      },
+      {
+        "problem": "circle_inexact",
+        "method": "rodas5p",
+        "rtol": 1e-06,
+        "mode": "sampled",
+        "passes": 8,
+        "total_steps": 2743244,
+        "maximum_reference_tolerance_units": 0.036669068172066645,
+        "convergence_units": 0.14451122469273553,
+        "maximum_absolute_error": 2.343770189039418e-08,
+        "algebraic_residual": 3.502883183514882e-08
+      },
+      {
+        "problem": "pollution",
+        "method": "rodas5p",
+        "rtol": 1e-06,
+        "mode": "sampled",
+        "passes": 3,
+        "total_steps": 163,
+        "maximum_reference_tolerance_units": 0.007570572378814294,
+        "convergence_units": 0.06348384608698938,
+        "maximum_absolute_error": 2.3996063469589046e-10
+      },
+      {
+        "problem": "pollution",
+        "method": "rodas5p",
+        "rtol": 1e-08,
+        "mode": "sampled",
+        "passes": 3,
+        "total_steps": 459,
+        "maximum_reference_tolerance_units": 0.00564926432313612,
+        "convergence_units": 0.06300007818514614,
+        "maximum_absolute_error": 2.6885021986444713e-12
+      },
+      {
+        "problem": "pollution",
+        "method": "rosenbrock23",
+        "rtol": 1e-06,
+        "mode": "sampled",
+        "passes": 6,
+        "total_steps": 13897,
+        "maximum_reference_tolerance_units": 0.0234184108727344,
+        "convergence_units": 0.08530567028302465,
+        "maximum_absolute_error": 3.489184219329644e-10
+      },
+      {
+        "problem": "pollution",
+        "method": "rosenbrock23",
+        "rtol": 1e-08,
+        "mode": "sampled",
+        "passes": 7,
+        "total_steps": 140512,
+        "maximum_reference_tolerance_units": 0.023439722724370633,
+        "convergence_units": 0.08531825739293908,
+        "maximum_absolute_error": 3.491373856689961e-12
+      },
+      {
+        "problem": "pv",
+        "method": "rodas5p",
+        "rtol": 1e-06,
+        "mode": "sampled",
+        "passes": 5,
+        "total_steps": 89557,
+        "maximum_reference_tolerance_units": 0.0020536513344697033,
+        "convergence_units": 0.22593428282367173,
+        "maximum_absolute_error": 1.6832372162767228e-09,
+        "algebraic_residual": 1.6658841417438452e-08
+      },
+      {
+        "problem": "pv",
+        "method": "rodas5p",
+        "rtol": 1e-08,
+        "mode": "sampled",
+        "passes": 6,
+        "total_steps": 292340,
+        "maximum_reference_tolerance_units": 0.0016028541356746307,
+        "convergence_units": 0.16717686858924538,
+        "maximum_absolute_error": 2.510205376893282e-10,
+        "algebraic_residual": 8.746781077206833e-12
+      },
+      {
+        "problem": "pv",
+        "method": "rosenbrock23",
+        "rtol": 1e-06,
+        "mode": "sampled",
+        "passes": 2,
+        "total_steps": 1403748,
+        "maximum_reference_tolerance_units": 0.01810313382907809,
+        "convergence_units": 0.16687130060996044,
+        "maximum_absolute_error": 2.588889401522465e-05,
+        "algebraic_residual": 2.614385152810428e-09
+      }
+    ],
+    "failures": [
+      "FAILED oregonator rosenbrock23 0.00000001: Error: validation step cap",
+      "FAILED amplifier rosenbrock23 0.00000001: Error: validation step cap",
+      "FAILED pendulum rosenbrock23 0.000001: Error: validation step cap",
+      "FAILED pendulum rosenbrock23 0.00000001: Error: validation step cap",
+      "FAILED circle_inexact rodas5p 0.00000001: Error: validation step cap",
+      "FAILED circle_inexact rosenbrock23 0.000001: Error: validation step cap",
+      "FAILED circle_inexact rosenbrock23 0.00000001: Error: validation step cap",
+      "FAILED pv rosenbrock23 0.00000001: Error: validation step cap"
+    ]
+  },
+  "larger_budget_runs": [
+    {
+      "problem": "amplifier",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 7,
+      "total_steps": 14895893,
+      "maximum_reference_tolerance_units": 0.016338917599029418,
+      "convergence_units": 0.07739714456162622,
+      "maximum_absolute_error": 2.116862241052786e-10,
+      "algebraic_residual": 4.560696438560274e-16
+    },
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 4,
+      "total_steps": 125169053,
+      "maximum_reference_tolerance_units": 0.003331596101348544,
+      "convergence_units": 0.02711108041943002,
+      "maximum_absolute_error": 5.447198248020868e-12,
+      "position_constraint_drift": 9.681144774731365e-13,
+      "velocity_constraint_drift": 1.0302869668521453e-13
+    },
+    {
+      "problem": "pv",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 2,
+      "total_steps": 14032176,
+      "maximum_reference_tolerance_units": 0.017945350803075383,
+      "convergence_units": 0.15404907531946585,
+      "maximum_absolute_error": 2.5902409106492996e-07,
+      "algebraic_residual": 3.6056491126146284e-11
+    },
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 4,
+      "total_steps": 12529442,
+      "maximum_reference_tolerance_units": 0.003383901269228652,
+      "convergence_units": 0.030124280393420393,
+      "maximum_absolute_error": 4.3707082397759223e-10,
+      "position_constraint_drift": 9.739942186115513e-11,
+      "velocity_constraint_drift": 1.0463629962487175e-11
+    },
+    {
+      "problem": "oregonator",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 8,
+      "total_steps": 21869632,
+      "maximum_reference_tolerance_units": 0.00797311576245492,
+      "convergence_units": 0.04384968249667799,
+      "maximum_absolute_error": 6.314658094197512e-07
+    }
+  ],
+  "mixed_explicit_budgets_raw_coverage": {
+    "original": 29,
+    "original_total": 32,
+    "including_source_supplement": 35,
+    "total": 40,
+    "equal_work_comparison": false
+  },
+  "source_supplement": [
+    {
+      "problem": "hyperbolic",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "passes": 3,
+      "accepted_steps": 46,
+      "coarse_fine_agreement_units": 0.11468131107414366,
+      "maximum_reference_error_units": 0.014187278251282512,
+      "reference": "analytic transport solution"
+    },
+    {
+      "problem": "hyperbolic",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "passes": 3,
+      "accepted_steps": 117,
+      "coarse_fine_agreement_units": 0.17020359628149156,
+      "maximum_reference_error_units": 0.019426213165186848,
+      "reference": "analytic transport solution"
+    },
+    {
+      "problem": "hyperbolic",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "passes": 5,
+      "accepted_steps": 4559,
+      "coarse_fine_agreement_units": 0.05614154389296248,
+      "maximum_reference_error_units": 0.015109491940959303,
+      "reference": "analytic transport solution"
+    },
+    {
+      "problem": "hyperbolic",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "passes": 6,
+      "accepted_steps": 46979,
+      "coarse_fine_agreement_units": 0.05439272804046831,
+      "maximum_reference_error_units": 0.014906467774878512,
+      "reference": "analytic transport solution"
+    },
+    {
+      "problem": "water_index1",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "passes": 4,
+      "accepted_steps": 23959,
+      "coarse_fine_agreement_units": 0.21768816429038812,
+      "maximum_reference_error_units": 0.03346441878598662,
+      "reference": "null-space ODE / Radau 1e-13",
+      "maximum_BDF_reference_error_units": 0.03330579088532936,
+      "maximum_original_flow_balance_m3_per_s": 7.19910242530375e-17,
+      "maximum_Colebrook_residual": 4.720668300706166e-13,
+      "minimum_friction_factor": 0.0365142702667565
+    },
+    {
+      "problem": "water_index1",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "passes": 5,
+      "accepted_steps": 76601,
+      "coarse_fine_agreement_units": 0.009644368702666689,
+      "maximum_reference_error_units": 0.33001687193954404,
+      "reference": "null-space ODE / Radau 1e-13",
+      "maximum_BDF_reference_error_units": 0.06593595126820474,
+      "maximum_original_flow_balance_m3_per_s": 9.627715291671279e-17,
+      "maximum_Colebrook_residual": 6.661338147750939e-15,
+      "minimum_friction_factor": 0.03651427026675648
+    }
+  ],
+  "source_supplement_failures": [
+    "FAILED water_index1 rosenbrock23 0.000001: ODE solver error: Step size is too small at time = 3535.4929244113705",
+    "FAILED water_index1 rosenbrock23 0.00000001: ODE solver error: Step size is too small at time = 3535.50630995707"
+  ],
+  "opt_in_consistent_observations": [
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "mode": "consistent-sampled",
+      "passes": 3,
+      "total_steps": 8385,
+      "maximum_reference_tolerance_units": 0.006426861218942883,
+      "convergence_units": 0.0592497433055093,
+      "maximum_absolute_error": 3.854442987005768e-09,
+      "algebraic_residual": 9.767742170652127e-13
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "consistent-sampled",
+      "passes": 3,
+      "total_steps": 83993,
+      "maximum_reference_tolerance_units": 0.007085474851438445,
+      "convergence_units": 0.0703899936062278,
+      "maximum_absolute_error": 4.076095017069292e-11,
+      "algebraic_residual": 9.547918011776346e-15
+    }
+  ],
+  "opt_in_consistent_observation_failures": [
+    "FAILED circle_inexact rosenbrock23 0.000001: Error: validation step cap",
+    "FAILED circle_inexact rosenbrock23 0.00000001: Error: validation step cap"
+  ],
+  "pendulum_analytic_check": [
+    {
+      "mode": "pass0.0010000000000000002",
+      "maximum_analytic_error_units": 0.0035050541906597246
+    },
+    {
+      "mode": "sampled",
+      "maximum_analytic_error_units": 0.0035050541906597246
+    }
+  ],
+  "water_diagnosis": {
+    "schema": "unibio.water-threshold-diagnosis/v1",
+    "runs": [
+      {
+        "rtol": 1e-06,
+        "time": 3535.4929244113705,
+        "trial_h": 1.4799391892021622e-12,
+        "flow_index_zero_based": 17,
+        "pipe": "node 12 to node 10",
+        "flow_m3_per_s": 0.0023664046663165114,
+        "Reynolds_number": 2300.0,
+        "friction_factor": 0.04751940452918529,
+        "laminar_pressure_loss_Pa": 0.12630496,
+        "turbulent_limit_pressure_loss_Pa": 0.43138918509530944,
+        "loss_jump_Pa": 0.3050842250953094,
+        "jump_ratio": 3.4154572005351924,
+        "float64_ulp_at_time": 4.547473508864641e-13,
+        "status": "typed StepSizeTooSmall; no complete trajectory",
+        "source_gap": "Exact published author index-1 adaptation unavailable; independent reduction only",
+        "contact": "Cancelled by user; no request sent"
+      },
+      {
+        "rtol": 1e-08,
+        "time": 3535.50630995707,
+        "trial_h": 6.51675810480073e-13,
+        "flow_index_zero_based": 17,
+        "pipe": "node 12 to node 10",
+        "flow_m3_per_s": 0.0023664046663165114,
+        "Reynolds_number": 2300.0,
+        "friction_factor": 0.04751940452918529,
+        "laminar_pressure_loss_Pa": 0.12630496,
+        "turbulent_limit_pressure_loss_Pa": 0.43138918509530944,
+        "loss_jump_Pa": 0.3050842250953094,
+        "jump_ratio": 3.4154572005351924,
+        "float64_ulp_at_time": 4.547473508864641e-13,
+        "status": "typed StepSizeTooSmall; no complete trajectory",
+        "source_gap": "Exact published author index-1 adaptation unavailable; independent reduction only",
+        "contact": "Cancelled by user; no request sent"
+      }
+    ]
+  },
+  "paper_source_gap": "Exact author water index-1 adaptation unavailable; independently derived system only",
+  "author_contact": "Cancelled by user; no request sent",
+  "public_claim": "Selected equations/examples and declared constant-mass index-1 scope; no universal error guarantee or full-bibliography reproduction",
+  "no_commits_or_pushes": true
+}

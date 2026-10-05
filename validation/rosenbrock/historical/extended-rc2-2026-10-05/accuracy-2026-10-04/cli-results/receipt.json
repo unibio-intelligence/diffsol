@@ -1,0 +1,125 @@
+{
+  "source": "classic Robertson benchmark, independently generated Radau comparator",
+  "runs": [
+    {
+      "method": "bdf",
+      "rtol": 0.001,
+      "maximum_requested_tolerance_units": 0.49170457749683083,
+      "result": "bdf-0.001.json"
+    },
+    {
+      "method": "esdirk34",
+      "rtol": 0.001,
+      "maximum_requested_tolerance_units": 0.8549890615779553,
+      "result": "esdirk34-0.001.json"
+    },
+    {
+      "method": "tr_bdf2",
+      "rtol": 0.001,
+      "maximum_requested_tolerance_units": 0.09727640176500685,
+      "result": "tr_bdf2-0.001.json"
+    },
+    {
+      "method": "rosenbrock23",
+      "rtol": 0.001,
+      "maximum_requested_tolerance_units": 0.3708202011886878,
+      "result": "rosenbrock23-0.001.json"
+    },
+    {
+      "method": "rodas5p",
+      "rtol": 0.001,
+      "maximum_requested_tolerance_units": 0.09263351781006063,
+      "result": "rodas5p-0.001.json"
+    },
+    {
+      "method": "bdf",
+      "rtol": 0.0001,
+      "maximum_requested_tolerance_units": 0.6880631932520287,
+      "result": "bdf-0.0001.json"
+    },
+    {
+      "method": "esdirk34",
+      "rtol": 0.0001,
+      "maximum_requested_tolerance_units": 1.094224330197272,
+      "result": "esdirk34-0.0001.json"
+    },
+    {
+      "method": "tr_bdf2",
+      "rtol": 0.0001,
+      "maximum_requested_tolerance_units": 0.21637800242648847,
+      "result": "tr_bdf2-0.0001.json"
+    },
+    {
+      "method": "rosenbrock23",
+      "rtol": 0.0001,
+      "maximum_requested_tolerance_units": 0.4179521805591693,
+      "result": "rosenbrock23-0.0001.json"
+    },
+    {
+      "method": "rodas5p",
+      "rtol": 0.0001,
+      "maximum_requested_tolerance_units": 0.20229569053947308,
+      "result": "rodas5p-0.0001.json"
+    },
+    {
+      "method": "bdf",
+      "rtol": 1e-05,
+      "maximum_requested_tolerance_units": 1.9146181887323934,
+      "result": "bdf-1e-05.json"
+    },
+    {
+      "method": "esdirk34",
+      "rtol": 1e-05,
+      "maximum_requested_tolerance_units": 2.0435469990533477,
+      "result": "esdirk34-1e-05.json"
+    },
+    {
+      "method": "tr_bdf2",
+      "rtol": 1e-05,
+      "maximum_requested_tolerance_units": 0.07989854037664154,
+      "result": "tr_bdf2-1e-05.json"
+    },
+    {
+      "method": "rosenbrock23",
+      "rtol": 1e-05,
+      "maximum_requested_tolerance_units": 0.6515806379983781,
+      "result": "rosenbrock23-1e-05.json"
+    },
+    {
+      "method": "rodas5p",
+      "rtol": 1e-05,
+      "maximum_requested_tolerance_units": 0.29740932537174375,
+      "result": "rodas5p-1e-05.json"
+    },
+    {
+      "method": "bdf",
+      "rtol": 1e-06,
+      "maximum_requested_tolerance_units": 1.8512812797789886,
+      "result": "bdf-1e-06.json"
+    },
+    {
+      "method": "esdirk34",
+      "rtol": 1e-06,
+      "maximum_requested_tolerance_units": 5.972055196925986,
+      "result": "esdirk34-1e-06.json"
+    },
+    {
+      "method": "tr_bdf2",
+      "rtol": 1e-06,
+      "maximum_requested_tolerance_units": 0.205320082925667,
+      "result": "tr_bdf2-1e-06.json"
+    },
+    {
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "maximum_requested_tolerance_units": 1.0045578016051404,
+      "result": "rosenbrock23-1e-06.json"
+    },
+    {
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "maximum_requested_tolerance_units": 0.9455220275005567,
+      "result": "rodas5p-1e-06.json"
+    }
+  ]
+}

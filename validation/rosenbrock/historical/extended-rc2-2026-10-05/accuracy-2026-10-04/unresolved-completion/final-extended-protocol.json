@@ -1,0 +1,41 @@
+[
+  {
+    "problem": "pv",
+    "rtol": 1e-08,
+    "step_cap_per_pass": 20000000,
+    "process_exit": 0,
+    "elapsed_seconds": 46.32301891699899,
+    "csv": "final-pv-extended.csv",
+    "log": "final-pv-extended.log",
+    "source_files_sha256": {
+      "crates/diffsol/src/ode_solver/rosenbrock.rs": "c5df30890ed552b01a05a2a041d3337c97c70cbf64037663eb1b912a263cbeec",
+      "crates/diffsol/src/ode_solver/runge_kutta.rs": "b50433f30f296d92ad95ac298b80c3b9f517d7c1715a21dbce5fd0b180ab8d0b"
+    }
+  },
+  {
+    "problem": "pendulum",
+    "rtol": 1e-06,
+    "step_cap_per_pass": 20000000,
+    "process_exit": 0,
+    "elapsed_seconds": 30.90661091695074,
+    "csv": "final-pendulum-extended.csv",
+    "log": "final-pendulum-extended.log",
+    "source_files_sha256": {
+      "crates/diffsol/src/ode_solver/rosenbrock.rs": "c5df30890ed552b01a05a2a041d3337c97c70cbf64037663eb1b912a263cbeec",
+      "crates/diffsol/src/ode_solver/runge_kutta.rs": "b50433f30f296d92ad95ac298b80c3b9f517d7c1715a21dbce5fd0b180ab8d0b"
+    }
+  },
+  {
+    "problem": "oregonator",
+    "rtol": 1e-08,
+    "step_cap_per_pass": 20000000,
+    "process_exit": 0,
+    "elapsed_seconds": 26.527501708944328,
+    "csv": "final-oregonator-extended.csv",
+    "log": "final-oregonator-extended.log",
+    "source_files_sha256": {
+      "crates/diffsol/src/ode_solver/rosenbrock.rs": "c5df30890ed552b01a05a2a041d3337c97c70cbf64037663eb1b912a263cbeec",
+      "crates/diffsol/src/ode_solver/runge_kutta.rs": "b50433f30f296d92ad95ac298b80c3b9f517d7c1715a21dbce5fd0b180ab8d0b"
+    }
+  }
+]

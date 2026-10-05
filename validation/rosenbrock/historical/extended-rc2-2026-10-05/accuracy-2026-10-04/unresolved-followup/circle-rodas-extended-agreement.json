@@ -1,0 +1,116 @@
+{
+  "schema": "unibio.additional-sampled-agreement/v1",
+  "runs": [
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "local",
+      "passes": 1,
+      "total_steps": 5926,
+      "maximum_reference_tolerance_units": 1156.5368499818255,
+      "convergence_units": null,
+      "maximum_absolute_error": 7.270677390258662e-06,
+      "algebraic_residual": 1.0737086283407749e-05
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "pass0.1",
+      "passes": 1,
+      "total_steps": 24678,
+      "maximum_reference_tolerance_units": 361.5936217384629,
+      "convergence_units": null,
+      "maximum_absolute_error": 2.350152696672936e-06,
+      "algebraic_residual": 3.6331397874622695e-06
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "pass0.010000000000000002",
+      "passes": 1,
+      "total_steps": 83993,
+      "maximum_reference_tolerance_units": 115.55030261378045,
+      "convergence_units": null,
+      "maximum_absolute_error": 7.285181717886502e-07,
+      "algebraic_residual": 1.1424186361352895e-06
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "pass0.0010000000000000002",
+      "passes": 1,
+      "total_steps": 271582,
+      "maximum_reference_tolerance_units": 36.6568074437961,
+      "convergence_units": null,
+      "maximum_absolute_error": 2.361015212226647e-07,
+      "algebraic_residual": 3.5780153484488153e-07
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "pass0.00010000000000000003",
+      "passes": 1,
+      "total_steps": 864811,
+      "maximum_reference_tolerance_units": 11.587688381512383,
+      "convergence_units": null,
+      "maximum_absolute_error": 7.503187371415976e-08,
+      "algebraic_residual": 1.1588807979912019e-07
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "pass0.000010000000000000004",
+      "passes": 1,
+      "total_steps": 2740786,
+      "maximum_reference_tolerance_units": 3.41309500192418,
+      "convergence_units": null,
+      "maximum_absolute_error": 2.3301083174054327e-08,
+      "algebraic_residual": 3.622737976272106e-08
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "pass0.0000010000000000000004",
+      "passes": 1,
+      "total_steps": 8673187,
+      "maximum_reference_tolerance_units": 1.1146718033157665,
+      "convergence_units": null,
+      "maximum_absolute_error": 7.236837795687734e-09,
+      "algebraic_residual": 1.1126795040894422e-08
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "pass0.00000010000000000000005",
+      "passes": 1,
+      "total_steps": 27338374,
+      "maximum_reference_tolerance_units": 0.3502117274805037,
+      "convergence_units": null,
+      "maximum_absolute_error": 2.3496212753215673e-09,
+      "algebraic_residual": 3.640236112545381e-09
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "pass0.000000010000000000000005",
+      "passes": 1,
+      "total_steps": 87269120,
+      "maximum_reference_tolerance_units": 0.4962179832891814,
+      "convergence_units": null,
+      "maximum_absolute_error": 2.772278073770451e-09,
+      "algebraic_residual": 1.1835434854390314e-09
+    }
+  ],
+  "failures": [
+    "FAILED circle_inexact rodas5p 0.00000001: Error: validation step cap"
+  ]
+}

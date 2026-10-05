@@ -1,0 +1,58 @@
+{
+  "schema": "unibio.additional-sampled-agreement/v1",
+  "runs": [
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "local",
+      "passes": 1,
+      "total_steps": 2736580,
+      "maximum_reference_tolerance_units": 3.3341743187257737,
+      "convergence_units": null,
+      "maximum_absolute_error": 3.92063537191234e-09,
+      "position_constraint_drift": 9.8735597475752e-10,
+      "velocity_constraint_drift": 1.0472245293158267e-10
+    },
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "pass0.1",
+      "passes": 1,
+      "total_steps": 11390384,
+      "maximum_reference_tolerance_units": 0.38345359209162566,
+      "convergence_units": null,
+      "maximum_absolute_error": 4.050040303127389e-10,
+      "position_constraint_drift": 1.148574568787808e-10,
+      "velocity_constraint_drift": 1.1545431277681928e-11
+    },
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "pass0.010000000000000002",
+      "passes": 1,
+      "total_steps": 38755193,
+      "maximum_reference_tolerance_units": 0.06620009046221494,
+      "convergence_units": null,
+      "maximum_absolute_error": 1.553619455307853e-10,
+      "position_constraint_drift": 3.633182643625332e-11,
+      "velocity_constraint_drift": 3.156586103614245e-12
+    },
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "pass0.0010000000000000002",
+      "passes": 1,
+      "total_steps": 125139516,
+      "maximum_reference_tolerance_units": 3.1911684185896374,
+      "convergence_units": null,
+      "maximum_absolute_error": 2.6884876547228487e-09,
+      "position_constraint_drift": 1.1102496699777475e-10,
+      "velocity_constraint_drift": 1.5924150886803545e-11
+    }
+  ],
+  "failures": []
+}

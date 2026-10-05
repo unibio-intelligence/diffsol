@@ -1,0 +1,12 @@
+{
+  "source_commit": "e553754e5b984529864c044611f714f312c37329",
+  "source_tree": "1656884009fb87ed1015fe4ad4617c8d076f09aa",
+  "kind": "dense-accuracy",
+  "environment": {},
+  "exit_code": 0,
+  "elapsed_seconds": 1.4677618340356275,
+  "driver_sha256": "dd028fd15deb11dc0d2cae13344691b125c36a908efb64d196f092c27c90f696",
+  "command": "python3 validation/rosenbrock/run.py --source SOURCE --snapshot dev-e553754 --target-dir TARGET --extended",
+  "csv_sha256": "c2898431cb8e92e3d7561addd2051ff1bbdda0cc47baf33dacc0cabae6b3f21a",
+  "diagnostic_sha256": "c236d2d780c93033db5a7487772805f93b5f455390c714fe5a334eda59f8a358"
+}

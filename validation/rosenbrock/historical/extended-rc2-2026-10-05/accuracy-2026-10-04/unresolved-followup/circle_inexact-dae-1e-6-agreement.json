@@ -1,0 +1,7 @@
+{
+  "schema": "unibio.additional-sampled-agreement/v1",
+  "runs": [],
+  "failures": [
+    "FAILED circle_inexact rosenbrock23 0.000001: Error: validation step cap"
+  ]
+}

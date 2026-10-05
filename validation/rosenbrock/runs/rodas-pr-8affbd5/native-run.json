@@ -1,0 +1,12 @@
+{
+  "source_commit": "8affbd5079e9c78ed66044814e001e877ac66777",
+  "source_tree": "554b3a92486ac62fddb0b9053a44cab1bf1c951b",
+  "kind": "native",
+  "environment": {},
+  "exit_code": 0,
+  "elapsed_seconds": 66.15154695801903,
+  "driver_sha256": "ab9ad77f329a3d299a0758b056c42a5eb3201734ca867124f31928b1e5c0001f",
+  "command": "python3 validation/rosenbrock/run.py --source SOURCE --snapshot rodas-pr-8affbd5 --target-dir TARGET",
+  "csv_sha256": "4ccd4aba512a14eae7e0dd4f9ac45b46f12fba4122f5368259977b2ca8cfab8c",
+  "diagnostic_sha256": "402c6b610ba65871ac4c96c43998d8b5541950386729f6eed410a0c0d11c40b3"
+}

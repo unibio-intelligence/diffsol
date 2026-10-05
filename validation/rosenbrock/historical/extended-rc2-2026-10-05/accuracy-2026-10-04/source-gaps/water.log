@@ -1,0 +1,24 @@
+   Compiling diffsol-pr-a-scientific v0.0.0 (<build-path>)
+    Finished `release` profile [optimized] target(s) in 1.73s
+     Running `<build-path>`
+water_index1 rodas5p 0.000001 passes=4 steps=23959
+water_index1 rodas5p 0.00000001 passes=4 steps=25352
+FAILED water_index1 rosenbrock23 0.000001: Error: validation step cap
+Traceback (most recent call last):
+  File "<source-path> line 12, in <module>
+    subprocess.run(['cargo','run','--release','--offline','--locked','--manifest-path',str(root/'Cargo.toml')],env=env,check=True)
+  File "<source-path> line 550, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<source-path> line 1201, in communicate
+    self.wait()
+  File "<source-path> line 1264, in wait
+    return self._wait(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<source-path> line 2053, in _wait
+    (pid, sts) = self._try_wait(0)
+                 ^^^^^^^^^^^^^^^^^
+  File "<source-path> line 2011, in _try_wait
+    (pid, sts) = os.waitpid(self.pid, wait_flags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

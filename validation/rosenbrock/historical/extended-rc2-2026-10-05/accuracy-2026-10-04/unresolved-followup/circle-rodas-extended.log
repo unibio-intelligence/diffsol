@@ -1,0 +1,4 @@
+   Compiling diffsol-pr-a-scientific v0.0.0 (<build-path>)
+    Finished `release` profile [optimized] target(s) in 1.27s
+     Running `<build-path>`
+FAILED circle_inexact rodas5p 0.00000001: Error: validation step cap

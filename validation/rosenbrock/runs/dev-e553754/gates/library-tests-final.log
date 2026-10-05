@@ -1,0 +1,919 @@
+   Compiling diffsol-la v0.2.0 (<workspace-source>)
+   Compiling diffsol-nl v0.2.0 (<workspace-source>)
+   Compiling diffsol v0.17.1 (<workspace-source>)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 12.16s
+     Running unittests src/lib.rs (<cargo-target>)
+
+running 319 tests
+test nonlinear_solver::root::tests::test_root ... ok
+test jacobian::tests::find_non_zeros_faer_sparse ... ok
+test jacobian::tests::find_non_zeros_dmatrix ... ok
+test jacobian::tests::build_coloring_faer_sparse ... ok
+test jacobian::tests::build_coloring_dmatrix ... ok
+test linear_solver::tests::test_lu_nalgebra ... ok
+test linear_solver::tests::test_lu_nalgebra_native ... ok
+test nonlinear_solver::tests::test_newton_cpu_square ... ok
+test nonlinear_solver::tests::test_newton_cpu_square_backtrack ... ok
+test jacobian::tests::matrix_coloring_dmatrix ... ok
+test ode_equations::sens_equations::tests::test_rhs_exponential ... ok
+test ode_equations::sens_equations::tests::test_rhs_robertson ... ok
+test linear_solver::tests::test_sparse_lu_faer ... ok
+test ode_equations::sens_equations::tests::test_rhs_exponential_algebraic ... ok
+test linear_solver::tests::test_lu_faer ... ok
+test ode_equations::test_models::heat2d::tests::test_soln ... ok
+test jacobian::tests::matrix_coloring_faer_sparse ... ok
+test ode_equations::tests::ode_equation_test ... ok
+test ode_equations::tests::ode_equations_statistics_new_matches_default ... ok
+test ode_equations::tests::ode_equations_reference_impl_forwards_reads ... ok
+test ode_equations::tests::ode_solver_equations_optional_members_and_param_roundtrip_work ... ok
+test ode_equations::tests::ode_solver_equations_expose_optional_root_and_reset_members ... ok
+test ode_equations::tests::ode_with_mass_test ... ok
+test ode_equations::test_models::logistic::tests::operators_run_batched ... ok
+test ode_equations::test_models::robertson_ode::tests::test_elem_matches_groups ... ok
+test ode_equations::adjoint_equations::tests::test_rhs_exponential_sparse ... ok
+test ode_equations::adjoint_equations::tests::test_rhs_exponential ... ok
+test ode_equations::adjoint_equations::tests::test_rhs_identity_output ... ok
+test ode_solver::bdf::test::bdf_config ... ok
+test ode_equations::test_models::heat2d::elem_tests::test_elem_matches_lane ... ok
+test ode_solver::bdf::test::bdf_clone_resets_statistics_and_preserves_operator_presence ... ok
+test ode_solver::bdf::test::bdf_state_mut ... ok
+test ode_equations::tests::no_aug_panics_for_all_runtime_methods ... ok
+test ode_solver::bdf::test::bdf_clone_preserves_sensitivity_operator_and_resets_statistics ... ok
+test ode_solver::bdf::test::bdf_test_checkpointing ... ok
+test ode_solver::bdf::test::bdf_test_faer_sparse_exponential_decay ... ok
+test ode_solver::bdf::test::bdf_test_interpolate ... ok
+test ode_solver::bdf::test::bdf_test_interpolate_dy ... ok
+test ode_solver::bdf::test::bdf_test_faer_sparse_exponential_decay_algebraic ... ok
+test ode_solver::bdf::test::bdf_test_interpolate_out ... ok
+test ode_solver::bdf::test::bdf_test_interpolate_sens ... ok
+test ode_equations::test_models::foodweb::tests::test_mass ... ok
+test ode_solver::bdf::test::bdf_test_faer_sparse_exponential_decay_sens ... ok
+test ode_solver::bdf::test::bdf_test_nalgebra_exponential_decay_adjoint_no_error_control ... ok
+test ode_equations::test_models::foodweb::tests::test_jacobian ... ok
+test ode_solver::bdf::test::bdf_test_faer_sparse_exponential_decay_algebraic_adjoint ... ok
+test ode_solver::bdf::test::bdf_restarts_cleanly_after_repeated_state_jumps ... ok
+test ode_solver::bdf::test::bdf_test_nalgebra_logistic_without_out ... ok
+test ode_solver::bdf::test::bdf_test_nalgebra_negative_exponential_decay ... ok
+test ode_solver::bdf::test::bdf_test_state_mut_exponential_decay ... ok
+test ode_equations::test_models::foodweb::elem_tests::test_elem_matches_lane ... ok
+test ode_solver::bdf::test::test_bdf_faer_sparse_exponential_decay_algebraic_sens ... ok
+test ode_solver::bdf::test::bdf_test_faer_sparse_robertson ... ok
+test ode_solver::bdf::test::bdf_test_faer_sparse_exponential_decay_adjoint ... ok
+test ode_solver::bdf::test::bdf_test_nalgebra_logistic_without_out_adjoint_sum_squares ... ok
+test ode_solver::bdf::test::bdf_test_nalgebra_exponential_decay_algebraic_adjoint ... ok
+test ode_solver::bdf::test::bdf_test_nalgebra_exponential_decay_adjoint_sum_squares ... ok
+test ode_solver::bdf::test::bdf_test_nalgebra_exponential_decay_adjoint ... ok
+test ode_solver::bdf::test::bdf_test_nalgebra_exponential_decay_sens ... ok
+test ode_solver::bdf::test::bdf_test_nalgebra_exponential_decay ... ok
+test ode_solver::bdf::test::bdf_test_nalgebra_exponential_decay_algebraic_adjoint_sum_squares ... ok
+test ode_solver::bdf::test::bdf_test_faer_exponential_decay ... ok
+test ode_equations::test_models::heat2d::tests::test_jacobian ... ok
+test ode_equations::test_models::heat2d::tests::test_mass ... ok
+test ode_solver::bdf::test::test_bdf_nalgebra_exponential_decay_algebraic ... ok
+test ode_solver::bdf::test::test_bdf_nalgebra_exponential_decay_algebraic_sens ... ok
+test ode_solver::bdf::test::test_bdf_nalgebra_gaussian_decay ... ok
+test ode_solver::bdf::test::test_bdf_nalgebra_dydt_y2_colored ... ok
+test ode_solver::bdf::test::test_bdf_nalgebra_exponential_decay_batched_sens_with_reset ... ok
+test ode_solver::bdf::test::test_bdf_nalgebra_exponential_decay_batched_sens ... ok
+test ode_solver::bdf::test::test_bdf_faer_sparse_robertson_ode_elem ... ok
+test ode_solver::bdf::test::test_bdf_nalgebra_dydt_y2 ... ok
+test ode_solver::bdf::test::test_bdf_nalgebra_robertson ... ok
+test ode_solver::bdf::test::test_root_found_index_bdf ... ok
+test ode_solver::bdf::test::test_root_finder_bdf ... ok
+test ode_solver::bdf::test::test_param_sweep_bdf ... ok
+test ode_solver::bdf::test::test_bdf_nalgebra_robertson_colored ... ok
+test ode_solver::bdf::test::test_solve_dense_sensitivities_with_reset_bdf ... ok
+test ode_solver::bdf::test::test_solve_adjoint_with_single_reset_root_bdf ... ok
+test ode_solver::bdf::test::test_solve_adjoint_sum_squares_with_single_reset_root_bdf_without_replay_solver ... ok
+test ode_solver::bdf::test::test_bdf_nalgebra_robertson_ode ... ok
+test ode_solver::bdf::test::test_solve_dense_with_reset_bdf ... ok
+test ode_solver::bdf::test::test_solve_adjoint_sum_squares_with_single_reset_root_bdf ... ok
+test ode_solver::bdf::test::test_solve_adjoint_with_single_reset_root_bdf_without_replay_solver ... ok
+test ode_solver::builder::tests::build_sensitivity_atols_defaults_parameter_scales_to_one ... ok
+test ode_solver::builder::tests::build_sensitivity_atols_rejects_invalid_parameter_scales ... ok
+test ode_solver::builder::tests::build_sensitivity_atols_uses_parameter_scales ... ok
+test ode_solver::checkpointing::tests::test_checkpointing_requires_solver_without_initial_segment - should panic ... ok
+test ode_solver::bdf::test::test_bdf_nalgebra_robertson_sens ... ok
+test ode_solver::explicit_rk::test::explicit_rk_config ... ok
+test ode_solver::explicit_rk::test::explicit_rk_state_mut ... ok
+test ode_solver::explicit_rk::test::explicit_rk_test_checkpointing ... ok
+test ode_solver::bdf::test::test_tstop_bdf ... ok
+test ode_solver::explicit_rk::test::explicit_rk_test_interpolate ... ok
+test ode_solver::explicit_rk::test::explicit_rk_test_interpolate_dy ... ok
+test ode_solver::explicit_rk::test::explicit_rk_test_interpolate_out ... ok
+test ode_solver::explicit_rk::test::explicit_rk_test_interpolate_sens ... ok
+test ode_solver::explicit_rk::test::explicit_rk_test_nalgebra_logistic_without_out ... ok
+test ode_solver::bdf::test::test_solve_soln_adjoint_with_single_reset_root_bdf ... ok
+test ode_solver::explicit_rk::test::explicit_rk_test_nalgebra_negative_exponential_decay ... ok
+test ode_solver::explicit_rk::test::explicit_rk_test_state_mut_exponential_decay ... ok
+test ode_solver::bdf::test::test_solve_soln_adjoint_sum_squares_with_single_reset_root_bdf ... ok
+test ode_solver::checkpointing::tests::test_checkpointing ... ok
+test ode_solver::explicit_rk::test::test_root_finder_tsit45 ... ok
+test ode_solver::bdf::test::test_solve_with_reset_bdf ... ok
+test ode_solver::explicit_rk::test::test_root_found_index_tsit45 ... ok
+test ode_solver::explicit_rk::test::test_param_sweep_tsit45 ... ok
+test ode_solver::explicit_rk::test::explicit_rk_test_nalgebra_logistic_without_out_adjoint_sum_squares ... ok
+test ode_solver::explicit_rk::test::test_solve_dense_sensitivities_with_reset_tsit45 ... ok
+test ode_solver::explicit_rk::test::test_solve_dense_with_reset_tsit45 ... ok
+test ode_solver::explicit_rk::test::test_solve_adjoint_with_single_reset_root_tsit45 ... ok
+test ode_solver::explicit_rk::test::test_tsit45_nalgebra_exponential_decay ... ok
+test ode_solver::explicit_rk::test::test_tsit45_nalgebra_exponential_decay_sens ... ok
+test ode_solver::explicit_rk::test::test_tsit45_nalgebra_f32_exponential_decay ... ok
+test ode_solver::explicit_rk::test::test_tstop_tsit45 ... ok
+test ode_solver::method::test::test_dense_solve ... ok
+test ode_solver::explicit_rk::test::test_solve_with_reset_tsit45 ... ok
+test ode_solver::method::test::test_dense_solve_integrate_out_stops_on_root ... ok
+test ode_solver::method::test::test_dense_solve_integrate_out ... ok
+test ode_solver::explicit_rk::test::explicit_rk_test_nalgebra_exponential_decay_adjoint_sum_squares ... ok
+test ode_solver::method::test::test_dense_solve_stops_on_root ... ok
+test ode_solver::method::test::test_solve ... ok
+test ode_solver::explicit_rk::test::explicit_rk_test_tsit45_exponential_decay_adjoint ... ok
+test ode_solver::method::test::test_dense_solve_sensitivities ... ok
+test ode_solver::method::test::test_solve_checkpointing ... ok
+test ode_solver::method::test::test_dense_solve_sensitivities_with_out ... ok
+test ode_solver::explicit_rk::test::test_solve_adjoint_sum_squares_with_single_reset_root_tsit45 ... ok
+test ode_solver::method::test::test_solve_dense_with_checkpointing_continues_after_reset ... ok
+test ode_solver::method::test::test_solve_integrate_out ... ok
+test ode_solver::method::test::test_solve_soln_multi_stage_matches_piecewise_analytical_solution ... ok
+test ode_solver::method::test::test_solve_adjoint ... ok
+test ode_solver::method::test::test_solve_stops_on_root ... ok
+test ode_solver::method::test::test_t_eval_errors ... ok
+test ode_solver::method::test::test_solve_soln_sensitivities_stops_on_root_without_writing_root_column ... ok
+test ode_solver::no_checkpointing_solver::tests::config_default_clone_copy_and_base_accessors_panic ... ok
+test ode_solver::no_checkpointing_solver::tests::solver_default_clone_and_config_accessors_panic ... ok
+test ode_solver::no_checkpointing_solver::tests::solver_step_interpolation_and_matrix_methods_panic ... ok
+test ode_solver::no_checkpointing_solver::tests::solver_state_and_problem_methods_panic ... ok
+test ode_solver::method::test::test_solve_dense_sensitivities_with_reset_fd_no_mass ... ok
+test ode_solver::rosenbrock::harness_tests::rodas5p::t_config ... ok
+test ode_solver::method::test::test_solve_soln_sensitivities_dense ... ok
+test ode_solver::rosenbrock::harness_tests::rodas5p::t_checkpointing ... ok
+test ode_solver::rosenbrock::harness_tests::rodas5p::t_exponential_decay_with_root ... ok
+test ode_solver::rosenbrock::harness_tests::rodas5p::t_exponential_decay ... ok
+test ode_solver::rosenbrock::harness_tests::rodas5p::t_interpolate ... ok
+test ode_solver::rosenbrock::harness_tests::rodas5p::t_interpolate_dy ... ok
+test ode_solver::rosenbrock::harness_tests::rodas5p::t_exponential_decay_tstop ... ok
+test ode_solver::rosenbrock::harness_tests::rodas5p::t_negative_exponential_decay ... ok
+test ode_solver::rosenbrock::harness_tests::rodas5p::t_state_mut ... ok
+test ode_solver::bdf::test::test_bdf_nalgebra_robertson_ode_sens ... ok
+test ode_solver::method::test::test_solve_dense_sensitivities_with_reset_fd_with_mass ... ok
+test ode_solver::rosenbrock::harness_tests::rosenbrock23::t_checkpointing ... ok
+test ode_solver::rosenbrock::harness_tests::rosenbrock23::t_config ... ok
+test ode_solver::rosenbrock::harness_tests::rosenbrock23::t_exponential_decay ... ok
+test ode_solver::method::test::test_solve_with_checkpointing_continues_after_reset ... ok
+test ode_solver::rosenbrock::harness_tests::rodas5p::t_robertson_ode_tstop ... ok
+test ode_solver::rosenbrock::harness_tests::rosenbrock23::t_exponential_decay_tstop ... ok
+test ode_solver::rosenbrock::harness_tests::rosenbrock23::t_interpolate ... ok
+test ode_solver::rosenbrock::harness_tests::rosenbrock23::t_interpolate_dy ... ok
+test ode_solver::rosenbrock::harness_tests::rosenbrock23::t_exponential_decay_with_root ... ok
+test ode_solver::rosenbrock::harness_tests::rosenbrock23::t_negative_exponential_decay ... ok
+test ode_solver::rosenbrock::harness_tests::rodas5p::t_robertson_ode ... ok
+test ode_solver::rosenbrock::harness_tests::rosenbrock23::t_state_mut ... ok
+test ode_solver::rosenbrock::harness_tests::rodas5p::t_state_mut_on_problem ... ok
+test ode_solver::rosenbrock::tests::built_in_fixed_nonautonomous_matches_julia_with_analytic_ft ... ok
+test ode_solver::rosenbrock::harness_tests::rosenbrock23::t_state_mut_on_problem ... ok
+test ode_solver::rosenbrock::tests::central_time_partial_resolves_small_time_signal ... ok
+test ode_solver::rosenbrock::tests::built_in_fixed_robertson_matches_julia ... ok
+test ode_solver::rosenbrock::tests::constant_integrated_output_is_consistent_and_dense ... ok
+test ode_solver::rosenbrock::tests::consistent_interpolation_preserves_differential_state ... ok
+test ode_solver::rosenbrock::tests::continuous_extension_avoids_endpoint_rhs_evaluation ... ok
+test ode_solver::rosenbrock::tests::continuous_extension_midpoint_convergence ... ok
+test ode_solver::rosenbrock::tests::custom_tableau_and_single_stage_hermite_interpolation ... ok
+test ode_solver::rosenbrock::tests::embedded_difference_has_local_order_five ... ok
+test ode_solver::rosenbrock::tests::fifth_order_and_stiff_order_reduction ... ok
+test ode_solver::rosenbrock::harness_tests::rosenbrock23::t_robertson_ode ... ok
+test ode_solver::rosenbrock::harness_tests::rosenbrock23::t_robertson_ode_tstop ... ok
+test ode_solver::rosenbrock::tests::forcing_jump_uses_incoming_endpoint_and_outgoing_restart ... ok
+test ode_solver::rosenbrock::tests::integrated_output_has_its_own_error_control ... ok
+test ode_solver::rosenbrock::tests::integrated_output_requires_continuous_extension ... ok
+test ode_solver::rosenbrock::tests::invalid_tableaus_are_typed_errors ... ok
+test ode_solver::rosenbrock::tests::maximum_step_bounds_dense_output_and_survives_clone ... ok
+test ode_solver::rosenbrock::tests::minimum_timestep_is_checked_before_any_attempt ... ok
+test ode_solver::rosenbrock::tests::nonlinear_jacobian_refreshes_at_the_accepted_state ... ok
+test ode_solver::rosenbrock::tests::nonfinite_trial_stages_shrink_and_retry ... ok
+test ode_solver::rosenbrock::tests::nonautonomous_constant_mass_dae ... ok
+test ode_solver::rosenbrock::tests::constant_mass_index_one_dae ... ok
+test ode_solver::rosenbrock::tests::paper_polynomial_dense_output_dae_problem_six ... ok
+test ode_solver::rosenbrock::tests::paper_index_one_dae_problem_one ... ok
+test ode_solver::rosenbrock::tests::paper_polynomial_dense_output_ode_component ... ok
+test ode_solver::rosenbrock::tests::nonlinear_integrated_output_converges_and_restarts ... ok
+test ode_solver::rosenbrock::tests::paper_prothero_robinson_problem_two ... ok
+test ode_solver::rosenbrock::tests::persistent_nonfinite_rhs_fails_without_accepting_state ... ok
+test ode_solver::rosenbrock::tests::polynomial_ode_endpoint_derivative_uses_rhs ... ok
+test ode_solver::rosenbrock::tests::quintic_dense_error_reduces_with_step_size ... ok
+test ode_solver::rosenbrock::tests::paper_table_five_fixed_step_dae_errors_and_order ... ok
+test ode_solver::rosenbrock::tests::refinement_reports_deterioration_and_stalling ... ok
+test ode_solver::rosenbrock::tests::nalgebra_shared_contract ... ok
+test ode_solver::rosenbrock::tests::rodas5p_coefficients_match_julia_bit_for_bit ... ok
+test ode_solver::rosenbrock::tests::rodas5p_stability_matches_julia ... ok
+test ode_solver::rosenbrock::tests::rodas5p_transformed_stiff_accuracy_and_l_stability ... ok
+test ode_solver::rosenbrock::tests::rejection_preserves_the_initial_solution ... ok
+test ode_solver::rosenbrock::tests::paper_table_six_fixed_step_errors_and_order ... ok
+test ode_solver::rosenbrock::tests::rosenbrock23_interpolation_and_root_event ... ok
+test ode_solver::rosenbrock::tests::rosenbrock23_matches_direct_stage_oracles ... ok
+test ode_solver::rosenbrock::tests::rosenbrock23_nonlinear_jacobian_refreshes_after_an_accepted_step ... ok
+test ode_solver::rosenbrock::tests::rosenbrock23_second_order_and_quadratic_dense_output ... ok
+test ode_solver::rosenbrock::tests::rosenbrock23_integrated_outputs_converge_and_restart ... ok
+test ode_solver::rosenbrock::tests::paper_table_eight_index_two_order_reduction ... ok
+test ode_solver::rosenbrock::tests::rosenbrock23_time_forcing_error_estimate_is_cubic ... ok
+test ode_solver::bdf::test::test_bdf_faer_sparse_heat2d ... ok
+test ode_solver::rosenbrock::tests::rosenbrock_rejects_steps_without_representable_progress ... ok
+test ode_solver::rosenbrock::tests::sampled_refinement_rejects_invalid_data_and_preserves_callback_errors ... ok
+test ode_solver::runge_kutta::tests::explicit_rk_rejects_invalid_a_diagonal ... ok
+test ode_solver::runge_kutta::tests::explicit_rk_rejects_mass_matrices ... ok
+test ode_solver::runge_kutta::tests::sdirk_rk_rejects_invalid_first_diagonal_entry ... ok
+test ode_solver::sdirk::test::sdirk_config ... ok
+test ode_solver::sdirk::test::sdirk_state_mut ... ok
+test ode_solver::sdirk::test::sdirk_test_checkpointing ... ok
+test ode_solver::bdf::test::test_bdf_faer_sparse_heat2d_elem ... ok
+test ode_solver::rosenbrock::tests::rosenbrock23_rejected_attempt_keeps_initial_state_intact ... ok
+test ode_solver::sdirk::test::sdirk_test_esdirk34_interpolate_dy ... ok
+test ode_solver::sdirk::test::sdirk_test_exponential_decay_with_mass ... ok
+test ode_solver::sdirk::test::sdirk_test_interpolate ... ok
+test ode_solver::sdirk::test::sdirk_test_interpolate_dy ... ok
+test ode_solver::sdirk::test::sdirk_test_interpolate_out ... ok
+test ode_solver::sdirk::test::sdirk_test_interpolate_sens ... ok
+test ode_solver::sdirk::test::sdirk_test_esdirk34_exponential_decay_algebraic_adjoint ... ok
+test ode_solver::sdirk::test::sdirk_test_nalgebra_negative_exponential_decay ... ok
+test ode_solver::sdirk::test::sdirk_test_esdirk34_exponential_decay_adjoint ... ok
+test ode_solver::sdirk::test::sdirk_test_state_mut_exponential_decay ... ok
+test ode_solver::sdirk::test::test_esdirk34_nalgebra_exponential_decay ... ok
+test ode_solver::sdirk::test::test_esdirk34_nalgebra_exponential_decay_algebraic ... ok
+test ode_solver::sdirk::test::test_esdirk34_nalgebra_exponential_decay_sens ... ok
+test ode_solver::sdirk::test::sdirk_test_nalgebra_exponential_decay_algebraic_adjoint_sum_squares ... ok
+test ode_solver::sdirk::test::test_param_sweep_tr_bdf2 ... ok
+test ode_solver::sdirk::test::test_root_finder_tr_bdf2 ... ok
+test ode_solver::sdirk::test::test_root_found_index_tr_bdf2 ... ok
+test ode_solver::sdirk::test::test_esdirk34_nalgebra_robertson ... ok
+test ode_solver::sdirk::test::test_solve_adjoint_sum_squares_with_single_reset_root_tr_bdf2 ... ok
+test ode_solver::sdirk::test::test_solve_adjoint_with_single_reset_root_tr_bdf2 ... ok
+test ode_solver::sdirk::test::test_solve_dense_with_reset_tr_bdf2 ... ok
+test ode_solver::sdirk::test::test_solve_with_reset_tr_bdf2 ... ok
+test ode_solver::sdirk::test::test_solve_dense_sensitivities_with_reset_tr_bdf2 ... ok
+test ode_solver::sdirk::test::test_esdirk34_nalgebra_robertson_sens ... ok
+test ode_solver::sdirk::test::test_tr_bdf2_nalgebra_exponential_decay2 ... ok
+test ode_solver::sdirk::test::test_tr_bdf2_nalgebra_exponential_decay_sens ... ok
+test ode_solver::rosenbrock::tests::faer_shared_contract ... ok
+test ode_solver::sdirk::test::test_tr_bdf2_nalgebra_robertson ... ok
+test ode_solver::sdirk::test::test_tr_bdf2_nalgebra_robertson_ode ... ok
+test ode_solver::sdirk::test::test_tstop_tr_bdf2 ... ok
+test ode_solver::sens_param_scale_small_parameter ... ok
+test ode_solver::solution::test::test_solution_new_dense_errors_on_non_increasing_t_evals ... ok
+test ode_solver::solution::test::test_solution_new_dense_with_out_eqn_sets_complete ... ok
+test ode_solver::solution::test::test_solution_new_dense_with_solve_soln_sets_complete ... ok
+test ode_solver::solution::test::test_solution_new_with_out_eqn_sets_complete ... ok
+test ode_solver::solution::test::test_solution_new_with_solve_soln_sets_complete ... ok
+test ode_solver::solution::test::test_solution_solve_soln_errors_on_incompatible_equations ... ok
+test ode_solver::state::test::apply_reset_rejects_mass_matrix_problem ... ok
+test ode_solver::state::test::apply_reset_with_sens_rejects_invalid_root_index ... ok
+test ode_solver::state::test::apply_reset_with_sens_rejects_mass_matrix_problem ... ok
+test ode_solver::state::test::apply_reset_with_sens_rejects_zero_event_denominator ... ok
+test ode_solver::state::test::parameterised_op_time_derive_uses_finite_difference ... ok
+test ode_solver::state::test::state_mut_op_with_adjoint_and_reset_matches_autonomous_formula ... ok
+test ode_solver::state::test::state_mut_op_with_adjoint_and_reset_matches_time_dependent_formula ... ok
+test ode_solver::state::test::state_mut_op_with_adjoint_and_reset_rejects_invalid_root_index ... ok
+test ode_solver::state::test::state_mut_op_with_adjoint_and_reset_rejects_mass_matrix_equations ... ok
+test ode_solver::state::test::state_mut_op_with_adjoint_and_reset_rejects_zero_event_denominator ... ok
+test ode_solver::state::test::state_mut_op_with_adjoint_and_reset_uses_selected_root_component ... ok
+test ode_solver::state::test::state_ref_mut_apply_reset_rejects_missing_reset ... ok
+test ode_solver::state::test::state_ref_mut_apply_reset_uses_equation_reset ... ok
+test ode_solver::state::test::state_ref_mut_apply_reset_with_sens_updates_state_and_sensitivities ... ok
+test ode_solver::state::test::step_size_clamps_tiny_initial_conditions ... ok
+test ode_solver::state::test::step_size_preserves_negative_direction ... ok
+test ode_solver::state::test::test_init_bdf_faer_sparse ... ok
+test ode_solver::state::test::test_init_bdf_nalgebra ... ok
+test ode_solver::state::test::test_init_rk_faer_sparse ... ok
+test ode_solver::rosenbrock::tests::rosenbrock23_shared_contract ... ok
+test ode_solver::state::test::test_init_rk_nalgebra ... ok
+test op::bdf::tests::test_bdf_callable ... ok
+test op::constant_op::tests::constant_op_default_helpers_construct_expected_outputs ... ok
+test op::init::tests::test_initop ... ok
+test op::linear_closure_with_adjoint::tests::linear_closure_with_adjoint_builds_matrices_and_tracks_statistics ... ok
+test op::linear_op::tests::linear_op_default_helpers_construct_expected_outputs ... ok
+test op::linearise::tests::linearised_op_tracks_state_and_uses_jacobian_helpers ... ok
+test op::nonlinear_op::tests::analytic_time_partial_survives_blanket_trait_and_reference_forwarding ... ok
+test op::nonlinear_op::tests::nonlinear_op_default_helpers_construct_expected_vectors_and_matrices ... ok
+test op::nonlinear_op::tests::nonlinear_op_time_partial_default_helper_uses_finite_differences ... ok
+test op::sdirk::tests::test_sdirk_callable ... ok
+test op::sdirk::tests::test_sdirk_robertson_jacobian ... ok
+test op::stoch::test::test_additive ... ok
+test op::stoch::test::test_diagonal ... ok
+test op::stoch::test::test_other ... ok
+test op::stoch::test::test_scalar ... ok
+test op::tests::op_statistics_increment_methods_update_counters ... ok
+test op::tests::parameterised_op_and_reference_forwarding_delegate_to_inner_operator ... ok
+test op::unit::tests::unit_callable_behaves_as_identity_and_zero_sens_operator ... ok
+test op::unit::tests::unit_callable_new_uses_supplied_context ... ok
+test small::tests::small_mat_columns_are_contiguous_when_not_square ... ok
+test small::tests::small_mat_mat_mul ... ok
+test small::tests::small_mat_mat_mul_non_square ... ok
+test small::tests::small_mat_mat_mul_rejects_mismatched_shapes - should panic ... ok
+test small::tests::small_mat_packs_to_the_current_shape ... ok
+test small::tests::small_mat_rejects_over_capacity - should panic ... ok
+test small::tests::small_mat_transposed_makes_rows_contiguous ... ok
+test small::tests::small_vec_rejects_over_capacity - should panic ... ok
+test small::tests::small_vec_slices_only_the_live_entries ... ok
+test ode_solver::sdirk::test::test_tr_bdf2_nalgebra_robertson_sens ... ok
+test ode_solver::rosenbrock::harness_tests::rodas5p::t_heat2d_faer_sparse ... ok
+test ode_solver::rosenbrock::tests::rosenbrock23_sparse_robertson_interpolation ... ok
+test ode_solver::rosenbrock::tests::rosenbrock23_controls_nonlinear_algebraic_endpoint ... ok
+test ode_solver::rosenbrock::tests::rosenbrock23_controls_rotated_algebraic_endpoint ... ok
+test ode_solver::rosenbrock::harness_tests::rosenbrock23::t_heat2d_faer_sparse ... ok
+test ode_solver::sdirk::test::test_tr_bdf2_faer_sparse_heat2d_elem ... ok
+test ode_solver::sdirk::test::test_tr_bdf2_faer_sparse_heat2d ... ok
+test ode_solver::bdf::test::test_bdf_nalgebra_heat2d_elem_batched ... ok
+test ode_solver::bdf::test::test_bdf_faer_sparse_foodweb ... ok
+test ode_solver::bdf::test::test_bdf_faer_sparse_foodweb_elem ... ok
+test ode_solver::rosenbrock::tests::small_increments_accumulate_without_roundoff_drift ... ok
+
+test result: ok. 319 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.54s
+
+     Running unittests src/lib.rs (<cargo-target>)
+
+running 548 tests
+test linear_solver::nalgebra::reusable_lu::tests::singular_matrix_fails_like_nalgebra_lu ... ok
+test linear_solver::nalgebra::reusable_lu::tests::matches_nalgebra_lu ... ok
+test linear_solver::nalgebra::adaptive_lu::tests::singular_and_nonfinite_fail_closed ... ok
+test linear_solver::nalgebra::lu::tests::test_lu ... ok
+test linear_solver::nalgebra::reusable_lu::tests::test_lu ... ok
+test linear_solver::nalgebra::reusable_lu::tests::test_grouped_lu ... ok
+test linear_solver::nalgebra::lu::tests::test_grouped_lu ... ok
+test matrix::dense_faer_serial::tests::test_add_faer ... ok
+test matrix::dense_faer_serial::tests::test_add_assign_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_add_assign_broadcast_faer ... ok
+test matrix::dense_faer_serial::tests::test_add_column_to_vector_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_add_columns_to_batched_vector_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_add_column_to_vector_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_copy_from_broadcast_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_copy_from_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_combine_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_from_diagonal_dense_faer ... ok
+test linear_solver::faer::sparse_lu::tests::test_sparse_lu ... ok
+test matrix::dense_faer_serial::tests::test_batched_from_diagonal_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_from_vec_faer ... ok
+test linear_solver::faer::lu::tests::test_lu ... ok
+test linear_solver::nalgebra::lu::tests::test_narrow_state_lu - should panic ... ok
+test linear_solver::faer::sparse_lu::tests::test_grouped_sparse_lu ... ok
+test linear_solver::nalgebra::reusable_lu::tests::test_narrow_state_lu - should panic ... ok
+test matrix::dense_faer_serial::tests::test_batched_gather_faer ... ok
+test linear_solver::faer::sparse_lu::tests::test_narrow_state_sparse_lu - should panic ... ok
+test linear_solver::faer::lu::tests::test_grouped_lu ... ok
+test matrix::dense_faer_serial::tests::test_batched_gemv_beta_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_gemv_broadcast_x_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_gemv_cols_faer ... ok
+test linear_solver::faer::lu::tests::test_narrow_state_lu - should panic ... ok
+test matrix::dense_faer_serial::tests::test_batched_gemv_broadcast_mat_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_gemv_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_gemv_o_broadcast_x_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_mul_scalar_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_mul_cols_by_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_gemv_incompatible_faer - should panic ... ok
+test matrix::dense_faer_serial::tests::test_batched_mul_scalar_ref_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_owned_lhs_add_broadcast_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_owned_lhs_broadcast_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_owned_lhs_narrow_faer - should panic ... ok
+test matrix::dense_faer_serial::tests::test_batched_owned_rhs_broadcast ... ok
+test matrix::dense_faer_serial::tests::test_batched_partition_indices_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_owned_rhs_narrow - should panic ... ok
+test matrix::dense_faer_serial::tests::test_batched_resize_cols_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_scale_add_broadcast_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_scale_add_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_set_column_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_set_data_with_indices_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_set_index_batch_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_update_backward_diff_faer ... ok
+test matrix::dense_faer_serial::tests::test_batched_zeros_faer ... ok
+test matrix::dense_faer_serial::tests::test_column_mut_faer ... ok
+test matrix::dense_faer_serial::tests::test_column_view_faer ... ok
+test matrix::dense_faer_serial::tests::test_copy_from_faer ... ok
+test matrix::dense_faer_serial::tests::test_from_diagonal_dense_faer ... ok
+test matrix::dense_faer_serial::tests::test_from_diagonal_faer ... ok
+test matrix::dense_faer_serial::tests::test_from_vec_faer ... ok
+test matrix::dense_faer_serial::tests::test_gather_faer ... ok
+test matrix::dense_faer_serial::tests::test_gemv_cols_faer ... ok
+test matrix::dense_faer_serial::tests::test_gemv_cols_many_columns_faer ... ok
+test matrix::dense_faer_serial::tests::test_gemv_faer ... ok
+test matrix::dense_faer_serial::tests::test_grouped_add_assign_faer ... ok
+test matrix::dense_faer_serial::tests::test_grouped_copy_from_faer ... ok
+test matrix::dense_faer_serial::tests::test_grouped_gemv_cols_faer ... ok
+test matrix::dense_faer_serial::tests::test_grouped_gemv_faer ... ok
+test matrix::dense_faer_serial::tests::test_grouped_gemv_x_faer ... ok
+test matrix::dense_faer_serial::tests::test_grouped_owned_lhs_add_faer ... ok
+test matrix::dense_faer_serial::tests::test_grouped_owned_lhs_narrow_faer - should panic ... ok
+test matrix::dense_faer_serial::tests::test_grouped_scale_add_faer ... ok
+test matrix::dense_faer_serial::tests::test_index_operator ... ok
+test matrix::dense_faer_serial::tests::test_inner_mut_faer ... ok
+test matrix::dense_faer_serial::tests::test_matrix_common_by_ref_faer ... ok
+test matrix::dense_faer_serial::tests::test_mul_scalar_faer ... ok
+test matrix::dense_faer_serial::tests::test_narrow_dest_add_assign_faer - should panic ... ok
+test matrix::dense_faer_serial::tests::test_narrow_dest_copy_from_faer - should panic ... ok
+test matrix::dense_faer_serial::tests::test_narrow_dest_gather_faer - should panic ... ok
+test matrix::dense_faer_serial::tests::test_narrow_dest_gemv_cols_faer - should panic ... ok
+test matrix::dense_faer_serial::tests::test_narrow_dest_gemv_faer - should panic ... ok
+test matrix::dense_faer_serial::tests::test_narrow_dest_scale_add_faer - should panic ... ok
+test matrix::dense_faer_serial::tests::test_owned_rhs ... ok
+test matrix::dense_faer_serial::tests::test_narrow_dest_set_data_with_indices_faer - should panic ... ok
+test matrix::dense_faer_serial::tests::test_partition_indices_by_zero_diagonal ... ok
+test matrix::dense_faer_serial::tests::test_partition_indices_faer ... ok
+test matrix::dense_faer_serial::tests::test_resize_cols ... ok
+test matrix::dense_faer_serial::tests::test_resize_cols_faer ... ok
+test matrix::dense_faer_serial::tests::test_scale_add_and_assign_faer ... ok
+test matrix::dense_faer_serial::tests::test_set_column_faer ... ok
+test matrix::dense_faer_serial::tests::test_set_data_with_indices_faer ... ok
+test matrix::dense_faer_serial::tests::test_sparsity_dense_errors_faer ... ok
+test matrix::dense_faer_serial::tests::test_sparsity_faer ... ok
+test matrix::dense_faer_serial::tests::test_sub_assign_faer ... ok
+test matrix::dense_faer_serial::tests::test_sub_faer ... ok
+test matrix::dense_faer_serial::tests::test_update_backward_diff ... ok
+test matrix::dense_faer_serial::tests::test_try_from_triplets_wrong_length_faer - should panic ... ok
+test matrix::dense_faer_serial::tests::test_update_backward_diff_faer ... ok
+test matrix::dense_faer_serial::tests::test_zeros_faer ... ok
+test matrix::dense_nalgebra_serial::tests::test_add_assign_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_add_column_to_vector_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_add_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_add_assign_broadcast_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_add_column_to_vector_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_add_columns_to_batched_vector_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_copy_from_broadcast_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_combine_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_copy_from_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_from_diagonal_dense_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_from_diagonal_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_from_vec_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_gather_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_gemv_beta_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_gemv_broadcast_mat_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_gemv_broadcast_x_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_gemv_cols_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_gemv_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_gemv_o_broadcast_x_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_gemv_incompatible_nalgebra - should panic ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_mul_cols_by_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_mul_scalar_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_mul_scalar_ref_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_owned_lhs_add_broadcast_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_owned_lhs_broadcast_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_owned_lhs_narrow_nalgebra - should panic ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_owned_rhs_broadcast ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_partition_indices_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_owned_rhs_narrow - should panic ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_resize_cols_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_scale_add_broadcast_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_scale_add_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_set_column_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_set_data_with_indices_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_set_index_batch_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_update_backward_diff_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_batched_zeros_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_column_mut_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_column_view_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_copy_from_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_from_diagonal_dense_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_from_diagonal_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_from_vec_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_gather_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_gemv_cols_many_columns_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_gemv_cols_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_gemv_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_grouped_add_assign_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_grouped_copy_from_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_grouped_gemv_cols_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_grouped_gemv_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_grouped_gemv_x_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_grouped_owned_lhs_add_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_grouped_owned_lhs_narrow_nalgebra - should panic ... ok
+test matrix::dense_nalgebra_serial::tests::test_grouped_scale_add_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_index_operator ... ok
+test matrix::dense_nalgebra_serial::tests::test_inner_mut_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_matrix_common_by_ref_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_mul_scalar_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_narrow_dest_add_assign_nalgebra - should panic ... ok
+test matrix::dense_nalgebra_serial::tests::test_narrow_dest_copy_from_nalgebra - should panic ... ok
+test matrix::dense_nalgebra_serial::tests::test_narrow_dest_gather_nalgebra - should panic ... ok
+test matrix::dense_nalgebra_serial::tests::test_narrow_dest_gemv_cols_nalgebra - should panic ... ok
+test matrix::dense_nalgebra_serial::tests::test_narrow_dest_scale_add_nalgebra - should panic ... ok
+test matrix::dense_nalgebra_serial::tests::test_narrow_dest_gemv_nalgebra - should panic ... ok
+test matrix::dense_nalgebra_serial::tests::test_owned_rhs ... ok
+test matrix::dense_nalgebra_serial::tests::test_narrow_dest_set_data_with_indices_nalgebra - should panic ... ok
+test matrix::dense_nalgebra_serial::tests::test_partition_indices_by_zero_diagonal ... ok
+test matrix::dense_nalgebra_serial::tests::test_partition_indices_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_resize_cols ... ok
+test matrix::dense_nalgebra_serial::tests::test_resize_cols_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_scale_add_and_assign_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_set_column_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_set_data_with_indices_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_sparsity_dense_errors_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_sparsity_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_sub_assign_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_sub_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_update_backward_diff ... ok
+test matrix::dense_nalgebra_serial::tests::test_try_from_triplets_wrong_length_nalgebra - should panic ... ok
+test matrix::dense_nalgebra_serial::tests::test_update_backward_diff_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_zeros_nalgebra ... ok
+test matrix::extract_block::tests::test_split_combine_faer_dense ... ok
+test matrix::extract_block::tests::test_split_combine_nalgebra_dense ... ok
+test matrix::sparse_faer::tests::sparsity_indices_round_trip ... ok
+test matrix::sparse_faer::tests::test_add_column_to_vector_faer_sparse ... ok
+test matrix::extract_block::tests::test_split_combine_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_add_columns_to_batched_vector_faer_sparse ... ok
+test linear_solver::nalgebra::adaptive_lu::tests::pivot_fill_and_residual_agree_with_independent_dense_lu ... ok
+test matrix::sparse_faer::tests::test_batched_add_column_to_vector_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_copy_from_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_copy_from_broadcast_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_from_diagonal_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_gather_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_gemv_beta_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_gemv_broadcast_mat_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_gemv_broadcast_x_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_gemv_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_mul_scalar_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_mul_scalar_ref_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_owned_lhs_add_broadcast_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_owned_lhs_broadcast_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_partition_indices_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_owned_lhs_narrow_faer_sparse - should panic ... ok
+test matrix::sparse_faer::tests::test_batched_scale_add_broadcast_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_set_column_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_scale_add_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_set_data_with_indices_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_batched_zeros_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_from_diagonal_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_copy_from_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_gemv_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_grouped_copy_from_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_grouped_gemv_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_grouped_gemv_x_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_grouped_owned_lhs_add_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_matrix_common_by_ref_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_grouped_owned_lhs_narrow_faer_sparse - should panic ... ok
+test matrix::sparse_faer::tests::test_grouped_scale_add_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_mul_scalar_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_narrow_dest_copy_from_faer_sparse - should panic ... ok
+test matrix::sparse_faer::tests::test_narrow_dest_gather_faer_sparse - should panic ... ok
+test matrix::sparse_faer::tests::test_narrow_dest_gemv_faer_sparse - should panic ... ok
+test matrix::sparse_faer::tests::test_narrow_dest_set_data_with_indices_faer_sparse - should panic ... ok
+test matrix::sparse_faer::tests::test_partition_indices_by_zero_diagonal ... ok
+test matrix::sparse_faer::tests::test_partition_indices_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_scale_add_and_assign_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_narrow_dest_scale_add_faer_sparse - should panic ... ok
+test matrix::sparse_faer::tests::test_set_column_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_sparsity_faer_sparse ... ok
+test matrix::sparse_faer::tests::test_set_data_with_indices ... ok
+test matrix::sparse_faer::tests::test_triplet_iter ... ok
+test matrix::sparse_faer::tests::test_zeros_faer_sparse ... ok
+test scalar::test_scale ... ok
+test matrix::sparse_faer::tests::test_try_from_triplets_wrong_length_faer_sparse - should panic ... ok
+test vector::faer_serial::tests::test_axpy_faer ... ok
+test vector::faer_serial::tests::test_batched_add_assign_broadcast_faer ... ok
+test vector::faer_serial::tests::test_assign_at_indices_faer ... ok
+test vector::faer_serial::tests::test_axpy_v_faer ... ok
+test vector::faer_serial::tests::test_batched_assign_at_indices_faer ... ok
+test vector::faer_serial::tests::test_add_faer ... ok
+test vector::faer_serial::tests::test_batched_add_faer ... ok
+test vector::faer_serial::tests::test_add_assign_faer ... ok
+test vector::faer_serial::tests::test_batched_axpy_broadcast_faer ... ok
+test vector::faer_serial::tests::test_batched_axpy_faer ... ok
+test vector::faer_serial::tests::test_batched_add_assign_incompatible_faer - should panic ... ok
+test vector::faer_serial::tests::test_batched_axpy_incompatible_faer - should panic ... ok
+test vector::faer_serial::tests::test_batched_axpy_new_faer ... ok
+test vector::faer_serial::tests::test_batched_axpy_new_broadcast_faer ... ok
+test vector::faer_serial::tests::test_batched_axpy_new_bad_nbatch_faer - should panic ... ok
+test vector::faer_serial::tests::test_batched_axpy_v_faer ... ok
+test vector::faer_serial::tests::test_batched_axpy_new_bad_length_faer - should panic ... ok
+test vector::faer_serial::tests::test_batched_component_div_broadcast_faer ... ok
+test vector::faer_serial::tests::test_batched_component_div_faer ... ok
+test vector::faer_serial::tests::test_batched_component_mul_broadcast_faer ... ok
+test vector::faer_serial::tests::test_batched_binary_forms_broadcast_faer ... ok
+test vector::faer_serial::tests::test_batched_component_mul_faer ... ok
+test vector::faer_serial::tests::test_batched_copy_from_broadcast_faer ... ok
+test vector::faer_serial::tests::test_batched_component_mul_incompatible_faer - should panic ... ok
+test vector::faer_serial::tests::test_batched_copy_from_incompatible_faer - should panic ... ok
+test vector::faer_serial::tests::test_batched_copy_from_indices_faer ... ok
+test vector::faer_serial::tests::test_batched_div_scalar_faer ... ok
+test vector::faer_serial::tests::test_batched_copy_from_view_faer ... ok
+test vector::faer_serial::tests::test_batched_empty_faer ... ok
+test vector::faer_serial::tests::test_batched_fill_faer ... ok
+test vector::faer_serial::tests::test_batched_fill_index_faer ... ok
+test vector::faer_serial::tests::test_batched_for_each_batch_bad_nbatch_faer - should panic ... ok
+test vector::faer_serial::tests::test_batched_from_slice_faer ... ok
+test vector::faer_serial::tests::test_batched_from_element_faer ... ok
+test vector::faer_serial::tests::test_batched_for_each_batch_mut_faer ... ok
+test vector::faer_serial::tests::test_batched_for_each_batch_index_faer ... ok
+test vector::faer_serial::tests::test_batched_from_vec_bad_length_faer - should panic ... ok
+test vector::faer_serial::tests::test_batched_for_each_elem_mut_faer ... ok
+test vector::faer_serial::tests::test_batched_for_each_batch_faer ... ok
+test vector::faer_serial::tests::test_batched_from_vec_faer ... ok
+test vector::faer_serial::tests::test_batched_gather_faer ... ok
+test vector::faer_serial::tests::test_batched_get_batch_faer ... ok
+test vector::faer_serial::tests::test_batched_get_batch_mut_faer ... ok
+test vector::faer_serial::tests::test_batched_len_and_total_len_faer ... ok
+test vector::faer_serial::tests::test_batched_get_index_panics_faer - should panic ... ok
+test vector::faer_serial::tests::test_batched_mul_assign_scalar_faer ... ok
+test vector::faer_serial::tests::test_batched_mul_scalar_faer ... ok
+test vector::faer_serial::tests::test_batched_norm_l1_faer ... ok
+test vector::faer_serial::tests::test_batched_norm_max_across_batches_faer ... ok
+test vector::faer_serial::tests::test_batched_owned_lhs_broadcast_faer ... ok
+test vector::faer_serial::tests::test_batched_owned_rhs_broadcast_faer ... ok
+test vector::faer_serial::tests::test_batched_owned_lhs_narrow_faer - should panic ... ok
+test vector::faer_serial::tests::test_batched_owned_rhs_narrow_faer - should panic ... ok
+test vector::faer_serial::tests::test_batched_reduce_batch_bad_dest_faer - should panic ... ok
+test vector::faer_serial::tests::test_batched_reduce_broadcast_faer ... ok
+test vector::faer_serial::tests::test_batched_reduce_batch_faer ... ok
+test vector::faer_serial::tests::test_batched_reduce_elem_faer ... ok
+test vector::faer_serial::tests::test_batched_reduce_elem_bad_dest_faer - should panic ... ok
+test vector::faer_serial::tests::test_batched_reduce_host_stateful_faer ... ok
+test vector::faer_serial::tests::test_batched_root_finding_consistent_faer ... ok
+test vector::faer_serial::tests::test_batched_root_finding_inconsistent_faer - should panic ... ok
+test vector::faer_serial::tests::test_batched_squared_norm_faer ... ok
+test vector::faer_serial::tests::test_batched_sub_assign_broadcast_faer ... ok
+test vector::faer_serial::tests::test_batched_sub_assign_faer ... ok
+test vector::faer_serial::tests::test_batched_set_index_panics_faer - should panic ... ok
+test vector::faer_serial::tests::test_batched_sub_faer ... ok
+test vector::faer_serial::tests::test_batched_scatter_faer ... ok
+test vector::faer_serial::tests::test_batched_view_add_broadcast_faer ... ok
+test vector::faer_serial::tests::test_component_div_assign_faer ... ok
+test vector::faer_serial::tests::test_component_mul_assign_faer ... ok
+test vector::faer_serial::tests::test_batched_view_add_narrow_faer - should panic ... ok
+test vector::faer_serial::tests::test_copy_from_faer ... ok
+test vector::faer_serial::tests::test_copy_from_indices_faer ... ok
+test vector::faer_serial::tests::test_copy_from_via_view_mut_faer ... ok
+test vector::faer_serial::tests::test_copy_from_view_faer ... ok
+test vector::faer_serial::tests::test_div_scalar_faer ... ok
+test vector::faer_serial::tests::test_empty ... ok
+test vector::faer_serial::tests::test_fill_faer ... ok
+test vector::faer_serial::tests::test_error_norm ... ok
+test vector::faer_serial::tests::test_for_each_batch_index_faer ... ok
+test vector::faer_serial::tests::test_for_each_batch_faer ... ok
+test vector::faer_serial::tests::test_for_each_batch_mut_faer ... ok
+test vector::faer_serial::tests::test_from_element_faer ... ok
+test vector::faer_serial::tests::test_for_each_elem_mut_faer ... ok
+test vector::faer_serial::tests::test_from_slice ... ok
+test vector::faer_serial::tests::test_from_slice_faer ... ok
+test vector::faer_serial::tests::test_from_vec_faer ... ok
+test vector::faer_serial::tests::test_gather_faer ... ok
+test vector::faer_serial::tests::test_get_index_faer ... ok
+test vector::faer_serial::tests::test_grouped_add_assign_faer ... ok
+test vector::faer_serial::tests::test_grouped_add_faer ... ok
+test vector::faer_serial::tests::test_grouped_axpy_faer ... ok
+test vector::faer_serial::tests::test_grouped_component_mul_faer ... ok
+test vector::faer_serial::tests::test_grouped_add_narrow_lhs_faer - should panic ... ok
+test vector::faer_serial::tests::test_grouped_gather_faer ... ok
+test vector::faer_serial::tests::test_grouped_copy_from_faer ... ok
+test vector::faer_serial::tests::test_grouped_incompatible_faer - should panic ... ok
+test vector::faer_serial::tests::test_grouped_owned_lhs_ref_rhs_faer ... ok
+test vector::faer_serial::tests::test_grouped_owned_lhs_narrow_faer - should panic ... ok
+test vector::faer_serial::tests::test_grouped_squared_norm_faer ... ok
+test vector::faer_serial::tests::test_host_only ... ok
+test vector::faer_serial::tests::test_index_zeros_and_is_empty_faer ... ok
+test vector::faer_serial::tests::test_into ... ok
+test vector::faer_serial::tests::test_mul_assign ... ok
+test vector::faer_serial::tests::test_mul_assign_scalar_faer ... ok
+test vector::faer_serial::tests::test_mul_scalar_faer ... ok
+test vector::faer_serial::tests::test_mult ... ok
+test vector::faer_serial::tests::test_narrow_dest_add_assign_faer - should panic ... ok
+test vector::faer_serial::tests::test_narrow_dest_axpy_faer - should panic ... ok
+test vector::faer_serial::tests::test_narrow_dest_copy_from_faer - should panic ... ok
+test vector::faer_serial::tests::test_narrow_dest_copy_from_indices_faer - should panic ... ok
+test vector::faer_serial::tests::test_narrow_dest_gather_faer - should panic ... ok
+test vector::faer_serial::tests::test_narrow_dest_component_mul_faer - should panic ... ok
+test vector::faer_serial::tests::test_norm_faer ... ok
+test vector::faer_serial::tests::test_narrow_dest_scatter_faer - should panic ... ok
+test vector::faer_serial::tests::test_norm_odd_k_uses_magnitudes ... ok
+test vector::faer_serial::tests::test_norm_l1_faer ... ok
+test vector::faer_serial::tests::test_narrow_dest_squared_norm_faer - should panic ... ok
+test vector::faer_serial::tests::test_owned_rhs_faer ... ok
+test vector::faer_serial::tests::test_root_finding ... ok
+test vector::faer_serial::tests::test_reduce_unbatched_faer ... ok
+test vector::faer_serial::tests::test_root_finding_faer ... ok
+test vector::faer_serial::tests::test_set_index_faer ... ok
+test vector::faer_serial::tests::test_scatter_faer ... ok
+test vector::faer_serial::tests::test_squared_norm_faer ... ok
+test vector::faer_serial::tests::test_strided_view_add_assign_broadcast_faer ... ok
+test vector::faer_serial::tests::test_strided_view_add_owned_faer ... ok
+test vector::faer_serial::tests::test_strided_view_assign_at_indices_faer ... ok
+test vector::faer_serial::tests::test_strided_view_component_div_faer ... ok
+test vector::faer_serial::tests::test_strided_view_component_mul_faer ... ok
+test vector::faer_serial::tests::test_strided_view_copy_from_indices_faer ... ok
+test vector::faer_serial::tests::test_strided_view_fill_faer ... ok
+test vector::faer_serial::tests::test_strided_view_fill_index_faer ... ok
+test vector::faer_serial::tests::test_strided_view_gather_faer ... ok
+test vector::faer_serial::tests::test_strided_view_into_owned_faer ... ok
+test vector::faer_serial::tests::test_strided_view_mul_scalar_faer ... ok
+test vector::faer_serial::tests::test_strided_view_mut_add_assign_faer ... ok
+test vector::faer_serial::tests::test_strided_view_mut_axpy_faer ... ok
+test vector::faer_serial::tests::test_strided_view_mut_copy_from_faer ... ok
+test vector::faer_serial::tests::test_strided_view_mut_mul_assign_scalar_faer ... ok
+test vector::faer_serial::tests::test_strided_view_mut_sub_assign_faer ... ok
+test vector::faer_serial::tests::test_strided_view_scatter_faer ... ok
+test vector::faer_serial::tests::test_strided_view_squared_norm_faer ... ok
+test vector::faer_serial::tests::test_strided_view_set_index_panics_faer - should panic ... ok
+test vector::faer_serial::tests::test_sub_assign_faer ... ok
+test vector::faer_serial::tests::test_sub_faer ... ok
+test vector::faer_serial::tests::test_unbatched_dest_squared_norm_faer - should panic ... ok
+test vector::faer_serial::tests::test_view_add_sub_faer ... ok
+test vector::faer_serial::tests::test_view_get_index_faer ... ok
+test vector::faer_serial::tests::test_view_into_owned_faer ... ok
+test vector::faer_serial::tests::test_view_mut_axpy_faer ... ok
+test vector::faer_serial::tests::test_view_mut_copy_from_view_faer ... ok
+test vector::faer_serial::tests::test_view_mut_mul_assign_scalar_faer ... ok
+test vector::faer_serial::tests::test_view_mut_set_index_faer ... ok
+test vector::faer_serial::tests::test_view_squared_norm_faer ... ok
+test vector::nalgebra_serial::tests::test_add_assign_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_add_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_assign_at_indices_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_axpy_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_axpy_v_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_add_assign_broadcast_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_add_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_assign_at_indices_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_add_assign_incompatible_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_batched_axpy_broadcast_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_axpy_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_axpy_incompatible_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_batched_axpy_new_bad_length_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_batched_axpy_new_broadcast_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_axpy_new_bad_nbatch_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_batched_component_div_broadcast_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_axpy_new_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_binary_forms_broadcast_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_axpy_v_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_component_div_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_component_mul_broadcast_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_copy_from_indices_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_component_mul_incompatible_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_batched_component_mul_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_copy_from_broadcast_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_copy_from_view_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_copy_from_incompatible_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_batched_empty_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_div_scalar_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_fill_index_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_fill_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_for_each_batch_index_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_for_each_batch_bad_nbatch_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_batched_for_each_batch_mut_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_for_each_elem_mut_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_from_vec_bad_length_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_batched_for_each_batch_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_from_element_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_get_batch_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_from_slice_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_from_vec_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_gather_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_get_batch_mut_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_get_index_panics_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_batched_len_and_total_len_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_mul_assign_scalar_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_mul_scalar_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_norm_max_across_batches_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_owned_lhs_broadcast_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_norm_l1_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_owned_rhs_broadcast_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_reduce_batch_bad_dest_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_batched_owned_lhs_narrow_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_batched_reduce_batch_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_owned_rhs_narrow_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_batched_reduce_broadcast_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_reduce_elem_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_reduce_host_stateful_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_reduce_elem_bad_dest_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_batched_root_finding_consistent_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_root_finding_inconsistent_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_batched_scatter_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_sub_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_component_mul_assign_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_squared_norm_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_sub_assign_broadcast_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_set_index_panics_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_batched_sub_assign_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_batched_view_add_narrow_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_batched_view_add_broadcast_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_component_div_assign_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_copy_from_indices_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_copy_from_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_copy_from_via_view_mut_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_div_scalar_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_copy_from_view_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_error_norm ... ok
+test vector::nalgebra_serial::tests::test_fill_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_for_each_batch_index_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_for_each_batch_mut_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_for_each_batch_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_for_each_elem_mut_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_from_element_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_from_slice ... ok
+test vector::nalgebra_serial::tests::test_from_slice_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_grouped_add_assign_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_from_vec_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_gather_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_get_index_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_grouped_add_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_grouped_axpy_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_grouped_component_mul_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_grouped_copy_from_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_grouped_add_narrow_lhs_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_grouped_gather_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_into ... ok
+test vector::nalgebra_serial::tests::test_grouped_incompatible_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_mul_scalar_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_grouped_owned_lhs_narrow_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_grouped_owned_lhs_ref_rhs_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_grouped_squared_norm_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_host_only ... ok
+test vector::nalgebra_serial::tests::test_mul_assign_scalar_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_index_zeros_and_is_empty_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_narrow_dest_add_assign_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_narrow_dest_gather_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_narrow_dest_axpy_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_narrow_dest_component_mul_nalgebra - should panic ... ok
+test vector::faer_serial::tests::test_batched_reduce_long_lane_faer ... ok
+test vector::nalgebra_serial::tests::test_narrow_dest_copy_from_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_narrow_dest_copy_from_indices_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_norm_l1_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_narrow_dest_scatter_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_norm_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_narrow_dest_squared_norm_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_owned_rhs_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_reduce_unbatched_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_root_finding ... ok
+test vector::nalgebra_serial::tests::test_root_finding_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_scatter_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_set_index_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_squared_norm_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_add_assign_broadcast_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_add_owned_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_assign_at_indices_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_component_div_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_component_mul_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_fill_index_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_copy_from_indices_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_fill_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_gather_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_into_owned_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_mul_scalar_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_mut_copy_from_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_mut_axpy_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_mut_add_assign_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_mut_sub_assign_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_mut_mul_assign_scalar_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_scatter_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_squared_norm_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_strided_view_set_index_panics_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_sub_assign_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_sub_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_unbatched_dest_squared_norm_nalgebra - should panic ... ok
+test vector::nalgebra_serial::tests::test_view_add_sub_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_view_get_index_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_view_into_owned_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_view_mut_axpy_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_view_mut_copy_from_view_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_view_mut_mul_assign_scalar_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_view_mut_set_index_nalgebra ... ok
+test vector::nalgebra_serial::tests::test_view_squared_norm_nalgebra ... ok
+test vector::tests::vector_assert_eq_panics_for_length_mismatch ... ok
+test vector::tests::vector_assert_eq_vec_panics_for_short_vector_mismatch ... ok
+test vector::tests::vector_common_for_references_and_default_helpers_work ... ok
+test vector::tests::vector_assert_eq_vec_panics_for_first_middle_and_last_mismatch_in_long_vectors ... ok
+test vector::tests::vector_assert_helpers_cover_success_and_failure_paths ... ok
+test vector::nalgebra_serial::tests::test_batched_reduce_long_lane_nalgebra ... ok
+test matrix::dense_nalgebra_serial::tests::test_mul_cols_by_nalgebra ... ok
+test linear_solver::faer::tests::faer_kernels_never_query_the_global_parallelism ... ok
+test matrix::dense_faer_serial::tests::test_mul_cols_by_faer ... ok
+
+test result: ok. 548 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s
+
+     Running unittests src/lib.rs (<cargo-target>)
+
+running 1 test
+test nonlinear_solver::tests::test_newton_cpu_square ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests diffsol
+
+running 4 tests
+test crates/diffsol/src/ode_solver/method.rs - ode_solver::method::OdeSolverMethod (line 95) ... ok
+test crates/diffsol/src/ode_solver/builder.rs - ode_solver::builder::OdeBuilder<M,Rhs,Init,Mass,Root,Out,Reset> (line 67) ... ok
+test crates/diffsol/src/ode_solver/solution.rs - ode_solver::solution::Solution (line 29) ... ok
+test crates/diffsol/src/ode_solver/method.rs - ode_solver::method::OdeSolverMethod::solve_soln (line 345) ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.66s
+
+   Doc-tests diffsol_la
+
+running 7 tests
+test crates/diffsol-la/src/vector/mod.rs - vector::Vector::for_each_batch (line 323) ... ignored
+test crates/diffsol-la/src/vector/mod.rs - vector::Vector::for_each_batch_host (line 285) ... ignored
+test crates/diffsol-la/src/vector/mod.rs - vector::Vector::for_each_batch_mut_host (line 267) ... ignored
+test crates/diffsol-la/src/vector/mod.rs - vector::Vector::for_each_elem (line 372) ... ignored
+test crates/diffsol-la/src/vector/mod.rs - vector::Vector::reduce_batch_host (line 400) ... ignored
+test crates/diffsol-la/src/vector/mod.rs - vector::Vector::reduce_elem_host (line 460) ... ignored
+test crates/diffsol-la/src/scalar/mod.rs - scalar::Scalar (line 19) ... ok
+
+test result: ok. 1 passed; 0 failed; 6 ignored; 0 measured; 0 filtered out; finished in 0.31s
+
+   Doc-tests diffsol_nl
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

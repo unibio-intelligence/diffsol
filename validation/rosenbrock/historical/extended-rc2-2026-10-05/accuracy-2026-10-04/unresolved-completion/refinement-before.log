@@ -1,0 +1,22 @@
+   Compiling diffsol v0.17.1 (<build-path>)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.37s
+     Running unittests src/lib.rs (target/debug/deps/diffsol-df06ada1315ba5ad)
+
+running 1 test
+test ode_solver::rosenbrock::tests::refinement_reports_deterioration_and_stalling ... FAILED
+
+failures:
+
+---- ode_solver::rosenbrock::tests::refinement_reports_deterioration_and_stalling stdout ----
+
+thread 'ode_solver::rosenbrock::tests::refinement_reports_deterioration_and_stalling' (187828969) panicked at crates/diffsol/src/ode_solver/rosenbrock.rs:1708:121:
+called `Result::unwrap_err()` on an `Ok` value: RefinedTrajectory { samples: [[1.0]], passes: 5, maximum_scaled_change: 0.0, local_tolerance_factor: 0.00010000000000000003 }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    ode_solver::rosenbrock::tests::refinement_reports_deterioration_and_stalling
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 316 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p diffsol --lib`

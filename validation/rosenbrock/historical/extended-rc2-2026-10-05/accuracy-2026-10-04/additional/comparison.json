@@ -1,0 +1,258 @@
+{
+  "schema": "unibio.additional-julia-comparison/v1",
+  "source_patch_sha256": "0fc81259530a78d392500f62170fe5de464f31b3fd9eac2e5b63727045f03cca",
+  "completed_diffsol_checks": 23,
+  "completed_julia_checks": 23,
+  "circle_fixed_comparisons": 10,
+  "maximum_circle_error_difference": 2.220446049250313e-15,
+  "adaptive_comparisons": [
+    {
+      "problem": "hires",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "diffsol_reference_units": 0.0027939776493972586,
+      "julia_reference_units": 0.0016682284517107065,
+      "diffsol_passes": 4,
+      "julia_passes": 4
+    },
+    {
+      "problem": "hires",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "diffsol_reference_units": 0.000604121645498679,
+      "julia_reference_units": 0.01136866911354935,
+      "diffsol_passes": 4,
+      "julia_passes": 3
+    },
+    {
+      "problem": "hires",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "diffsol_reference_units": 0.030082503225614874,
+      "julia_reference_units": 0.02324079000752363,
+      "diffsol_passes": 6,
+      "julia_passes": 6
+    },
+    {
+      "problem": "hires",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "diffsol_reference_units": 0.030047572196136553,
+      "julia_reference_units": 0.023227951531168942,
+      "diffsol_passes": 7,
+      "julia_passes": 7
+    },
+    {
+      "problem": "oregonator",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "diffsol_reference_units": 0.018709167822813354,
+      "julia_reference_units": 0.01957615266783036,
+      "diffsol_passes": 3,
+      "julia_passes": 3
+    },
+    {
+      "problem": "oregonator",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "diffsol_reference_units": 0.018654412829967035,
+      "julia_reference_units": 0.00412435029076223,
+      "diffsol_passes": 3,
+      "julia_passes": 4
+    },
+    {
+      "problem": "oregonator",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "diffsol_reference_units": 0.02086334588511066,
+      "julia_reference_units": 0.01909296478920537,
+      "diffsol_passes": 7,
+      "julia_passes": 7
+    },
+    {
+      "problem": "amplifier",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "diffsol_reference_units": 0.0037355170354785644,
+      "julia_reference_units": 0.011918882165213782,
+      "diffsol_passes": 5,
+      "julia_passes": 4
+    },
+    {
+      "problem": "amplifier",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "diffsol_reference_units": 0.020468059581751585,
+      "julia_reference_units": 0.05734971751009446,
+      "diffsol_passes": 5,
+      "julia_passes": 4
+    },
+    {
+      "problem": "amplifier",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "diffsol_reference_units": 0.008075217152907084,
+      "julia_reference_units": null,
+      "diffsol_passes": 4,
+      "julia_passes": null
+    },
+    {
+      "problem": "pendulum",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "diffsol_reference_units": 0.010584568874475965,
+      "julia_reference_units": 0.01717991775767221,
+      "diffsol_passes": 6,
+      "julia_passes": 5
+    },
+    {
+      "problem": "pendulum",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "diffsol_reference_units": 0.010055024387062277,
+      "julia_reference_units": 0.01614226017996169,
+      "diffsol_passes": 6,
+      "julia_passes": 5
+    },
+    {
+      "problem": "circle",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "diffsol_reference_units": 0.0016677656626727106,
+      "julia_reference_units": 0.0026080351906595154,
+      "diffsol_passes": 4,
+      "julia_passes": 4
+    },
+    {
+      "problem": "circle",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "diffsol_reference_units": 0.01845155399532613,
+      "julia_reference_units": 0.021909226723481917,
+      "diffsol_passes": 3,
+      "julia_passes": 3
+    },
+    {
+      "problem": "circle",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "diffsol_reference_units": 0.003301122421487434,
+      "julia_reference_units": 0.0008835643299881567,
+      "diffsol_passes": 3,
+      "julia_passes": 2
+    },
+    {
+      "problem": "circle",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "diffsol_reference_units": 0.0032806837626029976,
+      "julia_reference_units": 0.0009611482860206372,
+      "diffsol_passes": 3,
+      "julia_passes": 2
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "diffsol_reference_units": 0.0341309500192418,
+      "julia_reference_units": null,
+      "diffsol_passes": 8,
+      "julia_passes": null
+    },
+    {
+      "problem": "pollution",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "diffsol_reference_units": 0.0075705706157555355,
+      "julia_reference_units": 0.011296446700542539,
+      "diffsol_passes": 3,
+      "julia_passes": 2
+    },
+    {
+      "problem": "pollution",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "diffsol_reference_units": 0.005649278903613604,
+      "julia_reference_units": 0.015803444491562516,
+      "diffsol_passes": 3,
+      "julia_passes": 2
+    },
+    {
+      "problem": "pollution",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "diffsol_reference_units": 0.02341841005154755,
+      "julia_reference_units": 0.01827189975554719,
+      "diffsol_passes": 6,
+      "julia_passes": 6
+    },
+    {
+      "problem": "pollution",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "diffsol_reference_units": 0.02343984003677729,
+      "julia_reference_units": 0.018307416379943403,
+      "diffsol_passes": 7,
+      "julia_passes": 7
+    },
+    {
+      "problem": "pv",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "diffsol_reference_units": 0.0020545300241272602,
+      "julia_reference_units": 0.0021500374831597575,
+      "diffsol_passes": 5,
+      "julia_passes": 5
+    },
+    {
+      "problem": "pv",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "diffsol_reference_units": 0.001874533028334747,
+      "julia_reference_units": 0.0021644166434304345,
+      "diffsol_passes": 6,
+      "julia_passes": 6
+    }
+  ],
+  "diffsol_failures": [
+    "FAILED oregonator rosenbrock23 0.00000001: Error: validation step cap",
+    "FAILED amplifier rosenbrock23 0.00000001: Error: validation step cap",
+    "FAILED pendulum rosenbrock23 0.000001: Error: validation step cap",
+    "FAILED pendulum rosenbrock23 0.00000001: Error: validation step cap",
+    "FAILED circle_inexact rodas5p 0.00000001: Error: validation step cap",
+    "FAILED circle_inexact rosenbrock23 0.000001: Error: validation step cap",
+    "FAILED circle_inexact rosenbrock23 0.00000001: Error: validation step cap",
+    "FAILED pv rosenbrock23 0.000001: ODE solver error: Exceeded maximum number of error test failures (40) at time = 21496.228694939888",
+    "FAILED pv rosenbrock23 0.00000001: ODE solver error: Exceeded maximum number of error test failures (40) at time = 7194.477542740929"
+  ],
+  "julia_limits": [
+    "FAILED oregonator rosenbrock23 1.0e-8 pass=7 MaxIters",
+    "UNRESOLVED oregonator rosenbrock23 1.0e-8",
+    "UNSUPPORTED amplifier rosenbrock23: Julia requires diagonal mass matrix",
+    "UNSUPPORTED amplifier rosenbrock23: Julia requires diagonal mass matrix",
+    "FAILED pendulum rosenbrock23 1.0e-8 pass=2 MaxIters",
+    "UNRESOLVED pendulum rosenbrock23 1.0e-8",
+    "FAILED circle_inexact rodas5p 1.0e-6 pass=8 MaxIters",
+    "UNRESOLVED circle_inexact rodas5p 1.0e-6",
+    "FAILED circle_inexact rodas5p 1.0e-8 pass=6 MaxIters",
+    "UNRESOLVED circle_inexact rodas5p 1.0e-8",
+    "FAILED circle_inexact rosenbrock23 1.0e-6 pass=1 MaxIters",
+    "UNRESOLVED circle_inexact rosenbrock23 1.0e-6",
+    "FAILED circle_inexact rosenbrock23 1.0e-8 pass=1 MaxIters",
+    "UNRESOLVED circle_inexact rosenbrock23 1.0e-8",
+    "FAILED pv rosenbrock23 1.0e-8 pass=2 MaxIters",
+    "UNRESOLVED pv rosenbrock23 1.0e-8"
+  ],
+  "historical_unimplemented_source_gaps": [
+    "hyperbolic: full equation, forcing and parameters missing from 2023 paper",
+    "water-tube: the 2023 index-1 adaptation is not specified; original index-2 test does not qualify native index-1 support"
+  ],
+  "source_gap_followup": {
+    "date": "2026-10-05",
+    "report": "../source-gaps/README.md",
+    "original_hyperbolic_specification_recovered": true,
+    "water_original_specification_recovered": true,
+    "water_independent_index1_reduction_executed": true,
+    "paper_exact_water_adaptation_verified": false
+  }
+}

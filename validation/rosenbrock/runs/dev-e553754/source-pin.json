@@ -1,0 +1,19 @@
+{
+  "schema": "unibio.diffsol-validation-source/v1",
+  "label": "dev-e553754",
+  "source_commit": "e553754e5b984529864c044611f714f312c37329",
+  "source_tree": "1656884009fb87ed1015fe4ad4617c8d076f09aa",
+  "upstream_base": "bc6256a49e16779e77b58b786f0a993ad4242b63",
+  "source_patch_sha256": "a1824075a4c4f172067be2fe33283a61effc39df417b8ba2131c967463aa7015",
+  "measured_at_utc": "2026-10-05T17:48:20.424976+00:00",
+  "tracked_worktree_clean": true,
+  "julia_reference": "historical/extended-rc2-2026-10-05/accuracy-2026-10-04/julia-trajectories.csv",
+  "julia_results": "retained pinned reference; not rerun in this measurement",
+  "julia_version": "1.12.6",
+  "OrdinaryDiffEqRosenbrock": "2.7.1",
+  "toolchain": {
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01) (Homebrew)",
+    "cargo": "cargo 1.98.1 (797e8a9bc 2026-08-05) (Homebrew)"
+  },
+  "source_tag": null
+}

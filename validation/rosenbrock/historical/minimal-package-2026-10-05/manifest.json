@@ -1,0 +1,135 @@
+{
+  "source_candidate_patch_sha256": "f1fd8f0f5b3fa6be763532a9f919e5c1ad6f240e8e34b58d395ab8a0a8299dd5",
+  "files": [
+    {
+      "path": "Cargo.lock",
+      "bytes": 39229,
+      "sha256": "1922a1a9e4e0bf8bd7c687fb42501afa692693bfb4b7583d2f7674af0d697d1a"
+    },
+    {
+      "path": "FINAL_AGREEMENT.md",
+      "bytes": 1552,
+      "sha256": "dc20038145574f797a0d7b3260af5c46f50395ab755eabb8e507e967610a346e"
+    },
+    {
+      "path": "Manifest.toml",
+      "bytes": 93514,
+      "sha256": "7f6f721e5a6d15bc763124e7b03615ead0f3d5d6379fc3e8624a9ea1a780f33e"
+    },
+    {
+      "path": "PAPER_COVERAGE.md",
+      "bytes": 977,
+      "sha256": "d8bb286bd99984b76e054e58b1d1e4fd1dfbbc99763f1106b31aac143e26a09a"
+    },
+    {
+      "path": "Project.toml",
+      "bytes": 999,
+      "sha256": "0f94fef07faacef41667cfa577c6604f0443c50144219978c2dc3374d51e45f3"
+    },
+    {
+      "path": "README.md",
+      "bytes": 752,
+      "sha256": "aa5db3fb483ee7280cc239bcd718e69b41a2c5c5e43baa4767e54f05102a57f4"
+    },
+    {
+      "path": "agreement.json",
+      "bytes": 8238,
+      "sha256": "cabde9efd73aee62ffebcdc0b1cda5dba20d5efd138c632ba0bcfa00d71ac612"
+    },
+    {
+      "path": "gates.json",
+      "bytes": 1395,
+      "sha256": "fc80e0380746e6cc1c886daa65db88a0b6cc55e9a3738eea1cb4d081a64a7e01"
+    },
+    {
+      "path": "julia-parabolic.jl",
+      "bytes": 1150,
+      "sha256": "47bdd798f2dc9b5b735a65bd41f2c6750529770c6a313f797febff9f0e3f178a"
+    },
+    {
+      "path": "julia-reference.jl",
+      "bytes": 3262,
+      "sha256": "a87452a61d5def37ea28547b19623c17c6551e26295fb19919ea37304e05299e"
+    },
+    {
+      "path": "julia-stability.csv",
+      "bytes": 146,
+      "sha256": "17805fd98695787e75d0b89fc9457415f95510b250829578f9b206452820bd52"
+    },
+    {
+      "path": "julia-trajectories.csv",
+      "bytes": 2333,
+      "sha256": "6726a0a81b7ea350c49b9443bc12a8b2bee6518295025bd98719a151f76472bb"
+    },
+    {
+      "path": "native.csv",
+      "bytes": 4681,
+      "sha256": "4ccd4aba512a14eae7e0dd4f9ac45b46f12fba4122f5368259977b2ca8cfab8c"
+    },
+    {
+      "path": "native.log",
+      "bytes": 3598,
+      "sha256": "fea494f94d29dc1f0fed31285ccb00a377d201b3283dd5f30178cf9ecbab9ed2"
+    },
+    {
+      "path": "native.rs",
+      "bytes": 2917,
+      "sha256": "ab9ad77f329a3d299a0758b056c42a5eb3201734ca867124f31928b1e5c0001f"
+    },
+    {
+      "path": "paper.csv",
+      "bytes": 1180,
+      "sha256": "e2b333dcfa358867000a023dcca140f1aa4e1b3d55a0006c270b5ea621f9c6fa"
+    },
+    {
+      "path": "paper.log",
+      "bytes": 161,
+      "sha256": "2958ed59278fddaf25461264f48a9ca3bd0cfc30b4d1ee613dea1c93b3df0910"
+    },
+    {
+      "path": "paper.rs",
+      "bytes": 10144,
+      "sha256": "0c210fb65714cffe8b838e26cfe2cb390daa13dbe7ee3372f9fd4b9b9cedffc5"
+    },
+    {
+      "path": "parabolic.csv",
+      "bytes": 1025,
+      "sha256": "6442e38453a06e595a0bc360207a2a26e9f8995c73a601e8e601b4c198f7d75a"
+    },
+    {
+      "path": "parabolic.log",
+      "bytes": 161,
+      "sha256": "1e7de954536de5d01ffaf20381219556f2c3dcfc571f130a4b99b29afdeb4f7b"
+    },
+    {
+      "path": "parabolic.rs",
+      "bytes": 3152,
+      "sha256": "085ffa7d6c5936c76a535b782833b0c1fa9f08cf5cbe44cbacb9fd5cb8d3cbc1"
+    },
+    {
+      "path": "properties.csv",
+      "bytes": 632,
+      "sha256": "9a6cbdd709881e1f0c645c23de75bd4b5294b1bb7b0637f1afcfe46c2ceb788c"
+    },
+    {
+      "path": "properties.log",
+      "bytes": 161,
+      "sha256": "dc4da7f07699a0287eab063ba1d8d1ea86e6d3309721fb6e93045fe4cf141a0b"
+    },
+    {
+      "path": "properties.rs",
+      "bytes": 1292,
+      "sha256": "c748282cf2a5c015f31b895ea91652de0f6ef74c5cf7ba5282f38355b5b412d5"
+    },
+    {
+      "path": "run-rust.py",
+      "bytes": 1106,
+      "sha256": "203b9118ace688f792acd45a05fed1a8f3e24cd2a8443b0ee292a28c718aef14"
+    },
+    {
+      "path": "source-pin.json",
+      "bytes": 248,
+      "sha256": "e1cf9c5507a452101990ddb978e375d7b9b5a404397a833d832febad1a5ae356"
+    }
+  ]
+}

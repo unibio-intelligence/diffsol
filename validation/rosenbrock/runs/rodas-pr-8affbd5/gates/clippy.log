@@ -1,0 +1,28 @@
+    Checking libc v0.2.189
+   Compiling diffsol-la v0.2.0 (<source>/crates/diffsol-la)
+   Compiling diffsol v0.17.1 (<source>/crates/diffsol)
+    Checking alloca v0.4.0
+    Checking sysctl v0.6.0
+    Checking getrandom v0.3.4
+    Checking errno v0.3.14
+    Checking getrandom v0.4.3
+    Checking page_size v0.6.0
+    Checking console v0.16.6
+    Checking criterion v0.8.2
+    Checking rustix v1.1.5
+    Checking rand_core v0.9.5
+    Checking rand_chacha v0.9.0
+    Checking gemm-common v0.19.0
+    Checking rand v0.9.5
+    Checking gemm-c32 v0.19.0
+    Checking gemm-f32 v0.19.0
+    Checking gemm-c64 v0.19.0
+    Checking gemm-f64 v0.19.0
+    Checking tempfile v3.27.0
+    Checking rand_distr v0.5.1
+    Checking skeptic v0.13.7
+    Checking insta v1.48.0
+    Checking gemm v0.19.0
+    Checking faer v0.24.4
+    Checking diffsol-nl v0.2.0 (<source>/crates/diffsol-nl)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 21.34s

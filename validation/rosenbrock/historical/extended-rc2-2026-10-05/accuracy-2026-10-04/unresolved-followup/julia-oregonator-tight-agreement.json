@@ -1,0 +1,19 @@
+{
+  "schema": "unibio.additional-sampled-agreement/v1",
+  "runs": [
+    {
+      "problem": "oregonator",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "local",
+      "passes": 1,
+      "total_steps": 39107,
+      "maximum_reference_tolerance_units": 2055.091479887522,
+      "convergence_units": null,
+      "maximum_absolute_error": 0.3097319517401047
+    }
+  ],
+  "failures": [
+    "UNRESOLVED oregonator rosenbrock23 1.0e-8"
+  ]
+}

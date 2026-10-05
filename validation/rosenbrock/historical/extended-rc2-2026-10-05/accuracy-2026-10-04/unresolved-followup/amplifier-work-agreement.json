@@ -1,0 +1,20 @@
+{
+  "schema": "unibio.additional-sampled-agreement/v1",
+  "runs": [
+    {
+      "problem": "amplifier",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "local",
+      "passes": 1,
+      "total_steps": 580039,
+      "maximum_reference_tolerance_units": 7.309598490604309,
+      "convergence_units": null,
+      "maximum_absolute_error": 2.611147431608174e-08,
+      "algebraic_residual": 5.002470958087243e-12
+    }
+  ],
+  "failures": [
+    "FAILED amplifier rosenbrock23 0.00000001: ODE solver error: Exceeded maximum number of error test failures (40) at time = 0.020977971272532543"
+  ]
+}

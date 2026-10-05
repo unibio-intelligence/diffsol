@@ -1,0 +1,4 @@
+   Compiling diffsol-pr-a-scientific v0.0.0 (<build-path>)
+    Finished `release` profile [optimized] target(s) in 1.73s
+     Running `<build-path>`
+pendulum rosenbrock23 0.000001 passes=4 steps=12529442

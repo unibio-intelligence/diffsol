@@ -1,0 +1,12 @@
+{
+  "source_commit": "e553754e5b984529864c044611f714f312c37329",
+  "source_tree": "1656884009fb87ed1015fe4ad4617c8d076f09aa",
+  "kind": "paper",
+  "environment": {},
+  "exit_code": 0,
+  "elapsed_seconds": 3.4317764999577776,
+  "driver_sha256": "0c210fb65714cffe8b838e26cfe2cb390daa13dbe7ee3372f9fd4b9b9cedffc5",
+  "command": "python3 validation/rosenbrock/run.py --source SOURCE --snapshot dev-e553754 --target-dir TARGET --extended",
+  "csv_sha256": "b43682c9536311cb962f874896434755d70ce3d3d2f49cc05cb56a907a5519d9",
+  "diagnostic_sha256": "b1f70ee44932f26a59e07424e104a01f26fd681103bc0f19d53510d23ea63e93"
+}

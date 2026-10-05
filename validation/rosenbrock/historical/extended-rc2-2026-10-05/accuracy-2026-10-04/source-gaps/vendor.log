@@ -1,0 +1,29 @@
+warning: unused import: `Pow`
+ --> <build-path>
+  |
+8 | use num_traits::{FromPrimitive, One, Pow};
+  |                                      ^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `diffsol-nl` (lib) generated 1 warning (run `cargo fix --lib -p diffsol-nl` to apply 1 suggestion)
+warning: unused import: `Pow`
+ --> <build-path>
+  |
+3 | use num_traits::{One, Pow, Signed, Zero};
+  |                       ^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `diffsol` (lib) generated 1 warning
+   Compiling diffsol-pr-a-scientific v0.0.0 (<build-path>)
+    Finished `release` profile [optimized] target(s) in 2.00s
+     Running `<build-path>`
+hyperbolic rodas5p 0.000001 passes=3 steps=46
+hyperbolic rodas5p 0.00000001 passes=3 steps=117
+hyperbolic rosenbrock23 0.000001 passes=5 steps=4559
+hyperbolic rosenbrock23 0.00000001 passes=6 steps=46979
+water_index1 rodas5p 0.000001 passes=4 steps=23959
+water_index1 rodas5p 0.00000001 passes=4 steps=25352
+FAILED water_index1 rosenbrock23 0.000001: Error: validation step cap
+FAILED water_index1 rosenbrock23 0.00000001: Error: validation step cap

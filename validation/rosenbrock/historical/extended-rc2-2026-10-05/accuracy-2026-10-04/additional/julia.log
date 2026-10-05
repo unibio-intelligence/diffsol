@@ -1,0 +1,197 @@
+Julia Version 1.12.6
+Commit 15346901f00 (2026-04-09 19:20 UTC)
+Build Info:
+  Official https://julialang.org release
+Platform Info:
+  OS: macOS (arm64-apple-darwin24.0.0)
+  CPU: 14 × Apple M3 Max
+  WORD_SIZE: 64
+  LLVM: libLLVM-18.1.7 (ORCJIT, apple-m3)
+  GC: Built with stock GC
+Threads: 1 default, 1 interactive, 1 GC (on 10 virtual cores)
+Environment:
+  JULIA_DEPOT_PATH = <build-path>
+  JULIA_PKG_OFFLINE = true
+START hires rodas5p 1.0e-6 pass=1
+START hires rodas5p 1.0e-6 pass=2
+START hires rodas5p 1.0e-6 pass=3
+START hires rodas5p 1.0e-6 pass=4
+hires rodas5p 1.0e-6 passes=4 steps=1502
+START hires rodas5p 1.0e-8 pass=1
+START hires rodas5p 1.0e-8 pass=2
+START hires rodas5p 1.0e-8 pass=3
+hires rodas5p 1.0e-8 passes=3 steps=2462
+START hires rosenbrock23 1.0e-6 pass=1
+START hires rosenbrock23 1.0e-6 pass=2
+START hires rosenbrock23 1.0e-6 pass=3
+START hires rosenbrock23 1.0e-6 pass=4
+START hires rosenbrock23 1.0e-6 pass=5
+START hires rosenbrock23 1.0e-6 pass=6
+hires rosenbrock23 1.0e-6 passes=6 steps=86551
+START hires rosenbrock23 1.0e-8 pass=1
+START hires rosenbrock23 1.0e-8 pass=2
+START hires rosenbrock23 1.0e-8 pass=3
+START hires rosenbrock23 1.0e-8 pass=4
+START hires rosenbrock23 1.0e-8 pass=5
+START hires rosenbrock23 1.0e-8 pass=6
+START hires rosenbrock23 1.0e-8 pass=7
+hires rosenbrock23 1.0e-8 passes=7 steps=931700
+START oregonator rodas5p 1.0e-6 pass=1
+START oregonator rodas5p 1.0e-6 pass=2
+START oregonator rodas5p 1.0e-6 pass=3
+oregonator rodas5p 1.0e-6 passes=3 steps=6108
+START oregonator rodas5p 1.0e-8 pass=1
+START oregonator rodas5p 1.0e-8 pass=2
+START oregonator rodas5p 1.0e-8 pass=3
+START oregonator rodas5p 1.0e-8 pass=4
+oregonator rodas5p 1.0e-8 passes=4 steps=38029
+START oregonator rosenbrock23 1.0e-6 pass=1
+START oregonator rosenbrock23 1.0e-6 pass=2
+START oregonator rosenbrock23 1.0e-6 pass=3
+START oregonator rosenbrock23 1.0e-6 pass=4
+START oregonator rosenbrock23 1.0e-6 pass=5
+START oregonator rosenbrock23 1.0e-6 pass=6
+START oregonator rosenbrock23 1.0e-6 pass=7
+oregonator rosenbrock23 1.0e-6 passes=7 steps=1917888
+START oregonator rosenbrock23 1.0e-8 pass=1
+START oregonator rosenbrock23 1.0e-8 pass=2
+START oregonator rosenbrock23 1.0e-8 pass=3
+START oregonator rosenbrock23 1.0e-8 pass=4
+START oregonator rosenbrock23 1.0e-8 pass=5
+START oregonator rosenbrock23 1.0e-8 pass=6
+START oregonator rosenbrock23 1.0e-8 pass=7
+FAILED oregonator rosenbrock23 1.0e-8 pass=7 MaxIters
+UNRESOLVED oregonator rosenbrock23 1.0e-8
+START amplifier rodas5p 1.0e-6 pass=1
+START amplifier rodas5p 1.0e-6 pass=2
+START amplifier rodas5p 1.0e-6 pass=3
+START amplifier rodas5p 1.0e-6 pass=4
+amplifier rodas5p 1.0e-6 passes=4 steps=10583
+START amplifier rodas5p 1.0e-8 pass=1
+START amplifier rodas5p 1.0e-8 pass=2
+START amplifier rodas5p 1.0e-8 pass=3
+START amplifier rodas5p 1.0e-8 pass=4
+amplifier rodas5p 1.0e-8 passes=4 steps=31318
+UNSUPPORTED amplifier rosenbrock23: Julia requires diagonal mass matrix
+UNSUPPORTED amplifier rosenbrock23: Julia requires diagonal mass matrix
+START pendulum rodas5p 1.0e-6 pass=1
+START pendulum rodas5p 1.0e-6 pass=2
+START pendulum rodas5p 1.0e-6 pass=3
+START pendulum rodas5p 1.0e-6 pass=4
+START pendulum rodas5p 1.0e-6 pass=5
+pendulum rodas5p 1.0e-6 passes=5 steps=7048
+START pendulum rodas5p 1.0e-8 pass=1
+START pendulum rodas5p 1.0e-8 pass=2
+START pendulum rodas5p 1.0e-8 pass=3
+START pendulum rodas5p 1.0e-8 pass=4
+START pendulum rodas5p 1.0e-8 pass=5
+pendulum rodas5p 1.0e-8 passes=5 steps=17613
+START pendulum rosenbrock23 1.0e-6 pass=1
+START pendulum rosenbrock23 1.0e-6 pass=2
+START pendulum rosenbrock23 1.0e-6 pass=3
+pendulum rosenbrock23 1.0e-6 passes=3 steps=3760449
+START pendulum rosenbrock23 1.0e-8 pass=1
+START pendulum rosenbrock23 1.0e-8 pass=2
+FAILED pendulum rosenbrock23 1.0e-8 pass=2 MaxIters
+UNRESOLVED pendulum rosenbrock23 1.0e-8
+START circle rodas5p 1.0e-6 pass=1
+START circle rodas5p 1.0e-6 pass=2
+START circle rodas5p 1.0e-6 pass=3
+START circle rodas5p 1.0e-6 pass=4
+circle rodas5p 1.0e-6 passes=4 steps=208
+START circle rodas5p 1.0e-8 pass=1
+START circle rodas5p 1.0e-8 pass=2
+START circle rodas5p 1.0e-8 pass=3
+circle rodas5p 1.0e-8 passes=3 steps=306
+START circle rosenbrock23 1.0e-6 pass=1
+START circle rosenbrock23 1.0e-6 pass=2
+circle rosenbrock23 1.0e-6 passes=2 steps=19050
+START circle rosenbrock23 1.0e-8 pass=1
+START circle rosenbrock23 1.0e-8 pass=2
+circle rosenbrock23 1.0e-8 passes=2 steps=190280
+START circle_inexact rodas5p 1.0e-6 pass=1
+START circle_inexact rodas5p 1.0e-6 pass=2
+START circle_inexact rodas5p 1.0e-6 pass=3
+START circle_inexact rodas5p 1.0e-6 pass=4
+START circle_inexact rodas5p 1.0e-6 pass=5
+START circle_inexact rodas5p 1.0e-6 pass=6
+START circle_inexact rodas5p 1.0e-6 pass=7
+START circle_inexact rodas5p 1.0e-6 pass=8
+FAILED circle_inexact rodas5p 1.0e-6 pass=8 MaxIters
+UNRESOLVED circle_inexact rodas5p 1.0e-6
+START circle_inexact rodas5p 1.0e-8 pass=1
+START circle_inexact rodas5p 1.0e-8 pass=2
+START circle_inexact rodas5p 1.0e-8 pass=3
+START circle_inexact rodas5p 1.0e-8 pass=4
+START circle_inexact rodas5p 1.0e-8 pass=5
+START circle_inexact rodas5p 1.0e-8 pass=6
+FAILED circle_inexact rodas5p 1.0e-8 pass=6 MaxIters
+UNRESOLVED circle_inexact rodas5p 1.0e-8
+START circle_inexact rosenbrock23 1.0e-6 pass=1
+FAILED circle_inexact rosenbrock23 1.0e-6 pass=1 MaxIters
+UNRESOLVED circle_inexact rosenbrock23 1.0e-6
+START circle_inexact rosenbrock23 1.0e-8 pass=1
+FAILED circle_inexact rosenbrock23 1.0e-8 pass=1 MaxIters
+UNRESOLVED circle_inexact rosenbrock23 1.0e-8
+START pollution rodas5p 1.0e-6 pass=1
+START pollution rodas5p 1.0e-6 pass=2
+pollution rodas5p 1.0e-6 passes=2 steps=143
+START pollution rodas5p 1.0e-8 pass=1
+START pollution rodas5p 1.0e-8 pass=2
+pollution rodas5p 1.0e-8 passes=2 steps=335
+START pollution rosenbrock23 1.0e-6 pass=1
+START pollution rosenbrock23 1.0e-6 pass=2
+START pollution rosenbrock23 1.0e-6 pass=3
+START pollution rosenbrock23 1.0e-6 pass=4
+START pollution rosenbrock23 1.0e-6 pass=5
+START pollution rosenbrock23 1.0e-6 pass=6
+pollution rosenbrock23 1.0e-6 passes=6 steps=15835
+START pollution rosenbrock23 1.0e-8 pass=1
+START pollution rosenbrock23 1.0e-8 pass=2
+START pollution rosenbrock23 1.0e-8 pass=3
+START pollution rosenbrock23 1.0e-8 pass=4
+START pollution rosenbrock23 1.0e-8 pass=5
+START pollution rosenbrock23 1.0e-8 pass=6
+START pollution rosenbrock23 1.0e-8 pass=7
+pollution rosenbrock23 1.0e-8 passes=7 steps=158925
+START pv rodas5p 1.0e-6 pass=1
+START pv rodas5p 1.0e-6 pass=2
+START pv rodas5p 1.0e-6 pass=3
+START pv rodas5p 1.0e-6 pass=4
+START pv rodas5p 1.0e-6 pass=5
+pv rodas5p 1.0e-6 passes=5 steps=90081
+START pv rodas5p 1.0e-8 pass=1
+START pv rodas5p 1.0e-8 pass=2
+START pv rodas5p 1.0e-8 pass=3
+START pv rodas5p 1.0e-8 pass=4
+START pv rodas5p 1.0e-8 pass=5
+START pv rodas5p 1.0e-8 pass=6
+pv rodas5p 1.0e-8 passes=6 steps=294974
+START pv rosenbrock23 1.0e-6 pass=1
+START pv rosenbrock23 1.0e-6 pass=2
+pv rosenbrock23 1.0e-6 passes=2 steps=1416972
+START pv rosenbrock23 1.0e-8 pass=1
+START pv rosenbrock23 1.0e-8 pass=2
+┌ Warning: Verbosity toggle: max_iters 
+│  Interrupted. Larger maxiters is needed. If you are using an integrator for non-stiff ODEs or an automatic switching algorithm (the default), you may want to consider using a method for stiff equations. See the solver pages for more details (e.g. https://docs.sciml.ai/DiffEqDocs/stable/solvers/ode_solve/#Stiff-Problems).
+└ @ DiffEqBase ~/.julia/packages/DiffEqBase/xEDij/src/check_error.jl:37
+┌ Warning: Verbosity toggle: max_iters 
+│  Interrupted. Larger maxiters is needed. If you are using an integrator for non-stiff ODEs or an automatic switching algorithm (the default), you may want to consider using a method for stiff equations. See the solver pages for more details (e.g. https://docs.sciml.ai/DiffEqDocs/stable/solvers/ode_solve/#Stiff-Problems).
+└ @ DiffEqBase ~/.julia/packages/DiffEqBase/xEDij/src/check_error.jl:37
+┌ Warning: Verbosity toggle: max_iters 
+│  Interrupted. Larger maxiters is needed. If you are using an integrator for non-stiff ODEs or an automatic switching algorithm (the default), you may want to consider using a method for stiff equations. See the solver pages for more details (e.g. https://docs.sciml.ai/DiffEqDocs/stable/solvers/ode_solve/#Stiff-Problems).
+└ @ DiffEqBase ~/.julia/packages/DiffEqBase/xEDij/src/check_error.jl:37
+┌ Warning: Verbosity toggle: max_iters 
+│  Interrupted. Larger maxiters is needed. If you are using an integrator for non-stiff ODEs or an automatic switching algorithm (the default), you may want to consider using a method for stiff equations. See the solver pages for more details (e.g. https://docs.sciml.ai/DiffEqDocs/stable/solvers/ode_solve/#Stiff-Problems).
+└ @ DiffEqBase ~/.julia/packages/DiffEqBase/xEDij/src/check_error.jl:37
+┌ Warning: Verbosity toggle: max_iters 
+│  Interrupted. Larger maxiters is needed. If you are using an integrator for non-stiff ODEs or an automatic switching algorithm (the default), you may want to consider using a method for stiff equations. See the solver pages for more details (e.g. https://docs.sciml.ai/DiffEqDocs/stable/solvers/ode_solve/#Stiff-Problems).
+└ @ DiffEqBase ~/.julia/packages/DiffEqBase/xEDij/src/check_error.jl:37
+┌ Warning: Verbosity toggle: max_iters 
+│  Interrupted. Larger maxiters is needed. If you are using an integrator for non-stiff ODEs or an automatic switching algorithm (the default), you may want to consider using a method for stiff equations. See the solver pages for more details (e.g. https://docs.sciml.ai/DiffEqDocs/stable/solvers/ode_solve/#Stiff-Problems).
+└ @ DiffEqBase ~/.julia/packages/DiffEqBase/xEDij/src/check_error.jl:37
+┌ Warning: Verbosity toggle: max_iters 
+│  Interrupted. Larger maxiters is needed. If you are using an integrator for non-stiff ODEs or an automatic switching algorithm (the default), you may want to consider using a method for stiff equations. See the solver pages for more details (e.g. https://docs.sciml.ai/DiffEqDocs/stable/solvers/ode_solve/#Stiff-Problems).
+└ @ DiffEqBase ~/.julia/packages/DiffEqBase/xEDij/src/check_error.jl:37
+FAILED pv rosenbrock23 1.0e-8 pass=2 MaxIters
+UNRESOLVED pv rosenbrock23 1.0e-8

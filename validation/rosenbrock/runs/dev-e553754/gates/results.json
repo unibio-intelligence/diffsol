@@ -1,0 +1,32 @@
+{
+  "source_commit": "e553754e5b984529864c044611f714f312c37329",
+  "measurement": "retained checks from canonical consolidation on the identical committed source",
+  "checks": [
+    {
+      "name": "library-tests-final",
+      "exit_code": 0
+    },
+    {
+      "name": "clippy-fixed",
+      "exit_code": 0
+    },
+    {
+      "name": "format",
+      "exit_code": 0
+    }
+  ],
+  "library_tests": {
+    "diffsol": 319,
+    "diffsol-la": 548,
+    "diffsol-nl": 1
+  },
+  "doctests": {
+    "diffsol": 4,
+    "diffsol-la": 1
+  },
+  "product_checks": {
+    "scope": "separate PharmFlux integration, excluded from solver accuracy denominator",
+    "solver_methods_passed": 7
+  },
+  "publication_status": "local only; Fable review pending"
+}

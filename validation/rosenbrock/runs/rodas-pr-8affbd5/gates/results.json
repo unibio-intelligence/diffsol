@@ -1,0 +1,139 @@
+{
+  "source_commit": "8affbd5079e9c78ed66044814e001e877ac66777",
+  "checks": [
+    {
+      "name": "format",
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.7946312919957563,
+      "test_results": []
+    },
+    {
+      "name": "default",
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "diffsol",
+        "--offline",
+        "--locked"
+      ],
+      "exit_code": 0,
+      "seconds": 77.36787366704084,
+      "test_results": [
+        [
+          "ok",
+          "302",
+          "0",
+          "0"
+        ],
+        [
+          "ok",
+          "4",
+          "0",
+          "0"
+        ]
+      ]
+    },
+    {
+      "name": "faer",
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "diffsol",
+        "--offline",
+        "--locked",
+        "--no-default-features",
+        "--features",
+        "faer"
+      ],
+      "exit_code": 0,
+      "seconds": 61.34127879200969,
+      "test_results": [
+        [
+          "ok",
+          "302",
+          "0",
+          "0"
+        ],
+        [
+          "ok",
+          "4",
+          "0",
+          "0"
+        ]
+      ]
+    },
+    {
+      "name": "nalgebra",
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "diffsol",
+        "--offline",
+        "--locked",
+        "--no-default-features",
+        "--features",
+        "nalgebra"
+      ],
+      "exit_code": 0,
+      "seconds": 63.83167049998883,
+      "test_results": [
+        [
+          "ok",
+          "302",
+          "0",
+          "0"
+        ],
+        [
+          "ok",
+          "4",
+          "0",
+          "0"
+        ]
+      ]
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "-p",
+        "diffsol",
+        "--offline",
+        "--locked",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "seconds": 21.399534875061363,
+      "test_results": []
+    },
+    {
+      "name": "rustdoc",
+      "command": [
+        "cargo",
+        "doc",
+        "-p",
+        "diffsol",
+        "--offline",
+        "--locked",
+        "--no-deps"
+      ],
+      "exit_code": 0,
+      "seconds": 17.247355874977075,
+      "test_results": []
+    }
+  ],
+  "feature_caveat": "dependencies enable both matrix backends; these flags are not evidence of exclusive backend isolation"
+}

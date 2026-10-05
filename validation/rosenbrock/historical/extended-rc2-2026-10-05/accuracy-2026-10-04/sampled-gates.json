@@ -1,0 +1,20 @@
+{
+  "status": "pass",
+  "date": "2026-10-05",
+  "source_patch_sha256": "6428eb759a9fd56abcef7a5d2f8d68df1121e133146bbe60a8fde6afc741ed50",
+  "gate_scope": "constant-mass DAE subspace control, compensated accumulation, optional consistent observations, representable progress and refinement diagnostics; shared product sampled primal mode",
+  "diffsol_tests": 319,
+  "diffsol_doctests": 4,
+  "cranelift_tests": 350,
+  "cranelift_doctests": 4,
+  "product_tests": 113,
+  "product_ignored": 1,
+  "python_tests": 42,
+  "shared_numerical_rows": 55,
+  "shared_numerical_rows_bit_identical": true,
+  "historical_PV_rows": 153,
+  "historical_PV_scope": "Previous candidate only; fresh final PV runs supersede its numerical values",
+  "no_commits_or_pushes": true,
+  "source_rebuild": "current source distribution independently rebuilt on macOS ARM64; native module matches primary build",
+  "limits": "no fresh R CMD, cross-platform CI, exact Docker/product operation qualification"
+}

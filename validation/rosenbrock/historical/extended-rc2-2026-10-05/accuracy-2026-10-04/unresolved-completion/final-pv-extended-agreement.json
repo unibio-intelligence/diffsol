@@ -1,0 +1,42 @@
+{
+  "schema": "unibio.additional-sampled-agreement/v1",
+  "runs": [
+    {
+      "problem": "pv",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "local",
+      "passes": 1,
+      "total_steps": 3372317,
+      "maximum_reference_tolerance_units": 0.17082720523208955,
+      "convergence_units": null,
+      "maximum_absolute_error": 2.5902299967128783e-06,
+      "algebraic_residual": 2.780495833576424e-10
+    },
+    {
+      "problem": "pv",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "pass0.1",
+      "passes": 1,
+      "total_steps": 14032176,
+      "maximum_reference_tolerance_units": 0.017945350803075383,
+      "convergence_units": null,
+      "maximum_absolute_error": 2.5902409106492996e-07,
+      "algebraic_residual": 3.6056491126146284e-11
+    },
+    {
+      "problem": "pv",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 2,
+      "total_steps": 14032176,
+      "maximum_reference_tolerance_units": 0.017945350803075383,
+      "convergence_units": 0.15404907531946585,
+      "maximum_absolute_error": 2.5902409106492996e-07,
+      "algebraic_residual": 3.6056491126146284e-11
+    }
+  ],
+  "failures": []
+}

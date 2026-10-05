@@ -1,0 +1,97 @@
+{
+  "schema": "unibio.index1-dense-accuracy-controls/v1",
+  "status": "standalone experiment using existing shared controls; no solver changes",
+  "equation_class": "constant-mass index-1 DAE",
+  "algebraic_constraint": "y0-y1=0; algebraic derivative wrt y1 is -1",
+  "reference": "analytic y0=y1=t^5",
+  "requested_rtol": 10.0,
+  "requested_atol": [
+    10.0,
+    10.0
+  ],
+  "observation_times": [
+    0.13,
+    0.37,
+    0.73,
+    1.11,
+    1.41,
+    1.89,
+    2.0
+  ],
+  "upstream_vendor_rows_bit_identical": true,
+  "baseline_and_refinement_error_reduction": 32750248.311659057,
+  "rows": [
+    {
+      "sampling": "dense",
+      "maximum_step": 2.0,
+      "accepted_steps": 1,
+      "maximum_sample_error": 0.4612673084999859
+    },
+    {
+      "sampling": "dense",
+      "maximum_step": 1.0,
+      "accepted_steps": 2,
+      "maximum_sample_error": 0.013763907876843423
+    },
+    {
+      "sampling": "dense",
+      "maximum_step": 0.5,
+      "accepted_steps": 4,
+      "maximum_sample_error": 0.0004194548140873675
+    },
+    {
+      "sampling": "dense",
+      "maximum_step": 0.25,
+      "accepted_steps": 8,
+      "maximum_sample_error": 1.437704569351439e-05
+    },
+    {
+      "sampling": "dense",
+      "maximum_step": 0.125,
+      "accepted_steps": 16,
+      "maximum_sample_error": 2.414854747001538e-07
+    },
+    {
+      "sampling": "dense",
+      "maximum_step": 0.0625,
+      "accepted_steps": 32,
+      "maximum_sample_error": 1.4084391181112821e-08
+    },
+    {
+      "sampling": "observation_endpoints",
+      "maximum_step": 2.0,
+      "accepted_steps": 7,
+      "maximum_sample_error": 7.815970093361102e-14
+    },
+    {
+      "sampling": "observation_endpoints",
+      "maximum_step": 1.0,
+      "accepted_steps": 7,
+      "maximum_sample_error": 7.815970093361102e-14
+    },
+    {
+      "sampling": "observation_endpoints",
+      "maximum_step": 0.5,
+      "accepted_steps": 7,
+      "maximum_sample_error": 7.815970093361102e-14
+    },
+    {
+      "sampling": "observation_endpoints",
+      "maximum_step": 0.25,
+      "accepted_steps": 12,
+      "maximum_sample_error": 9.947598300641403e-14
+    },
+    {
+      "sampling": "observation_endpoints",
+      "maximum_step": 0.125,
+      "accepted_steps": 26,
+      "maximum_sample_error": 1.2789769243681803e-13
+    },
+    {
+      "sampling": "observation_endpoints",
+      "maximum_step": 0.0625,
+      "accepted_steps": 39,
+      "maximum_sample_error": 1.4921397450962104e-13
+    }
+  ]
+}

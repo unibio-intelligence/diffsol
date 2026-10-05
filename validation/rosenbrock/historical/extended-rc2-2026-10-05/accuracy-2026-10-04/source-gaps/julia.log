@@ -1,0 +1,53 @@
+START hyperbolic rodas5p 1.0e-6 pass=1
+START hyperbolic rodas5p 1.0e-6 pass=2
+PASS hyperbolic rodas5p 1.0e-6 passes=2 steps=39
+START hyperbolic rodas5p 1.0e-8 pass=1
+START hyperbolic rodas5p 1.0e-8 pass=2
+START hyperbolic rodas5p 1.0e-8 pass=3
+PASS hyperbolic rodas5p 1.0e-8 passes=3 steps=166
+START hyperbolic rosenbrock23 1.0e-6 pass=1
+START hyperbolic rosenbrock23 1.0e-6 pass=2
+PASS hyperbolic rosenbrock23 1.0e-6 passes=2 steps=6570
+START hyperbolic rosenbrock23 1.0e-8 pass=1
+START hyperbolic rosenbrock23 1.0e-8 pass=2
+PASS hyperbolic rosenbrock23 1.0e-8 passes=2 steps=66189
+START water_index1 rodas5p 1.0e-6 pass=1
+START water_index1 rodas5p 1.0e-6 pass=2
+START water_index1 rodas5p 1.0e-6 pass=3
+START water_index1 rodas5p 1.0e-6 pass=4
+PASS water_index1 rodas5p 1.0e-6 passes=4 steps=23897
+START water_index1 rodas5p 1.0e-8 pass=1
+START water_index1 rodas5p 1.0e-8 pass=2
+START water_index1 rodas5p 1.0e-8 pass=3
+START water_index1 rodas5p 1.0e-8 pass=4
+PASS water_index1 rodas5p 1.0e-8 passes=4 steps=25574
+START water_index1 rosenbrock23 1.0e-6 pass=1
+FAILED water_index1 rosenbrock23 1.0e-6 pass=1 Unstable
+UNRESOLVED water_index1 rosenbrock23 1.0e-6
+START water_index1 rosenbrock23 1.0e-8 pass=1
+┌ Warning: Verbosity toggle: dt_epsilon 
+│  At t=3535.506117395114, dt was forced below floating point epsilon 4.547473508864641e-13. Aborting. There is either an error in your model specification or the true solution is unstable (or it cannot be represented in Float64 precision).
+│ 
+│ Diagnostics:
+│ 
+│ Error Analysis:
+│   step error estimate EEst = 1.169e+04 (a step is accepted when EEst <= 1)
+│   largest contributors to EEst = internalnorm(atmp), where atmp is the tolerance-weighted local error per state component:
+│     atmp[49] = -5.785e+04, u[49] = 0.1066, uprev[49] = 0.1056
+│     atmp[47] = 5.785e+04, u[47] = 0.1045, uprev[47] = 0.1045
+│     atmp[36] = -4.441e-08, u[36] = 0.9504, uprev[36] = 0.9504
+└ @ DiffEqBase ~/.julia/packages/DiffEqBase/xEDij/src/check_error.jl:37
+┌ Warning: Verbosity toggle: dt_epsilon 
+│  At t=3535.5068240852943, dt was forced below floating point epsilon 4.547473508864641e-13. Aborting. There is either an error in your model specification or the true solution is unstable (or it cannot be represented in Float64 precision).
+│ 
+│ Diagnostics:
+│ 
+│ Error Analysis:
+│   step error estimate EEst = 1.169e+06 (a step is accepted when EEst <= 1)
+│   largest contributors to EEst = internalnorm(atmp), where atmp is the tolerance-weighted local error per state component:
+│     atmp[47] = 5.785e+06, u[47] = 0.1045, uprev[47] = 0.1045
+│     atmp[49] = -5.785e+06, u[49] = 0.1066, uprev[49] = 0.1056
+│     atmp[36] = -4.441e-06, u[36] = 0.9504, uprev[36] = 0.9504
+└ @ DiffEqBase ~/.julia/packages/DiffEqBase/xEDij/src/check_error.jl:37
+FAILED water_index1 rosenbrock23 1.0e-8 pass=1 Unstable
+UNRESOLVED water_index1 rosenbrock23 1.0e-8

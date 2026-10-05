@@ -1,0 +1,9 @@
+{
+  "source_patch_sha256": "6428eb759a9fd56abcef7a5d2f8d68df1121e133146bbe60a8fde6afc741ed50",
+  "source_changed": false,
+  "raw_local_and_final_rows_identical_to_retained": 202,
+  "endpoint_rows_identical_to_private_diagnostic": 808,
+  "two_analytic_gates_pass": true,
+  "raw_denominator_unchanged": "35/40",
+  "protocols_labeled_separately": true
+}

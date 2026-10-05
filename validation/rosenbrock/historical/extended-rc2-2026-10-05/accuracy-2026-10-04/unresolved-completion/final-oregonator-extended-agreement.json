@@ -1,0 +1,105 @@
+{
+  "schema": "unibio.additional-sampled-agreement/v1",
+  "runs": [
+    {
+      "problem": "oregonator",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "local",
+      "passes": 1,
+      "total_steps": 38432,
+      "maximum_reference_tolerance_units": 2180.3256618167247,
+      "convergence_units": null,
+      "maximum_absolute_error": 0.32860829787387047
+    },
+    {
+      "problem": "oregonator",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "pass0.1",
+      "passes": 1,
+      "total_steps": 127698,
+      "maximum_reference_tolerance_units": 292.8061131298447,
+      "convergence_units": null,
+      "maximum_absolute_error": 0.04413073946489021
+    },
+    {
+      "problem": "oregonator",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "pass0.010000000000000002",
+      "passes": 1,
+      "total_steps": 333409,
+      "maximum_reference_tolerance_units": 56.03868241822993,
+      "convergence_units": null,
+      "maximum_absolute_error": 0.006315821970929392
+    },
+    {
+      "problem": "oregonator",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "pass0.0010000000000000002",
+      "passes": 1,
+      "total_steps": 804353,
+      "maximum_reference_tolerance_units": 11.34958811845453,
+      "convergence_units": null,
+      "maximum_absolute_error": 0.0009542574553051963
+    },
+    {
+      "problem": "oregonator",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "pass0.00010000000000000003",
+      "passes": 1,
+      "total_steps": 1876082,
+      "maximum_reference_tolerance_units": 2.0863485401772532,
+      "convergence_units": null,
+      "maximum_absolute_error": 0.00014710688265040517
+    },
+    {
+      "problem": "oregonator",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "pass0.000010000000000000004",
+      "passes": 1,
+      "total_steps": 4300619,
+      "maximum_reference_tolerance_units": 0.34015204133622795,
+      "convergence_units": null,
+      "maximum_absolute_error": 2.2733904188498855e-05
+    },
+    {
+      "problem": "oregonator",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "pass0.0000010000000000000004",
+      "passes": 1,
+      "total_steps": 9746445,
+      "maximum_reference_tolerance_units": 0.051822798255636716,
+      "convergence_units": null,
+      "maximum_absolute_error": 3.653010935522616e-06
+    },
+    {
+      "problem": "oregonator",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "pass0.00000010000000000000005",
+      "passes": 1,
+      "total_steps": 21869632,
+      "maximum_reference_tolerance_units": 0.00797311576245492,
+      "convergence_units": null,
+      "maximum_absolute_error": 6.314658094197512e-07
+    },
+    {
+      "problem": "oregonator",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 8,
+      "total_steps": 21869632,
+      "maximum_reference_tolerance_units": 0.00797311576245492,
+      "convergence_units": 0.04384968249667799,
+      "maximum_absolute_error": 6.314658094197512e-07
+    }
+  ],
+  "failures": []
+}

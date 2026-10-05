@@ -1,0 +1,178 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.26
+   Compiling quote v1.0.47
+   Compiling autocfg v1.5.1
+   Compiling libm v0.2.16
+   Compiling libc v0.2.189
+   Compiling cfg-if v1.0.5
+   Compiling bytemuck v1.25.2
+   Compiling rand_core v0.6.4
+   Compiling crossbeam-utils v0.8.23
+   Compiling version_check v0.9.5
+   Compiling crossbeam-epoch v0.9.21
+   Compiling nano-gemm-codegen v0.2.1
+   Compiling crossbeam-deque v0.8.8
+   Compiling bitflags v2.13.2
+   Compiling memchr v2.8.3
+   Compiling rand v0.8.8
+   Compiling paste v1.0.15
+   Compiling rayon-core v1.13.0
+   Compiling either v1.18.0
+   Compiling num-traits v0.2.19
+   Compiling pulp v0.22.3
+   Compiling zerocopy v0.8.59
+   Compiling serde_core v1.0.229
+   Compiling reborrow v0.5.5
+   Compiling pulp-wasm-simd-flag v0.1.1
+   Compiling once_cell v1.21.4
+   Compiling thiserror v1.0.69
+   Compiling heck v0.5.0
+   Compiling dyn-stack-macros v0.1.3
+   Compiling byteorder v1.5.0
+   Compiling dyn-stack v0.13.2
+   Compiling raw-cpuid v11.6.0
+   Compiling getrandom v0.3.4
+   Compiling ucd-trie v0.1.7
+   Compiling syn v2.0.119
+   Compiling syn v3.0.6
+   Compiling serde v1.0.229
+   Compiling seq-macro v0.3.6
+   Compiling pest v2.9.2
+   Compiling rayon v1.12.0
+   Compiling nano-gemm-core v0.2.1
+   Compiling zmij v1.0.23
+   Compiling nano-gemm-f64 v0.2.1
+   Compiling nano-gemm-c32 v0.2.1
+   Compiling serde_derive v1.0.229
+   Compiling pest_meta v2.9.2
+   Compiling nano-gemm-f32 v0.2.1
+   Compiling nano-gemm-c64 v0.2.1
+   Compiling serde_json v1.0.151
+   Compiling num-complex v0.4.6
+   Compiling num-integer v0.1.47
+   Compiling pest_generator v2.9.2
+   Compiling zerocopy-derive v0.8.59
+   Compiling thiserror-impl v1.0.69
+   Compiling enum-as-inner v0.6.1
+   Compiling equator-macro v0.2.1
+   Compiling equator-macro v0.4.2
+   Compiling num-bigint v0.4.8
+   Compiling pest_derive v2.9.2
+   Compiling crossbeam-channel v0.5.17
+   Compiling crossbeam-queue v0.3.14
+   Compiling matrixmultiply v0.3.11
+   Compiling find-msvc-tools v0.1.14
+   Compiling itoa v1.0.18
+   Compiling rand_core v0.9.5
+   Compiling rustix v1.1.5
+   Compiling shlex v2.0.1
+   Compiling getrandom v0.4.3
+   Compiling cc v1.5.1
+   Compiling crossbeam v0.8.5
+   Compiling py_literal v0.4.0
+   Compiling equator v0.4.2
+   Compiling equator v0.2.2
+   Compiling sysctl v0.6.0
+   Compiling approx v0.5.1
+   Compiling errno v0.3.14
+   Compiling wide v1.7.1
+   Compiling qd v0.8.0
+   Compiling equator-macro v0.6.0
+   Compiling atomic-wait v1.1.0
+   Compiling camino v1.2.6
+   Compiling rawpointer v0.2.1
+   Compiling generativity v1.2.1
+   Compiling thiserror v2.0.21
+   Compiling faer-traits v0.24.0
+   Compiling equator v0.6.0
+   Compiling spindle v0.2.6
+   Compiling nano-gemm v0.2.2
+   Compiling npyz v0.8.4
+   Compiling ppv-lite86 v0.2.21
+   Compiling half v2.7.1
+   Compiling gemm-common v0.19.0
+   Compiling rand_chacha v0.9.0
+   Compiling rand v0.9.5
+   Compiling alloca v0.4.0
+   Compiling nalgebra-macros v0.3.0
+   Compiling num-rational v0.4.2
+   Compiling thiserror-impl v2.0.21
+   Compiling error-chain v0.12.4
+   Compiling same-file v1.0.6
+   Compiling typenum v1.20.1
+   Compiling rand_distr v0.5.1
+   Compiling pulldown-cmark v0.9.6
+   Compiling clap_lex v1.1.1
+   Compiling fastrand v2.5.0
+   Compiling regex-syntax v0.8.11
+   Compiling diffsol-la v0.2.0 (<build-path>)
+   Compiling ciborium-io v0.2.2
+   Compiling anstyle v1.0.14
+   Compiling plotters-backend v0.3.7
+   Compiling ciborium-ll v0.2.2
+   Compiling plotters-svg v0.3.7
+   Compiling clap_builder v4.6.7
+   Compiling tempfile v3.27.0
+   Compiling gemm-f64 v0.19.0
+   Compiling gemm-f32 v0.19.0
+   Compiling gemm-c64 v0.19.0
+   Compiling gemm-c32 v0.19.0
+   Compiling simba v0.10.2
+   Compiling regex-automata v0.4.18
+   Compiling gemm v0.19.0
+   Compiling faer v0.24.4
+   Compiling walkdir v2.5.0
+   Compiling cargo-platform v0.1.9
+   Compiling semver v1.0.28
+   Compiling itertools v0.13.0
+   Compiling cast v0.3.0
+   Compiling hashbrown v0.17.1
+   Compiling unicase v2.9.0
+   Compiling foldhash v0.1.5
+   Compiling equivalent v1.0.2
+   Compiling hashbrown v0.15.5
+   Compiling cargo_metadata v0.14.2
+   Compiling regex v1.13.1
+   Compiling indexmap v2.14.2
+   Compiling clap v4.6.7
+   Compiling plotters v0.3.7
+   Compiling ciborium v0.2.2
+   Compiling tinytemplate v1.2.1
+   Compiling nalgebra v0.35.0
+   Compiling criterion-plot v0.8.2
+   Compiling page_size v0.6.0
+   Compiling console v0.16.6
+   Compiling bytecount v0.6.9
+   Compiling fixedbitset v0.5.7
+   Compiling oorandom v11.1.5
+   Compiling anes v0.1.6
+   Compiling glob v0.3.4
+   Compiling diffsol v0.17.1 (<build-path>)
+   Compiling log v0.4.34
+   Compiling similar v2.7.0
+   Compiling skeptic v0.13.7
+   Compiling criterion v0.8.2
+   Compiling petgraph v0.8.3
+   Compiling insta v1.48.0
+   Compiling diffsol-nl v0.2.0 (<build-path>)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 18s
+     Running unittests src/lib.rs (<build-path>)
+
+running 1 test
+test ode_solver::rosenbrock::tests::rosenbrock23_controls_nonlinear_algebraic_endpoint ... FAILED
+
+failures:
+
+---- ode_solver::rosenbrock::tests::rosenbrock23_controls_nonlinear_algebraic_endpoint stdout ----
+
+thread 'ode_solver::rosenbrock::tests::rosenbrock23_controls_nonlinear_algebraic_endpoint' (187453613) panicked at crates/diffsol/src/ode_solver/rosenbrock.rs:723:9:
+constraint residual 0.00000023784710449260837 at 0.006236291026982378
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    ode_solver::rosenbrock::tests::rosenbrock23_controls_nonlinear_algebraic_endpoint
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 313 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p diffsol --lib`

@@ -1,0 +1,12 @@
+{
+  "source_commit": "8affbd5079e9c78ed66044814e001e877ac66777",
+  "source_tree": "554b3a92486ac62fddb0b9053a44cab1bf1c951b",
+  "kind": "paper",
+  "environment": {},
+  "exit_code": 0,
+  "elapsed_seconds": 3.263638084055856,
+  "driver_sha256": "0c210fb65714cffe8b838e26cfe2cb390daa13dbe7ee3372f9fd4b9b9cedffc5",
+  "command": "python3 validation/rosenbrock/run.py --source SOURCE --snapshot rodas-pr-8affbd5 --target-dir TARGET",
+  "csv_sha256": "e2b333dcfa358867000a023dcca140f1aa4e1b3d55a0006c270b5ea621f9c6fa",
+  "diagnostic_sha256": "5359bcc84ec58c5c15c50f8bb3ad6dcbf4ea6441cbffa3f856036649937c572c"
+}

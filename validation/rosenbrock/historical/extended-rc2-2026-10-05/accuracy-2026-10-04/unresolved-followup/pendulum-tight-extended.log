@@ -1,0 +1,23 @@
+   Compiling diffsol-pr-a-scientific v0.0.0 (<build-path>)
+    Finished `release` profile [optimized] target(s) in 1.34s
+     Running `<build-path>`
+Traceback (most recent call last):
+  File "<source-path> line 12, in <module>
+    subprocess.run(['cargo','run','--release','--offline','--locked','--manifest-path',str(root/'Cargo.toml')],env=env,check=True)
+  File "<source-path> line 550, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<source-path> line 1201, in communicate
+    self.wait()
+  File "<source-path> line 1264, in wait
+    return self._wait(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<source-path> line 2053, in _wait
+    (pid, sts) = self._try_wait(0)
+                 ^^^^^^^^^^^^^^^^^
+  File "<source-path> line 2011, in _try_wait
+    (pid, sts) = os.waitpid(self.pid, wait_flags)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+
+INTERRUPTED pendulum rosenbrock23 1e-8: fifth refinement stopped after fourth completed pass worsened the independent-reference error from 0.0662001 to 3.1911684 units; not a numerical-failure or completed convergence claim. Four completed passes used 125139516 accepted steps.

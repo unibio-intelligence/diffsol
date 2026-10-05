@@ -1,0 +1,6 @@
+    Blocking waiting for file lock on build directory
+    Checking diffsol-la v0.2.0 (<TEMP_PATH>)
+    Checking diffsol-nl v0.2.0 (<TEMP_PATH>)
+ Documenting diffsol v0.17.1 (<TEMP_PATH>)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 14.73s
+   Generated <TEMP_PATH>

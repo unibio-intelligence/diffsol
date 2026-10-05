@@ -1,0 +1,33 @@
+Julia Version 1.12.6
+Commit 15346901f00 (2026-04-09 19:20 UTC)
+Build Info:
+  Official https://julialang.org release
+Platform Info:
+  OS: macOS (arm64-apple-darwin24.0.0)
+  CPU: 14 × Apple M3 Max
+  WORD_SIZE: 64
+  LLVM: libLLVM-18.1.7 (ORCJIT, apple-m3)
+  GC: Built with stock GC
+Threads: 1 default, 1 interactive, 1 GC (on 10 virtual cores)
+Environment:
+  JULIA_DEPOT_PATH = <build-path>
+  JULIA_PKG_OFFLINE = true
+START pendulum rosenbrock23 1.0e-8 pass=1
+START pendulum rosenbrock23 1.0e-8 pass=2
+START pendulum rosenbrock23 1.0e-8 pass=3
+START pendulum rosenbrock23 1.0e-8 pass=4
+START pendulum rosenbrock23 1.0e-8 pass=5
+┌ Warning: Verbosity toggle: dt_epsilon 
+│  At t=0.5609729900534246, dt was forced below floating point epsilon 1.1102230246251565e-16. Aborting. There is either an error in your model specification or the true solution is unstable (or it cannot be represented in Float64 precision).
+│ 
+│ Diagnostics:
+│ 
+│ Error Analysis:
+│   step error estimate EEst = 1.509 (a step is accepted when EEst <= 1)
+│   largest contributors to EEst = internalnorm(atmp), where atmp is the tolerance-weighted local error per state component:
+│     atmp[5] = -3.375, u[5] = -10.1, uprev[5] = -10.1
+│     atmp[1] = 0, u[1] = 1.454, uprev[1] = 1.454
+│     atmp[2] = 0, u[2] = -3.564, uprev[2] = -3.564
+└ @ DiffEqBase ~/.julia/packages/DiffEqBase/xEDij/src/check_error.jl:37
+FAILED pendulum rosenbrock23 1.0e-8 pass=5 Unstable
+UNRESOLVED pendulum rosenbrock23 1.0e-8

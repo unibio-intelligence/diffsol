@@ -1,0 +1,41 @@
+{
+  "schema": "unibio.water-threshold-diagnosis/v1",
+  "runs": [
+    {
+      "rtol": 1e-06,
+      "time": 3535.4929244113705,
+      "trial_h": 1.4799391892021622e-12,
+      "flow_index_zero_based": 17,
+      "pipe": "node 12 to node 10",
+      "flow_m3_per_s": 0.0023664046663165114,
+      "Reynolds_number": 2300.0,
+      "friction_factor": 0.04751940452918529,
+      "laminar_pressure_loss_Pa": 0.12630496,
+      "turbulent_limit_pressure_loss_Pa": 0.43138918509530944,
+      "loss_jump_Pa": 0.3050842250953094,
+      "jump_ratio": 3.4154572005351924,
+      "float64_ulp_at_time": 4.547473508864641e-13,
+      "status": "typed StepSizeTooSmall; no complete trajectory",
+      "source_gap": "Exact published author index-1 adaptation unavailable; independent reduction only",
+      "contact": "Cancelled by user; no request sent"
+    },
+    {
+      "rtol": 1e-08,
+      "time": 3535.50630995707,
+      "trial_h": 6.51675810480073e-13,
+      "flow_index_zero_based": 17,
+      "pipe": "node 12 to node 10",
+      "flow_m3_per_s": 0.0023664046663165114,
+      "Reynolds_number": 2300.0,
+      "friction_factor": 0.04751940452918529,
+      "laminar_pressure_loss_Pa": 0.12630496,
+      "turbulent_limit_pressure_loss_Pa": 0.43138918509530944,
+      "loss_jump_Pa": 0.3050842250953094,
+      "jump_ratio": 3.4154572005351924,
+      "float64_ulp_at_time": 4.547473508864641e-13,
+      "status": "typed StepSizeTooSmall; no complete trajectory",
+      "source_gap": "Exact published author index-1 adaptation unavailable; independent reduction only",
+      "contact": "Cancelled by user; no request sent"
+    }
+  ]
+}

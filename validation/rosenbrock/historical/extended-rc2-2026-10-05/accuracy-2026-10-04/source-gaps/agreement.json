@@ -1,0 +1,301 @@
+{
+  "schema": "unibio.recovered-source-validation/v1",
+  "date": "2026-10-05",
+  "diffsol": [
+    {
+      "problem": "hyperbolic",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "passes": 3,
+      "accepted_steps": 46,
+      "coarse_fine_agreement_units": 0.11468131038842343,
+      "maximum_reference_error_units": 0.01418727776096888,
+      "reference": "analytic transport solution"
+    },
+    {
+      "problem": "hyperbolic",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "passes": 3,
+      "accepted_steps": 117,
+      "coarse_fine_agreement_units": 0.1702037047087303,
+      "maximum_reference_error_units": 0.019426213165186848,
+      "reference": "analytic transport solution"
+    },
+    {
+      "problem": "hyperbolic",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "passes": 5,
+      "accepted_steps": 4559,
+      "coarse_fine_agreement_units": 0.0561415441164893,
+      "maximum_reference_error_units": 0.015109491717432474,
+      "reference": "analytic transport solution"
+    },
+    {
+      "problem": "hyperbolic",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "passes": 6,
+      "accepted_steps": 46979,
+      "coarse_fine_agreement_units": 0.05439263862973665,
+      "maximum_reference_error_units": 0.014906534832927271,
+      "reference": "analytic transport solution"
+    },
+    {
+      "problem": "water_index1",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "passes": 4,
+      "accepted_steps": 23959,
+      "coarse_fine_agreement_units": 0.21768225436206556,
+      "maximum_reference_error_units": 0.03345915955543957,
+      "reference": "null-space ODE / Radau 1e-13",
+      "maximum_BDF_reference_error_units": 0.03330053165478147,
+      "maximum_original_flow_balance_m3_per_s": 5.2154461305242705e-15,
+      "maximum_Colebrook_residual": 4.702904732312163e-13,
+      "minimum_friction_factor": 0.036514270266756875
+    },
+    {
+      "problem": "water_index1",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "passes": 4,
+      "accepted_steps": 25352,
+      "coarse_fine_agreement_units": 0.1719837224935521,
+      "maximum_reference_error_units": 0.3323272599566993,
+      "reference": "null-space ODE / Radau 1e-13",
+      "maximum_BDF_reference_error_units": 0.06596746951401229,
+      "maximum_original_flow_balance_m3_per_s": 4.960008098686686e-15,
+      "maximum_Colebrook_residual": 4.5297099404706387e-13,
+      "minimum_friction_factor": 0.036514270266756604
+    }
+  ],
+  "julia": [
+    {
+      "problem": "hyperbolic",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "passes": 2,
+      "accepted_steps": 39,
+      "coarse_fine_agreement_units": 0.1264370977913869,
+      "maximum_reference_error_units": 0.021991352696598358,
+      "reference": "analytic transport solution"
+    },
+    {
+      "problem": "hyperbolic",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "passes": 3,
+      "accepted_steps": 166,
+      "coarse_fine_agreement_units": 0.04920315550977994,
+      "maximum_reference_error_units": 0.005276722186323479,
+      "reference": "analytic transport solution"
+    },
+    {
+      "problem": "hyperbolic",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "passes": 2,
+      "accepted_steps": 6570,
+      "coarse_fine_agreement_units": 0.039927767549693335,
+      "maximum_reference_error_units": 0.004326632805423356,
+      "reference": "analytic transport solution"
+    },
+    {
+      "problem": "hyperbolic",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "passes": 2,
+      "accepted_steps": 66189,
+      "coarse_fine_agreement_units": 0.03866451975329624,
+      "maximum_reference_error_units": 0.004284528733058395,
+      "reference": "analytic transport solution"
+    },
+    {
+      "problem": "water_index1",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "passes": 4,
+      "accepted_steps": 23897,
+      "coarse_fine_agreement_units": 0.10571105597679205,
+      "maximum_reference_error_units": 0.024944045568822633,
+      "reference": "null-space ODE / Radau 1e-13",
+      "maximum_BDF_reference_error_units": 0.024140435879870168,
+      "maximum_original_flow_balance_m3_per_s": 5.1143984880486215e-15,
+      "maximum_Colebrook_residual": 3.943512183468556e-13,
+      "minimum_friction_factor": 0.03651427026675665
+    },
+    {
+      "problem": "water_index1",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "passes": 4,
+      "accepted_steps": 25574,
+      "coarse_fine_agreement_units": 0.09003318099844393,
+      "maximum_reference_error_units": 0.3276978912964038,
+      "reference": "null-space ODE / Radau 1e-13",
+      "maximum_BDF_reference_error_units": 0.06559849559203834,
+      "maximum_original_flow_balance_m3_per_s": 4.993401525599239e-15,
+      "maximum_Colebrook_residual": 3.7969627442180354e-13,
+      "minimum_friction_factor": 0.036514270266756625
+    }
+  ],
+  "water_reference_uncertainty": {
+    "Radau_refinement_change_units_at_1e-8": 0.3037511110800952,
+    "BDF_refinement_change_units_at_1e-8": 0.3159528000099526,
+    "Radau_BDF_difference_units_at_1e-8": 0.35107984347057536
+  },
+  "unresolved_runs": [
+    {
+      "log": "water-rosenbrock23.log",
+      "message": "FAILED water_index1 rosenbrock23 0.000001: Error: validation step cap"
+    },
+    {
+      "log": "water-rosenbrock23.log",
+      "message": "FAILED water_index1 rosenbrock23 0.00000001: Error: validation step cap"
+    },
+    {
+      "log": "julia.log",
+      "message": "FAILED water_index1 rosenbrock23 1.0e-6 pass=1 Unstable"
+    },
+    {
+      "log": "julia.log",
+      "message": "UNRESOLVED water_index1 rosenbrock23 1.0e-6"
+    },
+    {
+      "log": "julia.log",
+      "message": "FAILED water_index1 rosenbrock23 1.0e-8 pass=1 Unstable"
+    },
+    {
+      "log": "julia.log",
+      "message": "UNRESOLVED water_index1 rosenbrock23 1.0e-8"
+    }
+  ],
+  "exact_source_limitations": [
+    "2023 water index-1 adaptation is unspecified; independent reduction validated instead",
+    "2020 hyperbolic variant and full 2023 timing curves not reproduced"
+  ],
+  "no_commits_or_pushes": true,
+  "adaptive_Julia_comparisons": [
+    {
+      "problem": "hyperbolic",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "maximum_scaled_DiffSol_Julia_difference": 0.026632302502711515
+    },
+    {
+      "problem": "hyperbolic",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "maximum_scaled_DiffSol_Julia_difference": 0.02156670895207205
+    },
+    {
+      "problem": "hyperbolic",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "maximum_scaled_DiffSol_Julia_difference": 0.01078285895866259
+    },
+    {
+      "problem": "hyperbolic",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "maximum_scaled_DiffSol_Julia_difference": 0.010622006100323976
+    },
+    {
+      "problem": "water_index1",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "maximum_scaled_DiffSol_Julia_difference": 0.03522495943611818
+    },
+    {
+      "problem": "water_index1",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "maximum_scaled_DiffSol_Julia_difference": 0.020176494314619153
+    }
+  ],
+  "upstream_vendor_bit_identical_completed_sampled_rows": 606,
+  "interrupted_diagnostic": {
+    "log": "water.log",
+    "reason": "After both Rodas5P targets completed, the longer Rosenbrock23 attempt was interrupted and rerun with an explicit 250000 accepted-step cap. No failed numerical outcome is inferred from the interruption."
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "input_sha256_before_public_path_sanitization": "dc51be51c19c5effd4d279789e1986ed709a3061c3fdbab70539185c47610194"
+    },
+    {
+      "path": "analyze.py",
+      "input_sha256_before_public_path_sanitization": "0615c3405d66f48f6f4e174844f16f81795594f320b1b6929ec1edf9d13a454d"
+    },
+    {
+      "path": "derivatives.log",
+      "input_sha256_before_public_path_sanitization": "24677528a0d1f1d5eabad08b23733f7a08b223ba211bf110d5263f2f27e32324"
+    },
+    {
+      "path": "hyperbolic.csv",
+      "input_sha256_before_public_path_sanitization": "1bec88cac39480f12bd0821dee542573cd6bbd3b411a6605bc19e32c168f6117"
+    },
+    {
+      "path": "hyperbolic.log",
+      "input_sha256_before_public_path_sanitization": "b0552e346937b26ccf3aabbb5ebd33896ddcec08c4dbf333edaba32c9b441650"
+    },
+    {
+      "path": "julia.csv",
+      "input_sha256_before_public_path_sanitization": "f5ae88dca7ce47cc136cc6224efbb3f3a1b8d9f290195f3547d47c70f5b1275e"
+    },
+    {
+      "path": "julia.jl",
+      "input_sha256_before_public_path_sanitization": "7baac86079a2ecad5953ab0c90d37e61785ac4fb09e2ba6786015d36ac929ef1"
+    },
+    {
+      "path": "julia.log",
+      "input_sha256_before_public_path_sanitization": "ecebcde124181757a47563a795c35159dbc353483110b51b00c3ebccd7d76df0"
+    },
+    {
+      "path": "reference-bdf.log",
+      "input_sha256_before_public_path_sanitization": "50b08aa5de133509a75e88fa6e3da33a06f17f1327663a26ffe32b9d93f049e0"
+    },
+    {
+      "path": "reference.log",
+      "input_sha256_before_public_path_sanitization": "fbb779f53f32cf6b842e7a9fe655c0a1d8be110419ae837fcfcf9a0df58dba21"
+    },
+    {
+      "path": "reference.py",
+      "input_sha256_before_public_path_sanitization": "0150facbebd3871eb3f396432484e290679e0a0638e40a9fafc0122800d68990"
+    },
+    {
+      "path": "vendor.csv",
+      "input_sha256_before_public_path_sanitization": "da481b006bb3193f5a27d1fecf190fc859ce972c94d53d3bfb98b3f8167e3bda"
+    },
+    {
+      "path": "vendor.log",
+      "input_sha256_before_public_path_sanitization": "6d4e97d7309cf772088d051de67e1a7857a61b8865190b20cb1d384501a11803"
+    },
+    {
+      "path": "water-bdf-reference.json",
+      "input_sha256_before_public_path_sanitization": "87e370859a30021dc9807a75ccff73ccf6e9df31b4a678b488200f88679faea8"
+    },
+    {
+      "path": "water-reference.json",
+      "input_sha256_before_public_path_sanitization": "7ba7252e2ceeb279f51011077e10683c882e03fc4980788f8ee3516daa752779"
+    },
+    {
+      "path": "water-rosenbrock23.csv",
+      "input_sha256_before_public_path_sanitization": "baeba0f0692e0cfda82fa4a2f114f67c1793efb60fc486649e4fbd7e6766c959"
+    },
+    {
+      "path": "water-rosenbrock23.log",
+      "input_sha256_before_public_path_sanitization": "5b6a362f0d556d73f1adaf8089a7664632300a30f1b422c27f4d2c0c3630874d"
+    },
+    {
+      "path": "water.csv",
+      "input_sha256_before_public_path_sanitization": "705622c3189eb350aecb61b4f8bfe41f60ecd1c5192866b8d5908b1564de35a6"
+    },
+    {
+      "path": "water.log",
+      "input_sha256_before_public_path_sanitization": "76b259372596400a4e4a5d3596f79206088c46d6362ac9a3440b455ab104b9c0"
+    }
+  ]
+}

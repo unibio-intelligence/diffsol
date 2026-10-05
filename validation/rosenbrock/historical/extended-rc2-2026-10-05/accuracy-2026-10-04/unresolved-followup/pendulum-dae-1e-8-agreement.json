@@ -1,0 +1,34 @@
+{
+  "schema": "unibio.additional-sampled-agreement/v1",
+  "runs": [
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "local",
+      "passes": 1,
+      "total_steps": 2736580,
+      "maximum_reference_tolerance_units": 3.3341743187257737,
+      "convergence_units": null,
+      "maximum_absolute_error": 3.92063537191234e-09,
+      "position_constraint_drift": 9.8735597475752e-10,
+      "velocity_constraint_drift": 1.0472245293158267e-10
+    },
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "pass0.1",
+      "passes": 1,
+      "total_steps": 11390384,
+      "maximum_reference_tolerance_units": 0.38345359209162566,
+      "convergence_units": null,
+      "maximum_absolute_error": 4.050040303127389e-10,
+      "position_constraint_drift": 1.148574568787808e-10,
+      "velocity_constraint_drift": 1.1545431277681928e-11
+    }
+  ],
+  "failures": [
+    "FAILED pendulum rosenbrock23 0.00000001: Error: validation step cap"
+  ]
+}

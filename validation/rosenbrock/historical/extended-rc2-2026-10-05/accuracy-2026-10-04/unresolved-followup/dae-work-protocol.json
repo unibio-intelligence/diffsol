@@ -1,0 +1,80 @@
+[
+  {
+    "problem": "pv",
+    "method": "rosenbrock23",
+    "rtol": 1e-06,
+    "step_cap_per_pass": 20000000,
+    "maximum_passes": 8,
+    "agreement_fraction": 0.25,
+    "seconds": 9.858288625022396,
+    "process_exit": 0,
+    "csv": "pv-dae-1e-6.csv",
+    "log": "pv-dae-1e-6.log",
+    "source_candidate_patch_sha256": "87e83dd29470af54ce0c3785e3c2a0562ca225913f9802bd25efc3d7c6ac62cd"
+  },
+  {
+    "problem": "pv",
+    "method": "rosenbrock23",
+    "rtol": 1e-08,
+    "step_cap_per_pass": 20000000,
+    "maximum_passes": 8,
+    "agreement_fraction": 0.25,
+    "seconds": 43.59713479108177,
+    "process_exit": 0,
+    "csv": "pv-dae-1e-8.csv",
+    "log": "pv-dae-1e-8.log",
+    "source_candidate_patch_sha256": "87e83dd29470af54ce0c3785e3c2a0562ca225913f9802bd25efc3d7c6ac62cd"
+  },
+  {
+    "problem": "pendulum",
+    "method": "rosenbrock23",
+    "rtol": 1e-06,
+    "step_cap_per_pass": 20000000,
+    "maximum_passes": 8,
+    "agreement_fraction": 0.25,
+    "seconds": 28.132322082994506,
+    "process_exit": 0,
+    "csv": "pendulum-dae-1e-6.csv",
+    "log": "pendulum-dae-1e-6.log",
+    "source_candidate_patch_sha256": "87e83dd29470af54ce0c3785e3c2a0562ca225913f9802bd25efc3d7c6ac62cd"
+  },
+  {
+    "problem": "pendulum",
+    "method": "rosenbrock23",
+    "rtol": 1e-08,
+    "step_cap_per_pass": 20000000,
+    "maximum_passes": 8,
+    "agreement_fraction": 0.25,
+    "seconds": 73.02384104195517,
+    "process_exit": 0,
+    "csv": "pendulum-dae-1e-8.csv",
+    "log": "pendulum-dae-1e-8.log",
+    "source_candidate_patch_sha256": "87e83dd29470af54ce0c3785e3c2a0562ca225913f9802bd25efc3d7c6ac62cd"
+  },
+  {
+    "problem": "circle_inexact",
+    "method": "rosenbrock23",
+    "rtol": 1e-06,
+    "step_cap_per_pass": 20000000,
+    "maximum_passes": 8,
+    "agreement_fraction": 0.25,
+    "seconds": 41.88838787493296,
+    "process_exit": 0,
+    "csv": "circle_inexact-dae-1e-6.csv",
+    "log": "circle_inexact-dae-1e-6.log",
+    "source_candidate_patch_sha256": "87e83dd29470af54ce0c3785e3c2a0562ca225913f9802bd25efc3d7c6ac62cd"
+  },
+  {
+    "problem": "circle_inexact",
+    "method": "rosenbrock23",
+    "rtol": 1e-08,
+    "step_cap_per_pass": 20000000,
+    "maximum_passes": 8,
+    "agreement_fraction": 0.25,
+    "seconds": 29.47514274995774,
+    "process_exit": 0,
+    "csv": "circle_inexact-dae-1e-8.csv",
+    "log": "circle_inexact-dae-1e-8.log",
+    "source_candidate_patch_sha256": "87e83dd29470af54ce0c3785e3c2a0562ca225913f9802bd25efc3d7c6ac62cd"
+  }
+]

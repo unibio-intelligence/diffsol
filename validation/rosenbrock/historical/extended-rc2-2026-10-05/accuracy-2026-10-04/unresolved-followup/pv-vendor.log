@@ -1,0 +1,22 @@
+warning: unused import: `Pow`
+ --> <build-path>
+  |
+8 | use num_traits::{FromPrimitive, One, Pow};
+  |                                      ^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `diffsol-nl` (lib) generated 1 warning (run `cargo fix --lib -p diffsol-nl` to apply 1 suggestion)
+warning: unused import: `Pow`
+ --> <build-path>
+  |
+3 | use num_traits::{One, Pow, Signed, Zero};
+  |                       ^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `diffsol` (lib) generated 1 warning
+   Compiling diffsol-pr-a-scientific v0.0.0 (<build-path>)
+    Finished `release` profile [optimized] target(s) in 1.10s
+     Running `<build-path>`
+pv rosenbrock23 0.000001 passes=2 steps=1403747

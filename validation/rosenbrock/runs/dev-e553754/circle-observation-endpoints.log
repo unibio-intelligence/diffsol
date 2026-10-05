@@ -1,0 +1,5 @@
+   Compiling diffsol-pr-a-scientific v0.0.0 (<driver-build>
+    Finished `release` profile [optimized] target(s) in 2.75s
+     Running `<cargo-target>/release/diffsol-pr-a-scientific`
+circle_inexact rodas5p 0.000001 passes=3 steps=8900
+circle_inexact rodas5p 0.00000001 passes=3 steps=84526

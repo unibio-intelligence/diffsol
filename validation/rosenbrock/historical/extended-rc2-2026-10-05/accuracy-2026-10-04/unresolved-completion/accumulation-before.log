@@ -1,0 +1,22 @@
+   Compiling diffsol v0.17.1 (<build-path>)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.77s
+     Running unittests src/lib.rs (target/debug/deps/diffsol-df06ada1315ba5ad)
+
+running 1 test
+test ode_solver::rosenbrock::tests::small_increments_accumulate_without_roundoff_drift ... FAILED
+
+failures:
+
+---- ode_solver::rosenbrock::tests::small_increments_accumulate_without_roundoff_drift stdout ----
+
+thread 'ode_solver::rosenbrock::tests::small_increments_accumulate_without_roundoff_drift' (187816900) panicked at crates/diffsol/src/ode_solver/rosenbrock.rs:989:9:
+accumulation error 0.00004901161193847656
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    ode_solver::rosenbrock::tests::small_increments_accumulate_without_roundoff_drift
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 315 filtered out; finished in 0.10s
+
+error: test failed, to rerun pass `-p diffsol --lib`

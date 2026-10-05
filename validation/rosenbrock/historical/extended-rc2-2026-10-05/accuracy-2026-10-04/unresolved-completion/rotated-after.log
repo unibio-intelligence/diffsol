@@ -1,0 +1,10 @@
+   Compiling diffsol v0.17.1 (<build-path>)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.88s
+     Running unittests src/lib.rs (target/debug/deps/diffsol-df06ada1315ba5ad)
+
+running 2 tests
+test ode_solver::rosenbrock::tests::rosenbrock23_controls_nonlinear_algebraic_endpoint ... ok
+test ode_solver::rosenbrock::tests::rosenbrock23_controls_rotated_algebraic_endpoint ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 313 filtered out; finished in 0.17s
+

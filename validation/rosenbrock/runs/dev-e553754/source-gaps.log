@@ -1,0 +1,11 @@
+   Compiling diffsol-pr-a-scientific v0.0.0 (<driver-build>
+    Finished `release` profile [optimized] target(s) in 2.04s
+     Running `<cargo-target>/release/diffsol-pr-a-scientific`
+hyperbolic rodas5p 0.000001 passes=3 steps=46
+hyperbolic rodas5p 0.00000001 passes=3 steps=117
+hyperbolic rosenbrock23 0.000001 passes=5 steps=4559
+hyperbolic rosenbrock23 0.00000001 passes=6 steps=46979
+water_index1 rodas5p 0.000001 passes=4 steps=23959
+water_index1 rodas5p 0.00000001 passes=5 steps=76601
+FAILED water_index1 rosenbrock23 0.000001: ODE solver error: Step size is too small at time = 3535.4929244113705
+FAILED water_index1 rosenbrock23 0.00000001: ODE solver error: Step size is too small at time = 3535.50630995707

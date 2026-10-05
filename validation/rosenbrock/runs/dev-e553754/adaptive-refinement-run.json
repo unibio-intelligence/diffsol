@@ -1,0 +1,12 @@
+{
+  "source_commit": "e553754e5b984529864c044611f714f312c37329",
+  "source_tree": "1656884009fb87ed1015fe4ad4617c8d076f09aa",
+  "kind": "adaptive-refinement",
+  "environment": {},
+  "exit_code": 0,
+  "elapsed_seconds": 2.90352058399003,
+  "driver_sha256": "bbc551d1633940e88380ca7f0445edaf3042b5e80771bef216d75668166724b3",
+  "command": "python3 validation/rosenbrock/run.py --source SOURCE --snapshot dev-e553754 --target-dir TARGET --extended",
+  "csv_sha256": "dbe18660e4fb17a1d2a29c7bff426cb5f283ddbb8daff186ea1139e9c7410478",
+  "diagnostic_sha256": "150e8c65e66037f8e8da48d758565160ad6a0abefb98496ee5ba3353c32eb220"
+}

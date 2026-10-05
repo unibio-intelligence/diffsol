@@ -1,0 +1,610 @@
+{
+  "schema": "unibio.unresolved-numerical-followup/v1",
+  "date": "2026-10-05",
+  "source_patch_sha256": "87e83dd29470af54ce0c3785e3c2a0562ca225913f9802bd25efc3d7c6ac62cd",
+  "source_status": "shared uncommitted candidate; Fable review pending",
+  "standard_budget_completed": 24,
+  "standard_budget_requested": 32,
+  "standard_failures": [
+    "FAILED oregonator rosenbrock23 0.00000001: Error: validation step cap",
+    "FAILED amplifier rosenbrock23 0.00000001: Error: validation step cap",
+    "FAILED pendulum rosenbrock23 0.000001: Error: validation step cap",
+    "FAILED pendulum rosenbrock23 0.00000001: Error: validation step cap",
+    "FAILED circle_inexact rodas5p 0.00000001: Error: validation step cap",
+    "FAILED circle_inexact rosenbrock23 0.000001: Error: validation step cap",
+    "FAILED circle_inexact rosenbrock23 0.00000001: Error: validation step cap",
+    "FAILED pv rosenbrock23 0.00000001: Error: validation step cap"
+  ],
+  "larger_budget_completed_total": 27,
+  "resolved_of_original_nine": [
+    {
+      "problem": "oregonator",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 8,
+      "total_steps": 21870206,
+      "maximum_reference_tolerance_units": 0.011392108325248144,
+      "convergence_units": 0.043898916899795935,
+      "maximum_absolute_error": 1.7162528820335865e-06,
+      "artifact": "oregonator-work.csv",
+      "protocol": "20000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 4,
+      "total_steps": 12529442,
+      "maximum_reference_tolerance_units": 0.0033982753137234076,
+      "convergence_units": 0.030649527758079827,
+      "maximum_absolute_error": 4.2224623797437744e-10,
+      "position_constraint_drift": 9.899192576767746e-11,
+      "velocity_constraint_drift": 1.0126122163001128e-11,
+      "artifact": "pendulum-dae-1e-6.csv",
+      "protocol": "20000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "pv",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 2,
+      "total_steps": 1403747,
+      "maximum_reference_tolerance_units": 0.017768105003542953,
+      "convergence_units": 0.16641695169197412,
+      "maximum_absolute_error": 2.5891185941873118e-05,
+      "algebraic_residual": 2.624416239882521e-09,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "pv",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 2,
+      "total_steps": 14032305,
+      "maximum_reference_tolerance_units": 0.017881538349658162,
+      "convergence_units": 0.16134693211868018,
+      "maximum_absolute_error": 3.532113623805344e-07,
+      "algebraic_residual": 3.945110904624016e-11,
+      "artifact": "pv-dae-1e-8.csv",
+      "protocol": "20000000 accepted steps per pass; 8 passes"
+    }
+  ],
+  "remaining_of_original_nine": [
+    {
+      "problem": "amplifier",
+      "method": "rosenbrock23",
+      "rtol": 1e-08
+    },
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-08
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-08
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rosenbrock23",
+      "rtol": 1e-06
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rosenbrock23",
+      "rtol": 1e-08
+    }
+  ],
+  "completed_checks": [
+    {
+      "problem": "hires",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 4,
+      "total_steps": 1276,
+      "maximum_reference_tolerance_units": 0.0027939776493972586,
+      "convergence_units": 0.0610377817956876,
+      "maximum_absolute_error": 3.999256481534985e-11,
+      "mass_drift": 9.540979117872439e-18,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "hires",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 4,
+      "total_steps": 4458,
+      "maximum_reference_tolerance_units": 0.000604121645498679,
+      "convergence_units": 0.013768035024905341,
+      "maximum_absolute_error": 8.737455203799982e-14,
+      "mass_drift": 3.0357660829594124e-17,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "hires",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 6,
+      "total_steps": 84978,
+      "maximum_reference_tolerance_units": 0.030082503225614874,
+      "convergence_units": 0.1097354391582639,
+      "maximum_absolute_error": 1.8209207475194944e-09,
+      "mass_drift": 7.025630077706069e-17,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "hires",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 7,
+      "total_steps": 915828,
+      "maximum_reference_tolerance_units": 0.030047572196136553,
+      "convergence_units": 0.10945289256397735,
+      "maximum_absolute_error": 1.817779260449015e-11,
+      "mass_drift": 6.227657278756737e-16,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "oregonator",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 3,
+      "total_steps": 5347,
+      "maximum_reference_tolerance_units": 0.018709167822813354,
+      "convergence_units": 0.1688537355108721,
+      "maximum_absolute_error": 0.0002529875055188313,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "oregonator",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 3,
+      "total_steps": 17647,
+      "maximum_reference_tolerance_units": 0.018654412829967035,
+      "convergence_units": 0.19512767436744757,
+      "maximum_absolute_error": 2.255183062516153e-06,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "oregonator",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 7,
+      "total_steps": 1899310,
+      "maximum_reference_tolerance_units": 0.02086334588511066,
+      "convergence_units": 0.09263250008129036,
+      "maximum_absolute_error": 0.0001474465971114114,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "amplifier",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 5,
+      "total_steps": 16489,
+      "maximum_reference_tolerance_units": 0.0037355170354785644,
+      "convergence_units": 0.13018915506878392,
+      "maximum_absolute_error": 3.793533709384178e-09,
+      "algebraic_residual": 1.9198711630891152e-12,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "amplifier",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 5,
+      "total_steps": 50497,
+      "maximum_reference_tolerance_units": 0.020468059581751585,
+      "convergence_units": 0.04712818342970149,
+      "maximum_absolute_error": 3.384679203577434e-10,
+      "algebraic_residual": 1.4597421578790848e-13,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "amplifier",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 4,
+      "total_steps": 2655724,
+      "maximum_reference_tolerance_units": 0.008075217152907084,
+      "convergence_units": 0.06488954129178423,
+      "maximum_absolute_error": 2.6214448389794143e-09,
+      "algebraic_residual": 5.112039264121293e-13,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "pendulum",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 6,
+      "total_steps": 9864,
+      "maximum_reference_tolerance_units": 0.010584568874475965,
+      "convergence_units": 0.08564670931149959,
+      "maximum_absolute_error": 9.55095558197172e-10,
+      "position_constraint_drift": 2.9458213646194054e-11,
+      "velocity_constraint_drift": 6.3726801613483985e-12,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "pendulum",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 6,
+      "total_steps": 24712,
+      "maximum_reference_tolerance_units": 0.010055024387062277,
+      "convergence_units": 0.10360989187212802,
+      "maximum_absolute_error": 1.9841905896100798e-11,
+      "position_constraint_drift": 3.3928415632544784e-13,
+      "velocity_constraint_drift": 1.0746958878371515e-13,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "circle",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 4,
+      "total_steps": 168,
+      "maximum_reference_tolerance_units": 0.0016677656626727106,
+      "convergence_units": 0.022657602642961967,
+      "maximum_absolute_error": 1.524820381071379e-09,
+      "algebraic_residual": 2.8938382801158014e-09,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "circle",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 3,
+      "total_steps": 281,
+      "maximum_reference_tolerance_units": 0.01845155399532613,
+      "convergence_units": 0.17495888793640324,
+      "maximum_absolute_error": 1.8542223312323358e-10,
+      "algebraic_residual": 3.69112296283447e-10,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "circle",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 2,
+      "total_steps": 15688,
+      "maximum_reference_tolerance_units": 0.001356129172431036,
+      "convergence_units": 0.011822275283862541,
+      "maximum_absolute_error": 7.576442806467298e-10,
+      "algebraic_residual": 1.3953913580166954e-09,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "circle",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 2,
+      "total_steps": 156875,
+      "maximum_reference_tolerance_units": 0.0013743811915311885,
+      "convergence_units": 0.0112117543014448,
+      "maximum_absolute_error": 7.678413460610045e-12,
+      "algebraic_residual": 1.3955947508748068e-11,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "circle_inexact",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 8,
+      "total_steps": 2743245,
+      "maximum_reference_tolerance_units": 0.0341309500192418,
+      "convergence_units": 0.13235964466412706,
+      "maximum_absolute_error": 2.3301083174054327e-08,
+      "algebraic_residual": 3.622737976272106e-08,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "pollution",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 3,
+      "total_steps": 163,
+      "maximum_reference_tolerance_units": 0.0075705706157555355,
+      "convergence_units": 0.06348384475800938,
+      "maximum_absolute_error": 2.3996046816243677e-10,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "pollution",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 3,
+      "total_steps": 459,
+      "maximum_reference_tolerance_units": 0.005649278903613604,
+      "convergence_units": 0.06299999856313768,
+      "maximum_absolute_error": 2.688509137538375e-12,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "pollution",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 6,
+      "total_steps": 13897,
+      "maximum_reference_tolerance_units": 0.02341841005154755,
+      "convergence_units": 0.08530566975511873,
+      "maximum_absolute_error": 3.489183664218132e-10,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "pollution",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 7,
+      "total_steps": 140512,
+      "maximum_reference_tolerance_units": 0.02343984003677729,
+      "convergence_units": 0.08531853894271521,
+      "maximum_absolute_error": 3.4919567237778892e-12,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "pv",
+      "method": "rodas5p",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 5,
+      "total_steps": 89557,
+      "maximum_reference_tolerance_units": 0.0020545300241272602,
+      "convergence_units": 0.22592725982081444,
+      "maximum_absolute_error": 2.8492650017142296e-08,
+      "algebraic_residual": 1.6664586155457073e-08,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "pv",
+      "method": "rodas5p",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 6,
+      "total_steps": 292341,
+      "maximum_reference_tolerance_units": 0.001874533028334747,
+      "convergence_units": 0.17000650847627474,
+      "maximum_absolute_error": 4.553294274955988e-08,
+      "algebraic_residual": 2.9267255285958527e-11,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "pv",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 2,
+      "total_steps": 1403747,
+      "maximum_reference_tolerance_units": 0.017768105003542953,
+      "convergence_units": 0.16641695169197412,
+      "maximum_absolute_error": 2.5891185941873118e-05,
+      "algebraic_residual": 2.624416239882521e-09,
+      "artifact": "current-standard.csv",
+      "protocol": "5000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "oregonator",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 8,
+      "total_steps": 21870206,
+      "maximum_reference_tolerance_units": 0.011392108325248144,
+      "convergence_units": 0.043898916899795935,
+      "maximum_absolute_error": 1.7162528820335865e-06,
+      "artifact": "oregonator-work.csv",
+      "protocol": "20000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "pv",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "sampled",
+      "passes": 2,
+      "total_steps": 14032305,
+      "maximum_reference_tolerance_units": 0.017881538349658162,
+      "convergence_units": 0.16134693211868018,
+      "maximum_absolute_error": 3.532113623805344e-07,
+      "algebraic_residual": 3.945110904624016e-11,
+      "artifact": "pv-dae-1e-8.csv",
+      "protocol": "20000000 accepted steps per pass; 8 passes"
+    },
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-06,
+      "mode": "sampled",
+      "passes": 4,
+      "total_steps": 12529442,
+      "maximum_reference_tolerance_units": 0.0033982753137234076,
+      "convergence_units": 0.030649527758079827,
+      "maximum_absolute_error": 4.2224623797437744e-10,
+      "position_constraint_drift": 9.899192576767746e-11,
+      "velocity_constraint_drift": 1.0126122163001128e-11,
+      "artifact": "pendulum-dae-1e-6.csv",
+      "protocol": "20000000 accepted steps per pass; 8 passes"
+    }
+  ],
+  "extended_completed_with_source_gap_supplement": 33,
+  "extended_requested_with_source_gap_supplement": 40,
+  "water_additional_unresolved": 2,
+  "water_current_failures": [
+    "FAILED water_index1 rosenbrock23 0.000001: Error: validation step cap",
+    "FAILED water_index1 rosenbrock23 0.00000001: Error: validation step cap"
+  ],
+  "new_shared_PV_rows_bit_identical": 153,
+  "Julia_followup": {
+    "julia-pv-tight": {
+      "schema": "unibio.additional-sampled-agreement/v1",
+      "runs": [
+        {
+          "problem": "pv",
+          "method": "rosenbrock23",
+          "rtol": 1e-08,
+          "mode": "local",
+          "passes": 1,
+          "total_steps": 3395158,
+          "maximum_reference_tolerance_units": 0.21779531965997387,
+          "convergence_units": null,
+          "maximum_absolute_error": 1.880933268694207e-06,
+          "algebraic_residual": 3.496250511325627e-10
+        },
+        {
+          "problem": "pv",
+          "method": "rosenbrock23",
+          "rtol": 1e-08,
+          "mode": "sampled",
+          "passes": 2,
+          "total_steps": 14383304,
+          "maximum_reference_tolerance_units": 0.06038732910706106,
+          "convergence_units": 0.20147969842475003,
+          "maximum_absolute_error": 5.512338248081505e-07,
+          "algebraic_residual": 4.028066769024008e-11
+        }
+      ],
+      "failures": []
+    },
+    "julia-oregonator-tight": {
+      "schema": "unibio.additional-sampled-agreement/v1",
+      "runs": [
+        {
+          "problem": "oregonator",
+          "method": "rosenbrock23",
+          "rtol": 1e-08,
+          "mode": "local",
+          "passes": 1,
+          "total_steps": 39107,
+          "maximum_reference_tolerance_units": 2055.091479887522,
+          "convergence_units": null,
+          "maximum_absolute_error": 0.3097319517401047
+        }
+      ],
+      "failures": [
+        "UNRESOLVED oregonator rosenbrock23 1.0e-8"
+      ]
+    },
+    "julia-pendulum-tight": {
+      "schema": "unibio.additional-sampled-agreement/v1",
+      "runs": [
+        {
+          "problem": "pendulum",
+          "method": "rosenbrock23",
+          "rtol": 1e-08,
+          "mode": "local",
+          "passes": 1,
+          "total_steps": 2655869,
+          "maximum_reference_tolerance_units": 3.3987285466457244,
+          "convergence_units": null,
+          "maximum_absolute_error": 5.86181947426212e-09,
+          "position_constraint_drift": 1.0159153518429775e-09,
+          "velocity_constraint_drift": 1.1385470344293935e-10
+        }
+      ],
+      "failures": [
+        "FAILED pendulum rosenbrock23 1.0e-8 pass=5 Unstable",
+        "UNRESOLVED pendulum rosenbrock23 1.0e-8"
+      ]
+    }
+  },
+  "pendulum_nonmonotonic_refinement": [
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "pass0.1",
+      "passes": 1,
+      "total_steps": 11390384,
+      "maximum_reference_tolerance_units": 0.38345359209162566,
+      "convergence_units": null,
+      "maximum_absolute_error": 4.050040303127389e-10,
+      "position_constraint_drift": 1.148574568787808e-10,
+      "velocity_constraint_drift": 1.1545431277681928e-11
+    },
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "pass0.010000000000000002",
+      "passes": 1,
+      "total_steps": 38755193,
+      "maximum_reference_tolerance_units": 0.06620009046221494,
+      "convergence_units": null,
+      "maximum_absolute_error": 1.553619455307853e-10,
+      "position_constraint_drift": 3.633182643625332e-11,
+      "velocity_constraint_drift": 3.156586103614245e-12
+    },
+    {
+      "problem": "pendulum",
+      "method": "rosenbrock23",
+      "rtol": 1e-08,
+      "mode": "pass0.0010000000000000002",
+      "passes": 1,
+      "total_steps": 125139516,
+      "maximum_reference_tolerance_units": 3.1911684185896374,
+      "convergence_units": null,
+      "maximum_absolute_error": 2.6884876547228487e-09,
+      "position_constraint_drift": 1.1102496699777475e-10,
+      "velocity_constraint_drift": 1.5924150886803545e-11
+    }
+  ],
+  "limits": [
+    "Larger-budget completion does not qualify the original budget or increase product limits.",
+    "No guarantee that a local tolerance bounds global error.",
+    "Hyperbolic formulation corroborated by author 2025 preprint; no complete timing-curve reproduction.",
+    "Original water system independently reduced; exact author index-1 adaptation unverified.",
+    "General non-diagonal Rosenbrock23 mass-matrix DAE high-accuracy qualification remains limited.",
+    "Inexact-Jacobian stress tests retain the published Jacobian; restoration to an exact Jacobian would change the test.",
+    "Tighter pendulum diagnostic interrupted during fifth pass after measured loss of accuracy; not counted complete or as a solver return-code failure."
+  ]
+}

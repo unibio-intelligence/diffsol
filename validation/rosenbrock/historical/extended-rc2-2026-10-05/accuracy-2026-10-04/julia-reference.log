@@ -1,0 +1,32 @@
+Julia Version 1.12.6
+Commit 15346901f00 (2026-04-09 19:20 UTC)
+Build Info:
+  Official https://julialang.org release
+Platform Info:
+  OS: macOS (arm64-apple-darwin24.0.0)
+  CPU: 14 × Apple M3 Max
+  WORD_SIZE: 64
+  LLVM: libLLVM-18.1.7 (ORCJIT, apple-m3)
+  GC: Built with stock GC
+Threads: 1 default, 1 interactive, 1 GC (on 10 virtual cores)
+Environment:
+  JULIA_DEPOT_PATH = <build-path>
+  JULIA_PKG_OFFLINE = true
+  JULIA_NUM_PRECOMPILE_TASKS = 2
+Status `~/Code/ubi-tools-modeling/docs/research/evidence/rosenbrock-accuracy-2026-10-04/JuliaProject.toml`
+⌃ [bcd4f6db] DelayDiffEq v6.4.0
+⌃ [459566f4] DiffEqCallbacks v4.19.3
+  [0c46a032] DifferentialEquations v8.1.1
+⌃ [961ee093] ModelingToolkit v11.42.1
+  [1dea7af3] OrdinaryDiffEq v7.8.1
+⌃ [50262376] OrdinaryDiffEqDefault v2.6.0
+⌃ [43230ef6] OrdinaryDiffEqRosenbrock v2.7.1
+⌃ [2d112036] OrdinaryDiffEqSDIRK v2.9.2
+⌅ [6099a3de] PythonCall v0.9.35
+  [789caeaf] StochasticDiffEq v7.2.0
+  [c3572dad] Sundials v6.7.1
+  [458c3c95] OpenSSL_jll v3.5.4+0
+Info Packages marked with ⌃ and ⌅ have new versions available. Those with ⌃ may be upgradable, but those with ⌅ are restricted by compatibility constraints from upgrading. To see why use `status --outdated`
+REFERENCE_SOURCE=<source-path>
+TABLEAU_SOURCE=<source-path>
+Reference run complete

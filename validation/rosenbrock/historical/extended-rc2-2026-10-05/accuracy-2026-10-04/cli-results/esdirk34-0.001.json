@@ -1,0 +1,111 @@
+{
+  "description": "Classic stiff numerical benchmark; no drug-specific interpretation.",
+  "identity": {
+    "algorithm": "esdirk34",
+    "backend": "diffsol",
+    "backend_version": "0.17.1+sha256:9c75ffcaa2f9e92ea782b4b91a660df9ffc3022ba6db480f47f0512fa5c9ccff",
+    "bound_value_hash": "sha256:a2b9e422ca108dc560b47b73ce7cb33a71e92ca1156b23fd3e5f97ff82f044d9",
+    "build_profile": "debug",
+    "compiler_source_sha256": "sha256:ad7a4c3d8aa59033c8b85ab4a8f90542ba516057eea112aa4aa136fcb178fc53",
+    "compiler_version": "pharmflux/0.1.0",
+    "model_content_hash": "sha256:a5e81ccf0d37368a173b057b88c0a42b717580785aa3f7ffac47c697abe259ff",
+    "run_request_hash": "sha256:77564847d739f1c58ef4fefbbe863f2fdde888ecd3a2bf160f1de76689d842bf",
+    "rustc_version": "rustc 1.98.1 (48a229cea 2026-09-01) (Homebrew)",
+    "rustflags_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "spec_version": "pharmflux.spec/0.1",
+    "target": "aarch64-apple-darwin"
+  },
+  "model_id": "synthetic_robertson",
+  "outputs": [
+    {
+      "name": "a_out",
+      "unit": "1",
+      "values": [
+        1.0,
+        0.9996006826941685,
+        0.9992029682765193,
+        0.9984123239010185,
+        0.9960778496548283,
+        0.9851720659219914,
+        0.9664628139148701,
+        0.905494427570243,
+        0.8413250764478745,
+        0.7157688106928847,
+        0.6170778658900202,
+        0.336761645030321,
+        0.10726212794272459
+      ]
+    },
+    {
+      "name": "b_out",
+      "unit": "1",
+      "values": [
+        0.0,
+        3.6450293941404554e-05,
+        3.637702416097931e-05,
+        3.6231528167779294e-05,
+        3.58048020588652e-05,
+        3.386449069688725e-05,
+        3.074562940828358e-05,
+        2.2407520791404573e-05,
+        1.6232929095924378e-05,
+        9.177680377820832e-06,
+        6.1547322354794925e-06,
+        2.0136292197864988e-06,
+        4.798628592996989e-07
+      ]
+    },
+    {
+      "name": "c_out",
+      "unit": "1",
+      "values": [
+        0.0,
+        0.0003628670118894874,
+        0.0007606546993191465,
+        0.0015514445708131588,
+        0.0038863455431122386,
+        0.01479406958731096,
+        0.03350644045572086,
+        0.09448316490896472,
+        0.1586586906230287,
+        0.2842220116267366,
+        0.3829159793777432,
+        0.6632363413404585,
+        0.8927373921944153
+      ]
+    }
+  ],
+  "request_id": null,
+  "schema": "pharmflux.result/v0.1",
+  "sides": [
+    "post",
+    "post",
+    "post",
+    "post",
+    "post",
+    "post",
+    "post",
+    "post",
+    "post",
+    "post",
+    "post",
+    "post",
+    "post"
+  ],
+  "time_unit": "s",
+  "times": [
+    0.0,
+    0.01,
+    0.02,
+    0.04,
+    0.1,
+    0.4,
+    1.0,
+    4.0,
+    10.0,
+    40.0,
+    100.0,
+    1000.0,
+    10000.0
+  ]
+}

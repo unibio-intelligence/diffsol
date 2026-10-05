@@ -1,0 +1,18 @@
+   Compiling diffsol-pr-a-scientific v0.0.0 (<build-path>)
+warning: function `advance` is never used
+  --> src/main.rs:65:4
+   |
+65 | fn advance<'a, E: OdeEquationsImplicit<T = f64> + 'a, S: OdeSolverMethod<'a, E>>(
+   |    ^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `endpoint` is never used
+  --> src/main.rs:72:4
+   |
+72 | fn endpoint(v: &NalgebraVec<f64>) -> String {
+   |    ^^^^^^^^
+
+warning: `diffsol-pr-a-scientific` (bin "diffsol-pr-a-scientific") generated 2 warnings
+    Finished `release` profile [optimized] target(s) in 1.07s
+     Running `<build-path>`

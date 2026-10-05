@@ -1,0 +1,27 @@
+    Checking bitflags v2.13.2
+    Checking either v1.18.0
+    Checking once_cell v1.21.4
+   Compiling zerocopy v0.8.59
+   Compiling serde_core v1.0.229
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.151
+    Checking rayon v1.12.0
+    Checking sysctl v0.6.0
+    Checking raw-cpuid v11.6.0
+    Checking gemm-common v0.19.0
+    Checking spindle v0.2.6
+    Checking gemm-c64 v0.19.0
+    Checking gemm-c32 v0.19.0
+    Checking gemm-f64 v0.19.0
+    Checking gemm-f32 v0.19.0
+    Checking gemm v0.19.0
+    Checking ppv-lite86 v0.2.21
+    Checking rand_chacha v0.9.0
+    Checking rand v0.9.5
+    Checking rand_distr v0.5.1
+    Checking faer v0.24.4
+    Checking diffsol-la v0.2.0 (<source>/crates/diffsol-la)
+    Checking diffsol-nl v0.2.0 (<source>/crates/diffsol-nl)
+ Documenting diffsol v0.17.1 (<source>/crates/diffsol)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 17.22s
+   Generated <cargo-target>/doc/diffsol/index.html
