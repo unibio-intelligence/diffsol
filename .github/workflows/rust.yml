@@ -1,11 +1,9 @@
 name: Rust
 
 on:
+  workflow_dispatch:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
+    branches: [main]
 permissions:
   contents: read
       
@@ -16,6 +14,10 @@ env:
   RUSTDOCFLAGS: -D warnings
   RUST_BACKTRACE: full
   LLVM_VERSION: "17"
+
+concurrency:
+  group: ci-rust-${{ github.event_name == 'push' && github.ref || format('qualification-{0}', github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'push' }}
 
 jobs:
   rustfmt:

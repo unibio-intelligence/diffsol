@@ -8,6 +8,10 @@ on:
 permissions:
   checks: write
 
+concurrency:
+  group: ci-benchmarks-base-${{ github.event_name == 'push' && github.ref || format('qualification-{0}', github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'push' }}
+
 jobs:
   benchmark_base:
     name: Benchmark Base Branch with Bencher
