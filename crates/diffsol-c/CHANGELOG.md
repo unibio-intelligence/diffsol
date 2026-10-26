@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0](https://github.com/unibio-intelligence/diffsol/compare/diffsol-c-v0.6.1...diffsol-c-v0.7.0) - 2026-10-26
+
+### Added
+
+- *(diffsol)* [**breaking**] sensitivity/adjoints calculated by batching ([#373](https://github.com/unibio-intelligence/diffsol/pull/373))
+- autodiff closures and examples ([#302](https://github.com/unibio-intelligence/diffsol/pull/302))
+- move crates under crates root dir ([#328](https://github.com/unibio-intelligence/diffsol/pull/328))
+
+### Fixed
+
+- use parameter-scaled sens_atol for forward sensitivity ([#339](https://github.com/unibio-intelligence/diffsol/pull/339))
+- consistent capitalisation of diffsol ([#336](https://github.com/unibio-intelligence/diffsol/pull/336))
+
+### Other
+
+- release ([#380](https://github.com/unibio-intelligence/diffsol/pull/380))
+- release ([#360](https://github.com/unibio-intelligence/diffsol/pull/360))
+- release ([#349](https://github.com/unibio-intelligence/diffsol/pull/349))
+- builder and tolerances sections ([#346](https://github.com/unibio-intelligence/diffsol/pull/346))
+- bdf uses LS param instead of NLS, always uses NewtonNonlinearSolver ([#332](https://github.com/unibio-intelligence/diffsol/pull/332))
+- version 0.16.1
+
 ## [0.6.1](https://github.com/martinjrobins/diffsol/compare/diffsol-c-v0.6.0...diffsol-c-v0.6.1) - 2026-09-28
 
 ### Other
